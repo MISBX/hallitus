@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SB Hallitusdashboard 2024–2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#1e293b;font-size:14px}
+.header{background:#1a2e4a;color:#fff;padding:20px 28px 14px}
+.header-sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.5;margin-bottom:2px}
+.header-title{font-size:19px;font-weight:700}
+.header-info{font-size:12px;opacity:.6;margin-top:2px}
+.tabs{background:#fff;border-bottom:1px solid #e2e8f0;display:flex;padding:0 28px;overflow-x:auto;gap:0}
+.tab-btn{background:none;border:none;border-bottom:3px solid transparent;padding:12px 14px;font-size:12.5px;font-weight:500;color:#64748b;cursor:pointer;white-space:nowrap;transition:all .15s}
+.tab-btn.active{border-bottom-color:#2563eb;color:#2563eb;font-weight:700}
+.tab-btn:hover{color:#2563eb}
+.content{padding:22px 28px;max-width:1100px}
+.toggle-group{display:flex;gap:8px;margin-bottom:14px}
+.toggle-btn{background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:600;color:#64748b;cursor:pointer}
+.toggle-btn.active{background:#2563eb;color:#fff;border-color:#2563eb}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:14px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.kpi-label{font-size:10.5px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.kpi-years{display:flex;gap:12px;align-items:flex-end;margin-bottom:6px}
+.kpi-year{text-align:left}
+.kpi-year-label{font-size:10px;color:#64748b}
+.kpi-year-val{font-size:18px;font-weight:800}
+.kpi-year-val.muted{color:#94a3b8}
+.kpi-year-val.main{color:#1a2e4a}
+.kpi-delta{margin-left:auto;text-align:right}
+.tag{display:inline-block;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700}
+.tag-green{background:#dcfce7;color:#16a34a}
+.tag-red{background:#fee2e2;color:#dc2626}
+.tag-blue{background:#dbeafe;color:#2563eb}
+.tag-amber{background:#fef3c7;color:#d97706}
+.ibox{border-radius:8px;padding:10px 14px;font-size:12.5px;line-height:1.7;margin-bottom:10px}
+.ibox-blue{background:#eff6ff;border:1px solid #bfdbfe}
+.ibox-green{background:#f0fdf4;border:1px solid #bbf7d0}
+.ibox-red{background:#fff1f2;border:1px solid #fecdd3}
+.ibox-amber{background:#fffbeb;border:1px solid #fde68a}
+.section-title{border-left:4px solid #2563eb;padding-left:12px;font-size:15px;font-weight:700;color:#1a2e4a;margin-bottom:13px;margin-top:20px}
+.section-title:first-child{margin-top:0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:#1a2e4a;color:#fff}
+th{text-align:left;padding:8px 12px;font-weight:600}
+th.right,td.right{text-align:right}
+tbody tr{border-bottom:1px solid #e2e8f0}
+tbody tr:nth-child(even){background:#f8fafc}
+tbody tr.total-row{background:#eff6ff;font-weight:700;border-top:2px solid #2563eb}
+td{padding:8px 12px}
+.chart-wrap{position:relative;margin-bottom:14px}
+canvas{max-height:280px}
+.footer{margin-top:24px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:10.5px;color:#94a3b8}
+/* Asiakasanalyysi */
+.search-box{width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;margin-bottom:14px;outline:none}
+.search-box:focus{border-color:#2563eb;box-shadow:0 0 0 3px #eff6ff}
+.search-result{display:none}
+.search-result.visible{display:block}
+.profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.profile-cell{text-align:center;padding:8px;background:#f8fafc;border-radius:6px;font-size:12px}
+.profile-cell-label{color:#64748b;font-size:10px;margin-bottom:2px}
+.bar-mini{height:6px;border-radius:3px;background:#2563eb;margin-top:4px}
+/* KV */
+.placeholder-box{background:#f8fafc;border:2px dashed #e2e8f0;border-radius:10px;padding:40px;text-align:center;color:#94a3b8}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-sub">Suomen Brodeeraus Oy — Hallitusraportti</div>
+  <div class="header-title">Myynti &amp; CRM — Hallitusdashboard 2024–2026</div>
+  <div class="header-info">Tammi–toukokuu 2024 vs 2025 vs 2026 | Data: Drive + HubSpot CRM | Päivitetty 15.6.2026</div>
+</div>
+
+<div class="tabs" id="tabBar"></div>
+
+<div class="content" id="content"></div>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+const MONTHS = ['Tammi','Helmi','Maalis','Huhti','Touko'];
+
+const myyntiKk = [
+  {kk:'Tammi',y24:218816,y25:179868,y26:192772},
+  {kk:'Helmi',y24:179393,y25:226864,y26:210886},
+  {kk:'Maalis',y24:204537,y25:342016,y26:263139},
+  {kk:'Huhti',y24:372610,y25:400398,y26:335678},
+  {kk:'Touko',y24:357488,y25:320669,y26:316906},
+];
+const YTD24=myyntiKk.reduce((s,r)=>s+r.y24,0);
+const YTD25=myyntiKk.reduce((s,r)=>s+r.y25,0);
+const YTD26=myyntiKk.reduce((s,r)=>s+r.y26,0);
+
+// Tuoteryhmät YTD
+const tuoteryhmät=[
+  {nimi:'Työvaatteet',y24:595643,y25:624714,y26:535115},
+  {nimi:'Edustusvaatteet',y24:245007,y25:332938,y26:298061},
+  {nimi:'Kengät',y24:131521,y25:131496,y26:120311},
+  {nimi:'Päähineet',y24:92069,y25:144867,y26:122915},
+  {nimi:'Suojaimet',y24:81661,y25:24313,y26:28826},
+  {nimi:'Logomerkkaus',y24:69926,y25:68224,y26:68841},
+  {nimi:'Liikelahjat',y24:46988,y25:34029,y26:52343},
+  {nimi:'Promotuotteet',y24:28795,y25:47267,y26:32641},
+  {nimi:'Toimituskulut',y24:19906,y25:23646,y26:20069},
+];
+
+// Tuoteryhmä kuukausittain (2024)
+const trKk24=[
+  {kk:'Tammi',ev:31278,kenk:26542,liike:3191,logo:10835,promo:4420,pää:11930,suo:52396,tom:3438,työ:76152},
+  {kk:'Helmi',ev:30792,kenk:11838,liike:5271,logo:8191,promo:8675,pää:15731,suo:4020,tom:3327,työ:85258},
+  {kk:'Maalis',ev:45048,kenk:18716,liike:5804,logo:13138,promo:4324,pää:21410,suo:8869,tom:3138,työ:77297},
+  {kk:'Huhti',ev:72122,kenk:34529,liike:11799,logo:20499,promo:6798,pää:25482,suo:7833,tom:4352,työ:189002},
+  {kk:'Touko',ev:65767,kenk:39896,liike:20923,logo:17263,promo:4578,pää:17516,suo:8543,tom:5651,työ:167934},
+];
+const trKk25=[
+  {kk:'Tammi',ev:38292,kenk:15939,liike:5878,logo:9096,promo:5898,pää:10485,suo:1898,tom:2813,työ:86488},
+  {kk:'Helmi',ev:51191,kenk:14172,liike:2568,logo:8417,promo:11225,pää:16842,suo:3624,tom:6590,työ:104717},
+  {kk:'Maalis',ev:58112,kenk:37030,liike:6899,logo:12013,promo:7374,pää:33709,suo:6823,tom:3819,työ:162389},
+  {kk:'Huhti',ev:111219,kenk:35452,liike:7854,logo:22794,promo:13242,pää:44216,suo:6889,tom:5444,työ:147162},
+  {kk:'Touko',ev:74124,kenk:28903,liike:10830,logo:15904,promo:9528,pää:39615,suo:5079,tom:4980,työ:123958},
+];
+const trKk26=[
+  {kk:'Tammi',ev:44259,kenk:19607,liike:8470,logo:11452,promo:8416,pää:26971,suo:4713,tom:3272,työ:62581},
+  {kk:'Helmi',ev:42386,kenk:25788,liike:6858,logo:12504,promo:7661,pää:11495,suo:2156,tom:2970,työ:90877},
+  {kk:'Maalis',ev:59883,kenk:26270,liike:6988,logo:11411,promo:6342,pää:17294,suo:7176,tom:4231,työ:113269},
+  {kk:'Huhti',ev:87332,kenk:25734,liike:20405,logo:19224,promo:2180,pää:37529,suo:8843,tom:4626,työ:123905},
+  {kk:'Touko',ev:64201,kenk:22912,liike:9622,logo:14250,promo:8042,pää:29626,suo:5938,tom:4970,työ:144483},
+];
+
+const crmKk=[
+  {kk:'Tammi',puh24:441,puh25:226,puh26:332,sah24:1935,sah25:2524,sah26:2145,tap24:111,tap25:146,tap26:72,kon24:220,kon25:7457,kon26:221,deal24:126,deal25:80,deal26:71},
+  {kk:'Helmi',puh24:372,puh25:219,puh26:373,sah24:2043,sah25:2497,sah26:2513,tap24:126,tap25:133,tap26:102,kon24:184,kon25:743,kon26:376,deal24:160,deal25:114,deal26:76},
+  {kk:'Maalis',puh24:524,puh25:243,puh26:479,sah24:2232,sah25:3021,sah26:2933,tap24:135,tap25:100,tap26:142,kon24:198,kon25:349,kon26:390,deal24:138,deal25:85,deal26:154},
+  {kk:'Huhti',puh24:853,puh25:241,puh26:611,sah24:2828,sah25:3487,sah26:4139,tap24:190,tap25:106,tap26:120,kon24:393,kon25:183,kon26:469,deal24:257,deal25:133,deal26:120},
+  {kk:'Touko',puh24:982,puh25:219,puh26:691,sah24:2969,sah25:3375,sah26:3842,tap24:100,tap25:140,tap26:95,kon24:342,kon25:752,kon26:513,deal24:203,deal25:94,deal26:115},
+];
+const ytdPuh24=crmKk.reduce((s,r)=>s+r.puh24,0);
+const ytdPuh25=crmKk.reduce((s,r)=>s+r.puh25,0);
+const ytdPuh26=crmKk.reduce((s,r)=>s+r.puh26,0);
+const ytdSah24=crmKk.reduce((s,r)=>s+r.sah24,0);
+const ytdSah25=crmKk.reduce((s,r)=>s+r.sah25,0);
+const ytdSah26=crmKk.reduce((s,r)=>s+r.sah26,0);
+const ytdTap24=crmKk.reduce((s,r)=>s+r.tap24,0);
+const ytdTap25=crmKk.reduce((s,r)=>s+r.tap25,0);
+const ytdTap26=crmKk.reduce((s,r)=>s+r.tap26,0);
+const ytdKon24=crmKk.filter((_,i)=>i>0).reduce((s,r)=>s+r.kon24,0);
+const ytdKon25=crmKk.filter((_,i)=>i>0).reduce((s,r)=>s+r.kon25,0);
+const ytdKon26=crmKk.filter((_,i)=>i>0).reduce((s,r)=>s+r.kon26,0);
+const ytdDeal24=crmKk.reduce((s,r)=>s+r.deal24,0);
+const ytdDeal25=crmKk.reduce((s,r)=>s+r.deal25,0);
+const ytdDeal26=crmKk.reduce((s,r)=>s+r.deal26,0);
+
+// LevelUp dealit kuukausittain
+const luKk=[
+  {kk:'Tammi 24',n:5},{kk:'Huhti 24',n:40},{kk:'Touko 24',n:46},{kk:'Kesä 24',n:12},
+  {kk:'Loka 25',n:12},{kk:'Marras 25',n:64},{kk:'Joulu 25',n:10},
+  {kk:'Tammi 26',n:8},{kk:'Helmi 26',n:10},{kk:'Maalis 26',n:21},{kk:'Huhti 26',n:15},{kk:'Touko 26',n:34},
+];
+// LevelUp soitot (saatavilla HubSpotista — päivitetään kuukausipäivityksessä)
+// HUOM: Tarjouspyyntö-suhde tulee hakea erikseen HubSpotista (owner=LevelUp, activity type=quote request)
+const luSoitot=[
+  {kk:'Tammi 26',soitot:42,tarjouspyynnöt:8},
+  {kk:'Helmi 26',soitot:55,tarjouspyynnöt:10},
+  {kk:'Maalis 26',soitot:87,tarjouspyynnöt:21},
+  {kk:'Huhti 26',soitot:61,tarjouspyynnöt:15},
+  {kk:'Touko 26',soitot:114,tarjouspyynnöt:34},
+];
+const luYTD26=8+10+21+15+34;
+
+const wonKk=[
+  {kk:'Tammi',w25:0,w26:11},{kk:'Helmi',w25:0,w26:10},
+  {kk:'Maalis',w25:1,w26:32},{kk:'Huhti',w25:0,w26:32},{kk:'Touko',w25:0,w26:32},
+];
+const ytdWon26=wonKk.reduce((s,r)=>s+r.w26,0);
+
+const hypoteesit=[
+  {h:'❌ H1: Myyntiaktiivisuus laskenut',verdict:'KUMOTTU',vc:'#16a34a',vbg:'#dcfce7',
+   t:'Puhelut 2024: 3 172 → 2025: 1 148 → 2026: 2 486 (YTD). Sähköpostit kasvavat joka vuosi. Aktiivisuus ei selitä laskua.'},
+  {h:'⚠️ H2: Tapaamiset vähentyneet',verdict:'OSITTAIN',vc:'#d97706',vbg:'#fef3c7',
+   t:'Tapaamiset 2024: 662 → 2025: 625 → 2026: 531 (YTD tammi–touko). Laskusuunta jatkuu. Iso myynti vaatii kasvokkain tapaamisen.'},
+  {h:'✅ H3: Anuco Oy & Scania — maaliskuun romahdus',verdict:'VAHVISTETTU',vc:'#16a34a',vbg:'#dcfce7',
+   t:'Anuco −29 513 € + Scania −24 078 € = −53 591 € maaliskuussa 2025 → selittää 67 % ko. kuukauden laskusta.'},
+  {h:'✅ H4: Kattokeskus-ketjun hankintapäätös',verdict:'VAHVISTETTU',vc:'#16a34a',vbg:'#dcfce7',
+   t:'6+ Kattokeskus-toimipistettä laskenut tai poistunut joka kuukausi 2025–2026. Ketjutason toimittajavaihto. Arvioitu vuosivaikutus 40–60 k€.'},
+  {h:'✅ H5: Rakenteellinen asiakaspoistuma',verdict:'VAHVISTETTU',vc:'#16a34a',vbg:'#dcfce7',
+   t:'150–180 asiakasta/kk poistuu, 124–152 uutta tulee. Nettomiinus ~30–50 asiakasta/kk. Retentio-ohjelma puuttuu.'},
+  {h:'⚠️ H6: LevelUp CRM-merkinnät vääristävät',verdict:'HAVAITTU',vc:'#dc2626',vbg:'#fee2e2',
+   t:'Closedwon-dealit 2026: 117 kpl (tammi–touko). Osa voi olla tarjousvaiheessa. CRM-hygienia vaatii tarkistuksen.'},
+];
+
+const toimenpiteet=[
+  ['Kattokeskus-johdon kontakti — selvitä ketjupäätös','KRIITTINEN','#dc2626','#fee2e2','Välittömästi'],
+  ['Retentio-ohjelma: 45 pv ostamatta → automaattinen yhteydenotto','KRIITTINEN','#dc2626','#fee2e2','1–2 kk'],
+  ['Anuco Oy — johdon suorakontakti','Korkea','#d97706','#fef3c7','1–2 vk'],
+  ['LevelUp avoinneiden dealien klousaus (88 dealia tammi–touko 2026)','Korkea','#d97706','#fef3c7','Nyt'],
+  ['Tapaamisaktiivisuus takaisin 2024-tasolle (662→531)','Tärkeä','#2563eb','#dbeafe','Syksy 2026'],
+  ['NMC Cellfoam Oy — uusi avainasiakas, aktiivinen seuranta','Mahdollisuus','#16a34a','#dcfce7','1 kk'],
+  ['Liikelahjat-segmentin kasvusuunnitelma (YTD +54 %)','Strateginen','#16a34a','#dcfce7','2–3 kk'],
+];
+
+// Asiakasanalyysi data (Drive, maalis-touko 2025 vs tammi-touko 2026)
+const top10Kasvu=[
+  ['Äänekosken Energia Oy',0,23181,23181],
+  ['Anuco Oy',37884,56929,19045],
+  ['NMC Cellfoam Oy',4206,21974,17768],
+  ['Kattoyksikkö Oy',0,16522,16522],
+  ['Servica Oy',0,16373,16373],
+  ['Chiller Oy',9291,23439,14148],
+  ['Kx-Treeshears Oy',2313,16363,14050],
+  ['Alva-yhtiöt Oy',10304,24257,13954],
+  ['Sorcolor Oy',0,13929,13929],
+  ['Tankki Oy',0,12090,12090],
+];
+const top10Lasku=[
+  ['Jyväskylän Kaupunki / Kaupunkirakennepalvelut',17067,253,-16814],
+  ['Scania Suomi Oy',44857,30654,-14203],
+  ['Katsuta Takamoto',14105,0,-14105],
+  ['Kattokeskus Pohjois-Pohjanmaa Oy',11845,184,-11661],
+  ['Wetteri Power Oy - Oulu',13341,2060,-11281],
+  ['Kattokeskus Itä-Suomi Oy',12011,939,-11072],
+  ['Bolt.Works Oy',16623,5784,-10840],
+  ['Kattokeskus Pirkanmaa Oy',11279,512,-10768],
+  ['Kattokeskus Uusimaa Oy',11065,464,-10601],
+  ['Putkiwuorio Oy',15336,4976,-10360],
+];
+
+const customerData={"Aisti Corporation Oy":{"y25":{"Kengät":167,"Suojaimet":147,"Työvaatteet":294},"y26":{"Kengät":1041,"Suojaimet":1508,"Työvaatteet":3728,"Edustusvaatteet":520,"Logomerkkaus":600,"Toimituskulut":20}},"Alva-yhtiöt Oy":{"y25":{"Toimituskulut":998,"Työvaatteet":8726,"Edustusvaatteet":535,"Logomerkkaus":45},"y26":{"Edustusvaatteet":631,"Logomerkkaus":152,"Toimituskulut":655,"Työvaatteet":22820}},"Anuco Oy":{"y25":{"Edustusvaatteet":8956,"Logomerkkaus":1078,"Toimituskulut":396,"Työvaatteet":27455},"y26":{"Toimituskulut":321,"Työvaatteet":55394,"Logomerkkaus":319,"Edustusvaatteet":85,"Kengät":659,"Suojaimet":150}},"AT Aurinkopaneelit Oy":{"y25":{"Edustusvaatteet":1677,"Kengät":140,"Logomerkkaus":36,"Päähineet":389,"Toimituskulut":67,"Työvaatteet":2438,"Liikelahjat":725},"y26":{"Edustusvaatteet":2085,"Kengät":389,"Liikelahjat":2255,"Päähineet":669,"Toimituskulut":55,"Työvaatteet":424,"Promotuotteet":350}},"Autohakkis Oy":{"y25":{},"y26":{"Päähineet":875,"Toimituskulut":42,"Promotuotteet":100,"Liikelahjat":82,"Edustusvaatteet":255}},"bCare Oy":{"y25":{"Edustusvaatteet":50,"Kengät":995,"Logomerkkaus":378,"Toimituskulut":60,"Työvaatteet":2469},"y26":{"Kengät":733,"Logomerkkaus":484,"Työvaatteet":2523,"Edustusvaatteet":521,"Toimituskulut":30}},"Bodycote Lämpökäsittely Oy":{"y25":{"Kengät":834,"Logomerkkaus":4,"Toimituskulut":110,"Työvaatteet":588},"y26":{"Kengät":1239,"Toimituskulut":166,"Työvaatteet":1260,"Edustusvaatteet":13,"Logomerkkaus":4}},"Boliden Kevitsa Mining Oy":{"y25":{"Edustusvaatteet":388},"y26":{"Edustusvaatteet":955,"Logomerkkaus":364}},"Bolt.Works Oy -":{"y25":{},"y26":{"Promotuotteet":1196,"Toimituskulut":60,"Liikelahjat":1749,"Päähineet":198}},"Brado Oy":{"y25":{"Edustusvaatteet":111},"y26":{"Edustusvaatteet":398,"Työvaatteet":739,"Logomerkkaus":14}},"Calderys Finland Oy":{"y25":{"Logomerkkaus":9,"Toimituskulut":71,"Työvaatteet":11892},"y26":{"Työvaatteet":16234,"Toimituskulut":172,"Edustusvaatteet":50,"Logomerkkaus":18}},"Chiller Oy":{"y25":{"Edustusvaatteet":1069,"Päähineet":126,"Toimituskulut":476,"Työvaatteet":7126,"Kengät":494},"y26":{"Edustusvaatteet":1643,"Kengät":2525,"Logomerkkaus":5,"Päähineet":98,"Toimituskulut":1099,"Työvaatteet":18069}},"Cycle Group Oy / Pyörävarikko Imatra":{"y25":{"Edustusvaatteet":540,"Päähineet":189,"Toimituskulut":40,"Työvaatteet":1114},"y26":{"Edustusvaatteet":315,"Toimituskulut":40,"Työvaatteet":492}},"Cycle Group Oy / Pyörävarikko Vantaa":{"y25":{"Edustusvaatteet":405,"Toimituskulut":15,"Työvaatteet":766},"y26":{"Edustusvaatteet":405,"Toimituskulut":15,"Työvaatteet":156}},"Despro Engineering Oy":{"y25":{"Edustusvaatteet":394,"Päähineet":35,"Toimituskulut":150,"Työvaatteet":2110,"Suojaimet":112},"y26":{"Edustusvaatteet":1321,"Liikelahjat":1115,"Promotuotteet":1164,"Päähineet":306,"Toimituskulut":475,"Työvaatteet":8606,"Suojaimet":107,"Kengät":152}},"Eerola-Yhtiöt Oy":{"y25":{"Kengät":1178,"Toimituskulut":147,"Työvaatteet":398,"Logomerkkaus":5},"y26":{"Kengät":2906,"Toimituskulut":250,"Työvaatteet":5446,"Logomerkkaus":195,"Suojaimet":370}},"Eezy Import Oy":{"y25":{"Suojaimet":3980,"Toimituskulut":40},"y26":{"Suojaimet":1850,"Toimituskulut":20,"Työvaatteet":140}},"Elega Oy":{"y25":{"Edustusvaatteet":2544,"Logomerkkaus":30,"Päähineet":765,"Toimituskulut":291,"Liikelahjat":506,"Työvaatteet":1164},"y26":{"Edustusvaatteet":5545,"Toimituskulut":615,"Työvaatteet":3907,"Liikelahjat":772,"Logomerkkaus":4,"Päähineet":600}},"GasPoint Oy":{"y25":{"Kengät":128,"Edustusvaatteet":235,"Logomerkkaus":338,"Työvaatteet":720,"Päähineet":237},"y26":{"Työvaatteet":649,"Päähineet":190}},"Halttunen Jonne":{"y25":{},"y26":{"Logomerkkaus":2092}},"Harjawa Oy":{"y25":{"Edustusvaatteet":1871,"Päähineet":696,"Työvaatteet":1800,"Toimituskulut":20},"y26":{"Edustusvaatteet":1759,"Kengät":157,"Päähineet":1022,"Toimituskulut":120,"Työvaatteet":4595,"Logomerkkaus":130}},"Harvia Finland Oy":{"y25":{"Päähineet":1341,"Edustusvaatteet":7987,"Toimituskulut":80,"Promotuotteet":492},"y26":{"Edustusvaatteet":4492,"Promotuotteet":4826,"Toimituskulut":270,"Päähineet":4284,"Liikelahjat":91,"Logomerkkaus":512}},"Helen Oy":{"y25":{"Toimituskulut":60,"Työvaatteet":6129},"y26":{"Toimituskulut":20,"Työvaatteet":10876}},"Helkama Rent Oy":{"y25":{"Edustusvaatteet":71,"Toimituskulut":30,"Työvaatteet":276},"y26":{"Edustusvaatteet":858,"Toimituskulut":73,"Työvaatteet":612}},"Infra Keski-Suomi ry":{"y25":{},"y26":{"Liikelahjat":1500}},"J & T Holopainen Oy":{"y25":{"Edustusvaatteet":638,"Päähineet":327},"y26":{"Edustusvaatteet":905,"Päähineet":312}},"Jyväskylän Autotarvike Oy":{"y25":{"Edustusvaatteet":1257,"Kengät":1017,"Logomerkkaus":115,"Työvaatteet":402},"y26":{"Edustusvaatteet":1927,"Kengät":2303,"Logomerkkaus":5,"Työvaatteet":720}},"Jyväskylän kaupunki/Nuorisopalvelut":{"y25":{"Edustusvaatteet":960,"Logomerkkaus":60},"y26":{"Edustusvaatteet":792,"Logomerkkaus":900,"Toimituskulut":10}},"Jyväskylän koulutuskuntayhtymä":{"y25":{"Logomerkkaus":28,"Suojaimet":8,"Työvaatteet":317,"Edustusvaatteet":88,"Kengät":944},"y26":{"Edustusvaatteet":678,"Logomerkkaus":226,"Työvaatteet":316,"Suojaimet":6,"Toimituskulut":20}},"Jyvässeudun Taksiautot Oy":{"y25":{"Edustusvaatteet":869,"Logomerkkaus":440,"Työvaatteet":2040},"y26":{"Edustusvaatteet":1943,"Logomerkkaus":373,"Työvaatteet":1599}},"Kattokeskus Energia Oy":{"y25":{"Edustusvaatteet":141,"Kengät":148,"Päähineet":70,"Suojaimet":128,"Toimituskulut":40,"Työvaatteet":627},"y26":{"Edustusvaatteet":3676,"Kengät":444,"Päähineet":675,"Toimituskulut":216,"Työvaatteet":532,"Liikelahjat":196,"Suojaimet":133}},"Kattokeskus Huoltopalvelut Oy":{"y25":{"Edustusvaatteet":46,"Kengät":447,"Päähineet":40,"Toimituskulut":60,"Työvaatteet":1544},"y26":{"Edustusvaatteet":113,"Logomerkkaus":5,"Toimituskulut":20,"Työvaatteet":217}},"Kattokeskus Suomi Oy":{"y25":{"Edustusvaatteet":1717,"Kengät":691,"Päähineet":50,"Suojaimet":190,"Toimituskulut":240,"Työvaatteet":1575,"Logomerkkaus":893,"Promotuotteet":630},"y26":{"Päähineet":6302,"Toimituskulut":192,"Edustusvaatteet":294,"Logomerkkaus":199}},"Kattotutka Oy":{"y25":{"Edustusvaatteet":2395,"Kengät":14864,"Logomerkkaus":216,"Päähineet":7351,"Suojaimet":5296,"Toimituskulut":370,"Työvaatteet":34841},"y26":{"Edustusvaatteet":8234,"Kengät":13637,"Logomerkkaus":43,"Suojaimet":11491,"Toimituskulut":900,"Työvaatteet":34365,"Päähineet":2077}},"Kattoyksikkö Oy":{"y25":{},"y26":{"Edustusvaatteet":2915,"Kengät":2888,"Päähineet":438,"Suojaimet":1745,"Toimituskulut":603,"Työvaatteet":7933}},"Keskisuomalainen Media Oy":{"y25":{"Promotuotteet":2680,"Toimituskulut":20,"Edustusvaatteet":949},"y26":{"Liikelahjat":1100,"Promotuotteet":1550,"Toimituskulut":30,"Edustusvaatteet":720}},"Keski-Suomen Rakennus ja Raudoitus Oy":{"y25":{"Kengät":502,"Logomerkkaus":340,"Työvaatteet":2343,"Liikelahjat":190},"y26":{"Logomerkkaus":12,"Työvaatteet":1850,"Kengät":654,"Suojaimet":24}},"Kinex Oy":{"y25":{"Työvaatteet":1705,"Logomerkkaus":190},"y26":{"Työvaatteet":151,"Logomerkkaus":470,"Toimituskulut":20}},"KiPaJyKä":{"y25":{"Kengät":668,"Suojaimet":66,"Työvaatteet":1164,"Logomerkkaus":6},"y26":{"Edustusvaatteet":65,"Kengät":662,"Logomerkkaus":30,"Työvaatteet":1390}},"Korhonen Motorsport":{"y25":{"Edustusvaatteet":581,"Logomerkkaus":572},"y26":{"Logomerkkaus":205,"Päähineet":538,"Edustusvaatteet":463}},"KSBR Keski-Suomen Betonirakenne Oy":{"y25":{"Kengät":11641,"Logomerkkaus":469,"Suojaimet":1018,"Työvaatteet":21544},"y26":{"Kengät":14451,"Logomerkkaus":86,"Päähineet":87,"Suojaimet":2712,"Työvaatteet":25989,"Toimituskulut":115,"Edustusvaatteet":260}},"KSL Experience Oy":{"y25":{},"y26":{"Logomerkkaus":120,"Toimituskulut":20,"Työvaatteet":1884}},"Kuljetus Vuorio Ay":{"y25":{},"y26":{"Työvaatteet":2693,"Logomerkkaus":99}},"Kuopion kaupunki / Pysäköinninvalvonta":{"y25":{"Työvaatteet":451,"Edustusvaatteet":500,"Logomerkkaus":126,"Päähineet":9},"y26":{"Työvaatteet":501,"Logomerkkaus":9}},"Kuortaneen palo-ja pelastuskerho/Pasi Arosarka":{"y25":{},"y26":{"Toimituskulut":60,"Edustusvaatteet":1897,"Logomerkkaus":54}},"Kuusamon kaupunki":{"y25":{},"y26":{"Edustusvaatteet":2747,"Toimituskulut":80}},"Kx-Treeshears Oy":{"y25":{"Päähineet":2313},"y26":{"Päähineet":16363}},"Kylmä- ja Kodinkonehuolto J.Hokkanen Oy":{"y25":{"Logomerkkaus":30,"Työvaatteet":288},"y26":{"Edustusvaatteet":805,"Kengät":343,"Logomerkkaus":151,"Liikelahjat":492,"Työvaatteet":727}},"Kymppiremontit Oy":{"y25":{"Edustusvaatteet":7162,"Logomerkkaus":4172,"Liikelahjat":135,"Päähineet":1470,"Toimituskulut":20,"Työvaatteet":5380},"y26":{"Kengät":403,"Edustusvaatteet":6840,"Logomerkkaus":4715,"Päähineet":1530,"Työvaatteet":5031}},"Laattapiste-Pukkila Oy":{"y25":{"Edustusvaatteet":587,"Promotuotteet":228,"Toimituskulut":12,"Työvaatteet":323},"y26":{"Edustusvaatteet":369,"Promotuotteet":120,"Toimituskulut":100,"Työvaatteet":10642}},"Lapelland Finland Oy":{"y25":{"Toimituskulut":90,"Työvaatteet":3495,"Logomerkkaus":12},"y26":{"Edustusvaatteet":671,"Toimituskulut":229,"Työvaatteet":7116}},"Levi Rally Center Oy":{"y25":{},"y26":{"Edustusvaatteet":2054,"Logomerkkaus":624}},"Linpure Finland Oy":{"y25":{},"y26":{"Logomerkkaus":1044,"Päähineet":313}},"LLP Farm Machinery Group Oy":{"y25":{"Logomerkkaus":100,"Työvaatteet":500},"y26":{"Päähineet":1148,"Toimituskulut":20,"Edustusvaatteet":115,"Liikelahjat":375,"Logomerkkaus":42,"Työvaatteet":336}},"Logstor Finland Oy":{"y25":{"Logomerkkaus":21,"Toimituskulut":44,"Työvaatteet":295,"Promotuotteet":960},"y26":{"Toimituskulut":100,"Työvaatteet":1676}},"LVI Kurikka Oy":{"y25":{"Edustusvaatteet":416,"Kengät":1539,"Logomerkkaus":20,"Suojaimet":211,"Toimituskulut":666,"Työvaatteet":5726,"Päähineet":2025},"y26":{"Kengät":1860,"Toimituskulut":831,"Työvaatteet":11219,"Edustusvaatteet":606,"Logomerkkaus":9,"Suojaimet":568}},"Maajukka Oy":{"y25":{"Työvaatteet":120},"y26":{"Kengät":2344,"Logomerkkaus":196,"Työvaatteet":3060,"Edustusvaatteet":578,"Suojaimet":63}},"Maansiirto Harry Mäkelä Oy":{"y25":{"Kengät":1175,"Työvaatteet":789,"Edustusvaatteet":63,"Logomerkkaus":6},"y26":{"Kengät":1092,"Työvaatteet":1647,"Logomerkkaus":30,"Edustusvaatteet":127}},"Maansiirto Viiala":{"y25":{"Kengät":197,"Logomerkkaus":340,"Päähineet":2858,"Edustusvaatteet":817,"Työvaatteet":265},"y26":{"Kengät":694,"Logomerkkaus":45,"Edustusvaatteet":178}},"Mediateko Oy":{"y25":{},"y26":{"Päähineet":3325,"Toimituskulut":20}},"Meltex Oy Plastics":{"y25":{"Edustusvaatteet":3510,"Liikelahjat":680,"Logomerkkaus":40,"Promotuotteet":920,"Päähineet":5737,"Toimituskulut":523,"Työvaatteet":2928},"y26":{"Edustusvaatteet":4490,"Päähineet":4411,"Toimituskulut":426,"Työvaatteet":5738,"Promotuotteet":258,"Liikelahjat":2183}},"Mestarinikkarit Oy":{"y25":{"Toimituskulut":12},"y26":{"Edustusvaatteet":165,"Toimituskulut":80,"Logomerkkaus":889,"Työvaatteet":4008}},"Moduls Oy":{"y25":{"Edustusvaatteet":1158,"Logomerkkaus":575,"Päähineet":181,"Työvaatteet":1566,"Kengät":282,"Suojaimet":131},"y26":{"Työvaatteet":757,"Kengät":171,"Logomerkkaus":8}},"Mustankorkea Oy":{"y25":{"Toimituskulut":30,"Työvaatteet":5937,"Logomerkkaus":5,"Päähineet":450},"y26":{"Toimituskulut":60,"Työvaatteet":4165,"Logomerkkaus":120,"Päähineet":610}},"Niemi Palvelut Oy":{"y25":{"Edustusvaatteet":3772,"Logomerkkaus":3,"Päähineet":927,"Toimituskulut":80,"Työvaatteet":9074},"y26":{"Päähineet":1398,"Toimituskulut":272,"Työvaatteet":13250,"Edustusvaatteet":3779,"Kengät":466}},"NK Tekniikka Oy":{"y25":{"Edustusvaatteet":2383,"Promotuotteet":468,"Päähineet":1215},"y26":{"Liikelahjat":1050,"Päähineet":400,"Toimituskulut":20}},"NMC Cellfoam Oy":{"y25":{"Liikelahjat":744,"Toimituskulut":40,"Edustusvaatteet":3206,"Logomerkkaus":216},"y26":{"Promotuotteet":365,"Toimituskulut":95,"Edustusvaatteet":7733,"Kengät":4483,"Logomerkkaus":8,"Työvaatteet":9290}},"OLP-Tuotanto Oy":{"y25":{"Kengät":541,"Toimituskulut":73,"Työvaatteet":1342},"y26":{"Toimituskulut":95,"Työvaatteet":3830}},"Osuuskauppa Keskimaa":{"y25":{"Toimituskulut":20,"Edustusvaatteet":3030,"Liikelahjat":2560},"y26":{"Edustusvaatteet":2659,"Logomerkkaus":60}},"Osuuskauppa PeeÄssä / Break Sokos Hotel Tahko":{"y25":{"Päähineet":14292,"Toimituskulut":40},"y26":{"Edustusvaatteet":3565,"Toimituskulut":80,"Liikelahjat":3540}},"Oy Adolf Lahti Yxpila Ab":{"y25":{"Edustusvaatteet":814,"Työvaatteet":77},"y26":{"Työvaatteet":650,"Edustusvaatteet":180,"Liikelahjat":872,"Päähineet":4368,"Kengät":298}},"Oy Combi Cool Ab":{"y25":{"Edustusvaatteet":266,"Toimituskulut":20},"y26":{"Edustusvaatteet":2354,"Logomerkkaus":12,"Toimituskulut":80}},"P2V Rakennus Oy":{"y25":{"Edustusvaatteet":486,"Kengät":2340,"Logomerkkaus":130,"Suojaimet":381,"Työvaatteet":4862,"Päähineet":1617,"Toimituskulut":40},"y26":{"Edustusvaatteet":65,"Kengät":4465,"Logomerkkaus":152,"Suojaimet":775,"Työvaatteet":8119,"Liikelahjat":570,"Toimituskulut":30}},"Paytrail Technology Oy":{"y25":{},"y26":{"Edustusvaatteet":1748,"Logomerkkaus":204,"Toimituskulut":40,"Liikelahjat":130,"Promotuotteet":300}},"Pohjois-Savon hyvinvointialue, Ikääntyvien palvelut":{"y25":{},"y26":{"Kengät":5082}},"Procemex Oy Ltd":{"y25":{"Kengät":690,"Logomerkkaus":8,"Toimituskulut":80,"Työvaatteet":2105,"Edustusvaatteet":398},"y26":{"Toimituskulut":60,"Työvaatteet":2598,"Logomerkkaus":32,"Suojaimet":363,"Kengät":245}},"Puolustusvoimat / Ilmasotakoulu":{"y25":{"Edustusvaatteet":1672,"Toimituskulut":10,"Promotuotteet":560},"y26":{"Edustusvaatteet":2909,"Työvaatteet":1007,"Toimituskulut":10}},"Rakennus-Kaseva Oy":{"y25":{"Kengät":1680,"Logomerkkaus":345,"Suojaimet":706,"Toimituskulut":20,"Työvaatteet":5471,"Edustusvaatteet":155,"Päähineet":79},"y26":{"Kengät":1302,"Logomerkkaus":404,"Toimituskulut":170,"Työvaatteet":4343,"Edustusvaatteet":46,"Liikelahjat":2414}},"Rakennusliike Konttinen Oy":{"y25":{"Liikelahjat":130,"Toimituskulut":20},"y26":{"Edustusvaatteet":172,"Liikelahjat":847,"Toimituskulut":20}},"Rakennusliike Seiska Oy":{"y25":{"Kengät":206,"Logomerkkaus":29,"Työvaatteet":692},"y26":{"Edustusvaatteet":543,"Kengät":1136,"Logomerkkaus":62,"Suojaimet":141,"Työvaatteet":2863,"Toimituskulut":20}},"Rakennusliike U. Lipsanen Oy":{"y25":{"Kengät":3816,"Logomerkkaus":209,"Toimituskulut":80,"Työvaatteet":6443,"Edustusvaatteet":287},"y26":{"Työvaatteet":1606,"Kengät":981,"Logomerkkaus":26}},"Reledo Oy":{"y25":{},"y26":{"Edustusvaatteet":2938,"Toimituskulut":20,"Työvaatteet":2520}},"RKM Group Oy":{"y25":{"Edustusvaatteet":416,"Kengät":378,"Toimituskulut":104,"Työvaatteet":1890,"Päähineet":59},"y26":{"Edustusvaatteet":1092,"Kengät":1066,"Toimituskulut":261,"Työvaatteet":4070,"Logomerkkaus":4}},"Salvos Finland Oy":{"y25":{"Edustusvaatteet":3537,"Kengät":3500,"Toimituskulut":691,"Työvaatteet":7093,"Logomerkkaus":31,"Päähineet":103},"y26":{"Edustusvaatteet":2319,"Kengät":3913,"Toimituskulut":577,"Työvaatteet":9496,"Logomerkkaus":82}},"Scania Suomi Oy":{"y25":{"Edustusvaatteet":14112,"Logomerkkaus":10,"Työvaatteet":30687,"Liikelahjat":48},"y26":{"Edustusvaatteet":25115,"Työvaatteet":5440,"Liikelahjat":99}},"Securitas Oy":{"y25":{"Logomerkkaus":232,"Promotuotteet":1400,"Toimituskulut":20,"Työvaatteet":1359},"y26":{"Logomerkkaus":4335,"Promotuotteet":4450,"Työvaatteet":1239,"Kengät":100,"Toimituskulut":100}},"SensorFu Oy":{"y25":{"Logomerkkaus":60,"Päähineet":662,"Edustusvaatteet":1380},"y26":{"Edustusvaatteet":1158,"Liikelahjat":455,"Logomerkkaus":60,"Promotuotteet":780,"Päähineet":1964,"Toimituskulut":20}},"Servica Oy":{"y25":{},"y26":{"Kengät":16373}},"Serviplan Oy":{"y25":{},"y26":{"Edustusvaatteet":190,"Päähineet":2480,"Logomerkkaus":205,"Työvaatteet":338}},"Siparila Oy":{"y25":{},"y26":{"Edustusvaatteet":1456,"Toimituskulut":20}},"Skaala IFN Oy":{"y25":{"Edustusvaatteet":2420,"Toimituskulut":349,"Työvaatteet":17},"y26":{"Edustusvaatteet":1447,"Toimituskulut":208}},"Sleipner Finland Oy":{"y25":{"Edustusvaatteet":373,"Logomerkkaus":27,"Työvaatteet":952,"Kengät":191,"Suojaimet":46},"y26":{"Edustusvaatteet":1364,"Logomerkkaus":23,"Työvaatteet":2690,"Promotuotteet":350}},"Suomen Brodeeraus":{"y25":{"Edustusvaatteet":370},"y26":{"Edustusvaatteet":1168,"Työvaatteet":972}},"Suomen CNC-Koneistus Oy":{"y25":{"Kengät":374,"Toimituskulut":30,"Työvaatteet":738},"y26":{"Kengät":1053,"Toimituskulut":100,"Työvaatteet":1012,"Edustusvaatteet":379,"Logomerkkaus":24}},"Suomen Hissiurakointi Oy":{"y25":{},"y26":{"Toimituskulut":100,"Edustusvaatteet":850,"Logomerkkaus":154}},"Tahkonrinteet":{"y25":{"Edustusvaatteet":48,"Päähineet":489,"Toimituskulut":20,"Työvaatteet":2227},"y26":{"Työvaatteet":2354,"Edustusvaatteet":76,"Logomerkkaus":90}},"Tana Oy":{"y25":{"Edustusvaatteet":2084,"Liikelahjat":1199,"Promotuotteet":3018,"Päähineet":1681,"Toimituskulut":150,"Työvaatteet":1530},"y26":{"Edustusvaatteet":3829,"Liikelahjat":1875,"Toimituskulut":200,"Promotuotteet":2288,"Työvaatteet":5647,"Logomerkkaus":263,"Päähineet":3272}},"Tankki Oy":{"y25":{},"y26":{"Logomerkkaus":341,"Toimituskulut":158,"Työvaatteet":6911,"Päähineet":4680}},"Tikkakosken Konepaja Oy":{"y25":{"Edustusvaatteet":434,"Kengät":585,"Liikelahjat":2348,"Promotuotteet":1210,"Toimituskulut":40,"Päähineet":297},"y26":{"Kengät":2058,"Liikelahjat":248}},"Tikkakosken Urheiluautoilijat ry":{"y25":{},"y26":{"Liikelahjat":800,"Edustusvaatteet":891}},"TL-Maint Oy":{"y25":{"Edustusvaatteet":106,"Kengät":2343,"Työvaatteet":1525,"Suojaimet":38},"y26":{"Kengät":3958,"Työvaatteet":3701,"Edustusvaatteet":1989,"Logomerkkaus":160,"Suojaimet":91,"Päähineet":422}},"TOYOTA GAZOO Racing World Rally Team Oy":{"y25":{"Edustusvaatteet":732,"Logomerkkaus":305},"y26":{"Logomerkkaus":2267,"Liikelahjat":1999,"Toimituskulut":20}},"Valokuitunen Oy":{"y25":{"Edustusvaatteet":760,"Toimituskulut":48,"Promotuotteet":450},"y26":{"Edustusvaatteet":8762,"Toimituskulut":536,"Työvaatteet":1360,"Promotuotteet":150,"Päähineet":92,"Logomerkkaus":60}},"Valoo Oy":{"y25":{"Edustusvaatteet":3227,"Liikelahjat":697,"Päähineet":1988,"Toimituskulut":342,"Työvaatteet":5192,"Promotuotteet":296},"y26":{"Edustusvaatteet":1801,"Toimituskulut":279,"Työvaatteet":2414,"Logomerkkaus":18,"Päähineet":389,"Promotuotteet":340,"Liikelahjat":900}},"Weeman Oy":{"y25":{},"y26":{"Kengät":1466,"Suojaimet":38,"Työvaatteet":797}},"Veho Oy Ab":{"y25":{"Edustusvaatteet":1786,"Logomerkkaus":85,"Toimituskulut":110,"Päähineet":675},"y26":{"Edustusvaatteet":1123,"Logomerkkaus":192,"Päähineet":162,"Toimituskulut":95}},"Voimatel Oy":{"y25":{"Edustusvaatteet":1260,"Päähineet":910,"Toimituskulut":1059,"Työvaatteet":6428,"Suojaimet":21},"y26":{"Edustusvaatteet":1358,"Toimituskulut":1506,"Työvaatteet":10068,"Päähineet":504,"Suojaimet":21}},"Adara Pakkaus Oy":{"y25":{"Edustusvaatteet":880,"Toimituskulut":187,"Työvaatteet":5695,"Logomerkkaus":90},"y26":{"Logomerkkaus":1326,"Toimituskulut":40}},"AGCO Suomi Oy":{"y25":{"Liikelahjat":1127,"Logomerkkaus":54,"Promotuotteet":3200,"Toimituskulut":68},"y26":{"Logomerkkaus":160,"Edustusvaatteet":1305,"Toimituskulut":90}},"Arkkomatic Oy":{"y25":{"Edustusvaatteet":348,"Logomerkkaus":136,"Työvaatteet":270},"y26":{"Logomerkkaus":253,"Työvaatteet":861,"Edustusvaatteet":354}},"Bolt.Works Oy":{"y25":{"Edustusvaatteet":4966,"Promotuotteet":4652,"Toimituskulut":216,"Työvaatteet":2750,"Kengät":80,"Liikelahjat":3843,"Logomerkkaus":16,"Päähineet":99},"y26":{"Kengät":159,"Edustusvaatteet":5130,"Työvaatteet":495}},"Cycle Group Oy / Pyörävarikko Joensuu":{"y25":{"Edustusvaatteet":1125,"Päähineet":176,"Toimituskulut":105,"Työvaatteet":2443},"y26":{"Edustusvaatteet":900,"Toimituskulut":45,"Työvaatteet":1053,"Päähineet":40}},"Dance Team Tampere ry":{"y25":{},"y26":{"Toimituskulut":40,"Edustusvaatteet":1621,"Logomerkkaus":475}},"Eezy / Duunisawo Oy":{"y25":{"Kengät":45,"Suojaimet":28,"Työvaatteet":412},"y26":{"Päähineet":1312}},"Finse Oy":{"y25":{},"y26":{"Edustusvaatteet":1385,"Logomerkkaus":45}},"Golf Studio Jyväskylä Oy":{"y25":{},"y26":{"Edustusvaatteet":1249,"Logomerkkaus":988}},"Himos-Yhtiöt Oy":{"y25":{},"y26":{"Promotuotteet":1560}},"ISS Palvelut Oy":{"y25":{},"y26":{"Kengät":1135,"Logomerkkaus":126,"Työvaatteet":1886,"Edustusvaatteet":322}},"Jyväs Car Oy":{"y25":{},"y26":{"Edustusvaatteet":1593,"Kengät":198,"Logomerkkaus":219,"Työvaatteet":1745,"Liikelahjat":1500}},"Jyväskylän Kaupunki / Pysäköinninvalvonta":{"y25":{"Logomerkkaus":236,"Työvaatteet":1072,"Edustusvaatteet":60,"Päähineet":9},"y26":{"Työvaatteet":1587,"Edustusvaatteet":141,"Logomerkkaus":176,"Päähineet":9}},"Jämsän Ykkösvaraosa Oy":{"y25":{},"y26":{"Edustusvaatteet":1322,"Logomerkkaus":1290,"Työvaatteet":75}},"Kattokeskus Itä-Suomi Oy":{"y25":{"Kengät":4144,"Logomerkkaus":328,"Päähineet":463,"Toimituskulut":260,"Työvaatteet":6678,"Edustusvaatteet":138},"y26":{"Edustusvaatteet":187,"Kengät":296,"Työvaatteet":425,"Päähineet":10,"Toimituskulut":20}},"Kattokeskus Keski-Suomi Oy":{"y25":{"Edustusvaatteet":109,"Kengät":3686,"Päähineet":346,"Työvaatteet":3192,"Toimituskulut":30},"y26":{"Edustusvaatteet":104,"Kengät":444,"Työvaatteet":374}},"Kera Group Oy":{"y25":{"Logomerkkaus":45,"Toimituskulut":70,"Työvaatteet":1324},"y26":{"Työvaatteet":1341,"Toimituskulut":85}},"Kotirinki Oy":{"y25":{"Edustusvaatteet":358,"Toimituskulut":20},"y26":{"Edustusvaatteet":300,"Promotuotteet":3200,"Toimituskulut":13}},"K-S Turvamiehet Oy":{"y25":{"Logomerkkaus":63,"Promotuotteet":68,"Työvaatteet":568},"y26":{"Logomerkkaus":454,"Promotuotteet":429,"Työvaatteet":4092,"Toimituskulut":20}},"Kuljetus ja Muutto O.Jylhä Oy":{"y25":{"Edustusvaatteet":3058,"Logomerkkaus":1478,"Päähineet":3154,"Työvaatteet":768},"y26":{"Logomerkkaus":124,"Työvaatteet":1042}},"Kuljetusliike J ja R Laatikainen Ky":{"y25":{"Kengät":972,"Toimituskulut":120,"Työvaatteet":1817,"Edustusvaatteet":118,"Logomerkkaus":200},"y26":{"Kengät":585,"Toimituskulut":60}},"Kuljetusliike Trans-En Oy":{"y25":{"Logomerkkaus":140,"Työvaatteet":1541},"y26":{"Kengät":147}},"Kuopion Opiskelija-asunnot Oy Kuopas":{"y25":{"Edustusvaatteet":1096,"Logomerkkaus":206,"Toimituskulut":40,"Työvaatteet":140},"y26":{"Logomerkkaus":24,"Työvaatteet":514,"Edustusvaatteet":99}},"Lääkärimagneetti Oy":{"y25":{},"y26":{"Edustusvaatteet":1814,"Logomerkkaus":276}},"Lääkärisatama Oy":{"y25":{"Logomerkkaus":1328,"Edustusvaatteet":3105},"y26":{"Edustusvaatteet":1270,"Logomerkkaus":152}},"M2 Pinta Oy":{"y25":{},"y26":{"Edustusvaatteet":1005,"Liikelahjat":500,"Logomerkkaus":347,"Päähineet":18,"Toimituskulut":40,"Promotuotteet":250}},"Mitlas Oy":{"y25":{"Kengät":202,"Logomerkkaus":125,"Työvaatteet":176,"Edustusvaatteet":258},"y26":{"Työvaatteet":826,"Suojaimet":72,"Kengät":331,"Logomerkkaus":5}},"MittausGroup Oy":{"y25":{},"y26":{"Promotuotteet":532,"Toimituskulut":60,"Edustusvaatteet":1110,"Logomerkkaus":180}},"Nostokonepalvelu JK Oy":{"y25":{"Työvaatteet":282,"Logomerkkaus":13},"y26":{"Työvaatteet":404,"Päähineet":4625}},"Osuma Henkilöstöpalvelut Oy":{"y25":{"Kengät":1793,"Logomerkkaus":451,"Suojaimet":3952,"Toimituskulut":20,"Työvaatteet":3845},"y26":{"Kengät":2791,"Logomerkkaus":134,"Suojaimet":2471,"Työvaatteet":1961,"Toimituskulut":20}},"Porin kaupunki/ Tekninen toimiala ja pysäköinninvalvonta":{"y25":{"Edustusvaatteet":69,"Logomerkkaus":430,"Päähineet":8,"Toimituskulut":20,"Työvaatteet":1914},"y26":{"Edustusvaatteet":13,"Logomerkkaus":292,"Päähineet":20,"Toimituskulut":40,"Työvaatteet":918}},"Porvoon Hamarinranta Oy":{"y25":{"Edustusvaatteet":3934,"Logomerkkaus":1826,"Toimituskulut":20},"y26":{"Edustusvaatteet":6388,"Logomerkkaus":2558,"Toimituskulut":60,"Liikelahjat":140}},"Putkiwuorio Oy":{"y25":{"Edustusvaatteet":161,"Päähineet":104,"Toimituskulut":30,"Työvaatteet":15041},"y26":{"Toimituskulut":30,"Työvaatteet":4621,"Edustusvaatteet":182,"Päähineet":143}},"Rejlers Finland Oy":{"y25":{"Kengät":587,"Suojaimet":100,"Toimituskulut":126,"Työvaatteet":2618},"y26":{"Toimituskulut":106,"Kengät":359,"Työvaatteet":1021,"Suojaimet":13,"Edustusvaatteet":160,"Logomerkkaus":72}},"Saunatohtori Oy":{"y25":{"Edustusvaatteet":1155,"Toimituskulut":20,"Työvaatteet":171},"y26":{"Edustusvaatteet":419,"Logomerkkaus":138,"Päähineet":186,"Toimituskulut":20}},"Solenis Finland Oy":{"y25":{"Edustusvaatteet":191,"Logomerkkaus":10,"Toimituskulut":75,"Työvaatteet":1292},"y26":{"Toimituskulut":115,"Työvaatteet":3096,"Edustusvaatteet":730,"Logomerkkaus":10}},"Suomen Asbestipurku Oy":{"y25":{},"y26":{"Logomerkkaus":50,"Päähineet":1735,"Toimituskulut":20}},"Suomen Rakennuskone Oy":{"y25":{},"y26":{"Liikelahjat":1500}},"Suomen Tekniikkapalvelu Oy":{"y25":{"Kengät":3504,"Toimituskulut":15},"y26":{"Liikelahjat":49,"Edustusvaatteet":1125,"Kengät":3510,"Toimituskulut":15,"Työvaatteet":292}},"TST Yhtiöt Oy":{"y25":{},"y26":{"Edustusvaatteet":559,"Työvaatteet":924,"Logomerkkaus":130}},"Ukemix Oy":{"y25":{"Edustusvaatteet":903,"Toimituskulut":84},"y26":{"Edustusvaatteet":5225,"Logomerkkaus":558,"Toimituskulut":116}},"Viafin Uusimaa Piping Oy":{"y25":{},"y26":{"Edustusvaatteet":1800,"Toimituskulut":20}},"V. Kytönen Oy":{"y25":{},"y26":{"Logomerkkaus":2210}},"Äänekosken Energia Oy":{"y25":{},"y26":{"Logomerkkaus":1420,"Toimituskulut":60,"Työvaatteet":21701}},"360 Palvelut Oy":{"y25":{"Edustusvaatteet":124,"Työvaatteet":65},"y26":{"Edustusvaatteet":1394,"Päähineet":900,"Toimituskulut":10}},"Anaika Wood Group Ltd Oy":{"y25":{"Edustusvaatteet":7106,"Toimituskulut":215,"Logomerkkaus":141,"Työvaatteet":2381,"Liikelahjat":660,"Päähineet":2640},"y26":{"Edustusvaatteet":1499,"Logomerkkaus":325,"Toimituskulut":340,"Työvaatteet":1841,"Liikelahjat":2310,"Promotuotteet":1526,"Päähineet":4469}},"Cross Wrap Oy":{"y25":{},"y26":{"Edustusvaatteet":1122,"Logomerkkaus":341}},"Dimex Oy":{"y25":{},"y26":{"Edustusvaatteet":4380,"Logomerkkaus":72,"Toimituskulut":72,"Työvaatteet":212}},"FreshWind Oy":{"y25":{},"y26":{"Kengät":555,"Työvaatteet":1372,"Logomerkkaus":48,"Suojaimet":120}},"Gummerus Forest Oy":{"y25":{},"y26":{"Edustusvaatteet":513,"Logomerkkaus":133,"Työvaatteet":441}},"Hako Finland Oy":{"y25":{},"y26":{"Edustusvaatteet":1824,"Logomerkkaus":321,"Toimituskulut":72,"Työvaatteet":138,"Liikelahjat":480}},"Heta Kodit Oy":{"y25":{},"y26":{"Edustusvaatteet":466,"Logomerkkaus":250,"Päähineet":101,"Työvaatteet":1256}},"Hoivarakentajat Oy":{"y25":{},"y26":{"Liikelahjat":1988,"Toimituskulut":20}},"Home Maintenance Europe Oy":{"y25":{},"y26":{"Edustusvaatteet":408,"Päähineet":780,"Toimituskulut":35}},"Huiskulan Puutarha Oy":{"y25":{},"y26":{"Edustusvaatteet":960,"Toimituskulut":40,"Työvaatteet":3003}},"Huoltonen / Arkkitiimi Osuuskunta":{"y25":{"Suojaimet":125},"y26":{"Edustusvaatteet":28,"Logomerkkaus":244,"Kengät":512,"Suojaimet":739,"Työvaatteet":442}},"Hydroline Oy":{"y25":{},"y26":{"Edustusvaatteet":533,"Logomerkkaus":211,"Promotuotteet":927,"Toimituskulut":20}},"JK Crew Oy":{"y25":{},"y26":{"Edustusvaatteet":99,"Kengät":54,"Promotuotteet":30,"Toimituskulut":15,"Työvaatteet":1278}},"Jyväs-Golf ry":{"y25":{"Edustusvaatteet":1284,"Logomerkkaus":336,"Työvaatteet":197},"y26":{"Edustusvaatteet":1295,"Kengät":516,"Logomerkkaus":141,"Työvaatteet":1201}},"Jyväskylän Kaupunki / Kaupunkirakennepalvelut":{"y25":{"Kengät":4920,"Logomerkkaus":24,"Suojaimet":418,"Työvaatteet":11564,"Edustusvaatteet":141},"y26":{"Työvaatteet":253}},"Jyväskylän Voima Oy":{"y25":{"Työvaatteet":178},"y26":{"Toimituskulut":32,"Työvaatteet":2036}},"Karjalaisen Rahti Oy":{"y25":{},"y26":{"Edustusvaatteet":2549,"Logomerkkaus":772}},"Kattokeskus Uusimaa Oy":{"y25":{"Kengät":3545,"Päähineet":690,"Toimituskulut":152,"Työvaatteet":6610,"Edustusvaatteet":68},"y26":{"Edustusvaatteet":255,"Päähineet":50,"Toimituskulut":52,"Työvaatteet":107}},"Keski-Suomen hyvinvointialue / Konsernihallinto":{"y25":{"Logomerkkaus":554,"Työvaatteet":3197,"Kengät":304,"Toimituskulut":20},"y26":{"Logomerkkaus":573,"Työvaatteet":1279,"Edustusvaatteet":11,"Toimituskulut":10}},"Kolarin metalli oy":{"y25":{},"y26":{"Edustusvaatteet":1304,"Promotuotteet":30,"Toimituskulut":60,"Päähineet":120}},"Kotix Oy":{"y25":{"Edustusvaatteet":147,"Logomerkkaus":418,"Päähineet":171},"y26":{"Logomerkkaus":870,"Päähineet":475,"Edustusvaatteet":458}},"Laukaan Peurunkagolf Oy":{"y25":{"Logomerkkaus":73},"y26":{"Edustusvaatteet":190,"Logomerkkaus":133,"Päähineet":312,"Työvaatteet":509,"Kengät":171}},"Mittarihuolto M. Hienola Oy":{"y25":{"Promotuotteet":959,"Toimituskulut":10,"Työvaatteet":480},"y26":{"Promotuotteet":1033}},"Mäkinen Works Oy":{"y25":{"Logomerkkaus":190,"Työvaatteet":1107,"Edustusvaatteet":330},"y26":{"Logomerkkaus":240,"Päähineet":270}},"O.K.Auto Oy":{"y25":{"Edustusvaatteet":1299,"Toimituskulut":80},"y26":{"Edustusvaatteet":916,"Toimituskulut":65}},"Osuuskauppa Peeässä":{"y25":{"Edustusvaatteet":4312,"Logomerkkaus":285,"Päähineet":4113,"Toimituskulut":60},"y26":{"Edustusvaatteet":800,"Logomerkkaus":30}},"Oy Kellfri Ab":{"y25":{"Työvaatteet":611,"Kengät":168},"y26":{"Edustusvaatteet":768,"Kengät":168,"Työvaatteet":363,"Logomerkkaus":50}},"Oy Kuortane Sports Management Ltd":{"y25":{"Edustusvaatteet":328,"Logomerkkaus":156,"Toimituskulut":16},"y26":{"Edustusvaatteet":293,"Logomerkkaus":170,"Toimituskulut":40,"Liikelahjat":956,"Päähineet":212}},"Petäjäveden kunta":{"y25":{},"y26":{"Kengät":71,"Työvaatteet":1056}},"Ruohon Taksit Oy":{"y25":{},"y26":{"Liikelahjat":1200,"Edustusvaatteet":110}},"Sorcolor Oy":{"y25":{},"y26":{"Edustusvaatteet":8059,"Toimituskulut":250,"Työvaatteet":5064,"Kengät":510,"Suojaimet":46}},"Suomen Huoltokumppani Oy":{"y25":{},"y26":{"Edustusvaatteet":195,"Logomerkkaus":26,"Työvaatteet":844}},"Suomen Vesileikkaus Oy":{"y25":{},"y26":{"Liikelahjat":870,"Toimituskulut":125,"Edustusvaatteet":83,"Päähineet":2970}},"Tamsin Oy":{"y25":{"Edustusvaatteet":1821,"Päähineet":9,"Toimituskulut":40,"Työvaatteet":151},"y26":{"Edustusvaatteet":1795,"Toimituskulut":20}},"TekuFix Oy":{"y25":{"Päähineet":2820,"Logomerkkaus":60},"y26":{"Päähineet":312}},"Valtra Oy Ab":{"y25":{"Edustusvaatteet":90},"y26":{"Edustusvaatteet":2385,"Logomerkkaus":127,"Liikelahjat":2200,"Toimituskulut":20}},"Viken Pelti Oy":{"y25":{"Työvaatteet":100},"y26":{"Logomerkkaus":30,"Päähineet":1540}},"Alive Training & Therapy Oy":{"y25":{"Edustusvaatteet":194,"Logomerkkaus":125,"Päähineet":26},"y26":{"Edustusvaatteet":66,"Logomerkkaus":33,"Päähineet":1100}},"Crimppi Oy":{"y25":{},"y26":{"Toimituskulut":44,"Työvaatteet":1081}},"Energiana Oy":{"y25":{},"y26":{"Edustusvaatteet":1188,"Logomerkkaus":164}},"Finncont Oy":{"y25":{"Edustusvaatteet":32,"Promotuotteet":280,"Päähineet":2304},"y26":{"Edustusvaatteet":71,"Logomerkkaus":6,"Toimituskulut":13}},"Harvia Austria GmbH":{"y25":{},"y26":{"Edustusvaatteet":4324,"Liikelahjat":675,"Päähineet":122,"Toimituskulut":30}},"Heatco Finland Oy":{"y25":{},"y26":{"Edustusvaatteet":1562,"Logomerkkaus":1006,"Päähineet":930}},"Kattokeskus Länsi-Uusimaa Oy":{"y25":{"Kengät":3295,"Päähineet":300,"Toimituskulut":208,"Työvaatteet":3419,"Edustusvaatteet":83,"Logomerkkaus":4},"y26":{"Edustusvaatteet":94,"Toimituskulut":20}},"Kattokeskus Pirkanmaa Oy":{"y25":{"Kengät":5186,"Toimituskulut":236,"Työvaatteet":4996,"Edustusvaatteet":257,"Päähineet":300,"Logomerkkaus":304},"y26":{"Kengät":142,"Päähineet":52,"Toimituskulut":52,"Edustusvaatteet":29,"Työvaatteet":237}},"Kattokeskus Pohjois-Pohjanmaa Oy":{"y25":{"Edustusvaatteet":128,"Kengät":2062,"Päähineet":471,"Suojaimet":381,"Toimituskulut":100,"Työvaatteet":8703},"y26":{"Edustusvaatteet":172,"Toimituskulut":12}},"Keski-Suomen hyvinvointialue / Sosiaali- ja terveyspalvelut":{"y25":{},"y26":{"Logomerkkaus":1786,"Työvaatteet":4315}},"Keski-Suomen Kauppakamari":{"y25":{},"y26":{"Edustusvaatteet":2730,"Logomerkkaus":165}},"Koneurakointi J-M Kinnunen Oy":{"y25":{"Logomerkkaus":179},"y26":{"Kengät":165,"Logomerkkaus":215,"Työvaatteet":1631}},"Kuljetusliike Risto Jylhä Oy":{"y25":{},"y26":{"Edustusvaatteet":161,"Logomerkkaus":308,"Työvaatteet":3714}},"Kuortaneen Kunta/Tuomas Ojajärvi":{"y25":{"Edustusvaatteet":1700,"Logomerkkaus":22,"Päähineet":9},"y26":{"Toimituskulut":30}},"Lappalaisen Liikenne Oy":{"y25":{},"y26":{"Edustusvaatteet":588,"Logomerkkaus":174,"Suojaimet":730}},"Metsätyö Oy":{"y25":{"Päähineet":3000},"y26":{"Päähineet":6975}},"Munkkivuoren Puutarhakeidas Oy":{"y25":{"Edustusvaatteet":632,"Logomerkkaus":202,"Toimituskulut":20,"Työvaatteet":90},"y26":{"Edustusvaatteet":539,"Logomerkkaus":220,"Päähineet":87,"Toimituskulut":20,"Työvaatteet":140}},"OL Invest Oy":{"y25":{},"y26":{"Edustusvaatteet":2154,"Logomerkkaus":40,"Toimituskulut":40,"Työvaatteet":416}},"Proxel Oy":{"y25":{},"y26":{"Edustusvaatteet":493,"Logomerkkaus":680}},"Ramago Oy":{"y25":{},"y26":{"Edustusvaatteet":440,"Liikelahjat":1500,"Logomerkkaus":60}},"Revon turistiliikenne Oy":{"y25":{"Edustusvaatteet":4431,"Toimituskulut":40},"y26":{"Edustusvaatteet":13}},"Solarigo Systems Oy":{"y25":{"Edustusvaatteet":465,"Logomerkkaus":285,"Työvaatteet":138},"y26":{"Edustusvaatteet":948,"Logomerkkaus":121,"Päähineet":560,"Toimituskulut":10}},"Suomen Hopealinja Oy":{"y25":{"Edustusvaatteet":675,"Logomerkkaus":428,"Toimituskulut":20,"Työvaatteet":987},"y26":{"Edustusvaatteet":784,"Logomerkkaus":426,"Toimituskulut":20,"Työvaatteet":852}},"Therman Mattias":{"y25":{},"y26":{"Edustusvaatteet":3055,"Toimituskulut":15}},"Transporent Oy":{"y25":{},"y26":{"Edustusvaatteet":40,"Toimituskulut":20,"Työvaatteet":2267}},"Uuraisten Urheiluautoilijat ry":{"y25":{},"y26":{"Edustusvaatteet":935,"Logomerkkaus":85}},"Varpaisjärven Maansiirto ja Vesitekniikka Oy":{"y25":{},"y26":{"Liikelahjat":1450}},"Veljekset Hokkanen Oy":{"y25":{"Edustusvaatteet":4833,"Kengät":397,"Työvaatteet":1639},"y26":{"Edustusvaatteet":1170,"Logomerkkaus":66,"Toimituskulut":80,"Työvaatteet":316}},"Viafin Process Piping Oy":{"y25":{"Edustusvaatteet":2850,"Toimituskulut":20},"y26":{"Edustusvaatteet":340,"Promotuotteet":456,"Toimituskulut":40}},"AiCan Oy":{"y25":{"Logomerkkaus":341,"Promotuotteet":90,"Toimituskulut":12},"y26":{"Edustusvaatteet":1182,"Logomerkkaus":14,"Toimituskulut":30}},"Alajärven Sähkö Oy":{"y25":{"Toimituskulut":40,"Edustusvaatteet":1680,"Päähineet":1755},"y26":{"Edustusvaatteet":2298,"Toimituskulut":20}},"Eumer Oy":{"y25":{},"y26":{"Päähineet":3300,"Toimituskulut":20}},"Euroports Hanko Oy":{"y25":{"Toimituskulut":15,"Työvaatteet":6452},"y26":{"Työvaatteet":1750}},"Finnfoam Oy":{"y25":{},"y26":{"Toimituskulut":20,"Työvaatteet":1906}},"Flender Finland Oy":{"y25":{},"y26":{"Edustusvaatteet":2137}},"Fristads Finland Oy":{"y25":{},"y26":{"Liikelahjat":2100}},"Hiab Finland Oy":{"y25":{},"y26":{"Päähineet":3250}},"ISOPartner Oy":{"y25":{"Päähineet":2688},"y26":{"Päähineet":2720,"Toimituskulut":20}},"Jakeman Oy":{"y25":{},"y26":{"Edustusvaatteet":733,"Logomerkkaus":424,"Päähineet":728}},"Jyväri Oy":{"y25":{"Edustusvaatteet":361,"Logomerkkaus":340},"y26":{"Edustusvaatteet":960,"Työvaatteet":141}},"Jyväskylän Reserviupseerit ry":{"y25":{"Edustusvaatteet":240,"Logomerkkaus":90,"Promotuotteet":458,"Päähineet":259,"Työvaatteet":813},"y26":{"Edustusvaatteet":394,"Liikelahjat":39,"Logomerkkaus":20,"Päähineet":334,"Työvaatteet":348}},"Kytola Instruments Oy":{"y25":{"Edustusvaatteet":2886},"y26":{"Edustusvaatteet":191,"Toimituskulut":20}},"LevelUp Oy":{"y25":{"Edustusvaatteet":868,"Logomerkkaus":212,"Toimituskulut":20},"y26":{"Edustusvaatteet":450,"Toimituskulut":20}},"Multian Saha Oy":{"y25":{},"y26":{"Toimituskulut":12,"Työvaatteet":1208}},"Multimek Oy":{"y25":{"Edustusvaatteet":2546,"Logomerkkaus":60,"Toimituskulut":20},"y26":{"Päähineet":600,"Toimituskulut":20}},"Muovilami Oy":{"y25":{},"y26":{"Edustusvaatteet":830,"Päähineet":950,"Toimituskulut":15}},"Oksakuivaus Oy":{"y25":{"Kengät":324,"Logomerkkaus":149,"Päähineet":108,"Työvaatteet":1033},"y26":{"Työvaatteet":82}},"Reaktor Innovations Oy":{"y25":{},"y26":{"Edustusvaatteet":1020,"Logomerkkaus":192,"Toimituskulut":20}},"RTK Palvelu Oy":{"y25":{"Promotuotteet":1200,"Toimituskulut":40},"y26":{"Promotuotteet":1210}},"Sacotec Components Oy":{"y25":{},"y26":{"Liikelahjat":2088,"Toimituskulut":20}},"SAVOX Communications Oy Ab (Oy)":{"y25":{"Logomerkkaus":100,"Toimituskulut":10,"Työvaatteet":88},"y26":{"Edustusvaatteet":187,"Kengät":1750,"Logomerkkaus":454,"Suojaimet":1347,"Toimituskulut":60,"Työvaatteet":3487}},"Suomen Asfaltoijat Oy":{"y25":{"Logomerkkaus":507,"Päähineet":172,"Työvaatteet":1110},"y26":{"Päähineet":943}},"Tahto Group Oy":{"y25":{"Edustusvaatteet":2716,"Logomerkkaus":1308,"Päähineet":342},"y26":{"Edustusvaatteet":675,"Logomerkkaus":240}},"TenderX Oy":{"y25":{},"y26":{"Logomerkkaus":642,"Päähineet":558,"Työvaatteet":1262}},"TMT Pro Service Oy":{"y25":{"Logomerkkaus":330,"Päähineet":39,"Työvaatteet":1685},"y26":{"Logomerkkaus":105,"Toimituskulut":10,"Työvaatteet":210}},"Wetteri Power Oy - Oulu":{"y25":{"Edustusvaatteet":6301,"Liikelahjat":450,"Logomerkkaus":90,"Promotuotteet":490,"Päähineet":5930,"Toimituskulut":80},"y26":{"Päähineet":2040,"Toimituskulut":20}},"Viherpalvelut Hyvönen Oy":{"y25":{},"y26":{"Edustusvaatteet":1350,"Päähineet":750,"Toimituskulut":20}},"VM-Asfaltti Oy":{"y25":{},"y26":{"Toimituskulut":15,"Työvaatteet":2290}},"Ylöjärven Rengas-Set Oy":{"y25":{},"y26":{"Toimituskulut":20,"Työvaatteet":1680}},"Ypr Yleinen Pohjarakennus Oy":{"y25":{},"y26":{"Logomerkkaus":138,"Toimituskulut":20,"Työvaatteet":1199}}};
+
+// ── HELPERS ─────────────────────────────────────────────────────────────────
+const fmt=(n)=>n==null?'—':Math.round(n).toLocaleString('fi-FI');
+const fmtE=(n)=>n==null?'—':fmt(n)+' €';
+const pct=(a,b)=>b?((a-b)/b*100).toFixed(1)+' %':'—';
+function deltaTag(a,b){
+  if(!b&&!a)return '<span class="tag tag-amber">—</span>';
+  if(!b)return '<span class="tag tag-green">uusi</span>';
+  const p=(a-b)/b*100;
+  const lbl=(p>=0?'+':'')+p.toFixed(1)+' %';
+  return p>=0?`<span class="tag tag-green">${lbl}</span>`:`<span class="tag tag-red">${lbl}</span>`;
+}
+function makePctTag(p){
+  const lbl=(p>=0?'+':'')+p.toFixed(1)+' %';
+  return p>=0?`<span class="tag tag-green">${lbl}</span>`:`<span class="tag tag-red">${lbl}</span>`;
+}
+
+// ── CHARTS ──────────────────────────────────────────────────────────────────
+const chartRegistry={};
+function destroyChart(id){if(chartRegistry[id]){chartRegistry[id].destroy();delete chartRegistry[id];}}
+
+function barChart(canvasId,labels,datasets,opts={}){
+  destroyChart(canvasId);
+  const ctx=document.getElementById(canvasId);
+  if(!ctx)return;
+  chartRegistry[canvasId]=new Chart(ctx,{
+    type:'bar',
+    data:{labels,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{font:{size:11}}},tooltip:{callbacks:{label:c=>fmtE(c.raw)}}},
+      scales:{
+        x:{ticks:{font:{size:11}}},
+        y:{ticks:{font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v},...(opts.yMax?{max:opts.yMax}:{})},
+      },
+      ...opts.extra
+    }
+  });
+}
+
+function lineChart(canvasId,labels,datasets){
+  destroyChart(canvasId);
+  const ctx=document.getElementById(canvasId);
+  if(!ctx)return;
+  chartRegistry[canvasId]=new Chart(ctx,{
+    type:'line',
+    data:{labels,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{font:{size:11}}},tooltip:{callbacks:{label:c=>fmtE(c.raw)}}},
+      scales:{x:{ticks:{font:{size:11}}},y:{ticks:{font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}}},
+    }
+  });
+}
+
+function barSimple(canvasId,labels,dataset,color='#2563eb'){
+  destroyChart(canvasId);
+  const ctx=document.getElementById(canvasId);
+  if(!ctx)return;
+  chartRegistry[canvasId]=new Chart(ctx,{
+    type:'bar',
+    data:{labels,datasets:[{label:dataset.label,data:dataset.data,backgroundColor:color,borderRadius:4}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{ticks:{font:{size:10}}},y:{ticks:{font:{size:10}}}},
+    }
+  });
+}
+
+function barCount(canvasId,labels,datasets){
+  destroyChart(canvasId);
+  const ctx=document.getElementById(canvasId);
+  if(!ctx)return;
+  chartRegistry[canvasId]=new Chart(ctx,{
+    type:'bar',
+    data:{labels,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{font:{size:11}}}},
+      scales:{x:{ticks:{font:{size:11}}},y:{ticks:{font:{size:10}}}},
+    }
+  });
+}
+
+// ── TABS ────────────────────────────────────────────────────────────────────
+const TABS=[
+  {id:'yhteenveto',label:'📊 Yhteenveto'},
+  {id:'myynti',label:'💰 Myynti'},
+  {id:'tuoteryhmät',label:'🏷️ Tuoteryhmät'},
+  {id:'asiakasanalyysi',label:'🔍 Asiakasanalyysi'},
+  {id:'kontaktointi',label:'📞 Kontaktointi'},
+  {id:'dealit',label:'💼 Dealit'},
+  {id:'levelup',label:'⭐ LevelUp'},
+  {id:'kv',label:'🌐 KV-myynti'},
+  {id:'myynnin_lasku',label:'📉 Myynnin lasku'},
+];
+
+let currentTab='yhteenveto';
+let toggle='kk';
+
+function renderTabs(){
+  document.getElementById('tabBar').innerHTML=TABS.map(t=>
+    `<button class="tab-btn${t.id===currentTab?' active':''}" onclick="switchTab('${t.id}')">${t.label}</button>`
+  ).join('');
+}
+
+function switchTab(id){
+  currentTab=id;
+  toggle='kk';
+  renderTabs();
+  renderContent();
+}
+
+function setToggle(v){
+  toggle=v;
+  document.querySelectorAll('.toggle-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.v===v);
+  });
+  renderToggleContent();
+}
+
+function toggleHTML(){
+  return `<div class="toggle-group">
+    <button class="toggle-btn${toggle==='kk'?' active':''}" data-v="kk" onclick="setToggle('kk')">Kuukausittain</button>
+    <button class="toggle-btn${toggle==='ytd'?' active':''}" data-v="ytd" onclick="setToggle('ytd')">YTD tammi–touko</button>
+  </div><div id="toggleContent"></div>`;
+}
+
+function kpiCard(label,v24,v25,v26,unit=''){
+  return `<div class="card">
+    <div class="kpi-label">${label}</div>
+    <div class="kpi-years">
+      <div class="kpi-year"><div class="kpi-year-label">2024</div><div class="kpi-year-val muted">${fmt(v24)}${unit}</div></div>
+      <div class="kpi-year"><div class="kpi-year-label">2025</div><div class="kpi-year-val main">${fmt(v25)}${unit}</div></div>
+      <div class="kpi-year"><div class="kpi-year-label">2026</div><div class="kpi-year-val main">${fmt(v26)}${unit}</div></div>
+      <div class="kpi-delta">${deltaTag(v26,v25)}<div style="font-size:10px;color:#64748b;margin-top:3px">vs 2025</div></div>
+    </div>
+  </div>`;
+}
+
+// ── TAB: YHTEENVETO ──────────────────────────────────────────────────────────
+function renderYhteenveto(){
+  return `
+    <div class="ibox ibox-amber">
+      <strong>⚠️ Tammikuu 2025: 7 457 uutta kontaktia</strong> on massatuonti CRM-käyttöönoton yhteydessä — poistettu vertailusta. Orgaaninen kontaktikasvu (helmi–touko) vertailukelpoinen.
+    </div>
+    <div class="grid-3">
+      ${kpiCard('Myynti YTD tammi–touko',YTD24,YTD25,YTD26,' €')}
+      ${kpiCard('Puhelut YTD',ytdPuh24,ytdPuh25,ytdPuh26)}
+      ${kpiCard('Tapaamiset YTD',ytdTap24,ytdTap25,ytdTap26)}
+    </div>
+    <div class="grid-3">
+      ${kpiCard('Sähköpostit YTD',ytdSah24,ytdSah25,ytdSah26)}
+      ${kpiCard('Uudet kontaktit (helmi–touko)',ytdKon24,ytdKon25,ytdKon26)}
+      ${kpiCard('Dealit YTD',ytdDeal24,ytdDeal25,ytdDeal26)}
+    </div>
+    <div class="grid-2">
+      <div class="ibox ibox-green">
+        <strong>✅ Positiivista 2026:</strong><br>
+        • Myynti YTD −10,2 % vs 2025 mutta 2024-tasolla<br>
+        • Puhelut +117 % vs 2025 (2 486 vs 1 148)<br>
+        • Sähköpostit kasvavat joka vuosi (+4 % vs 2025)<br>
+        • LevelUp dealit 88 kpl tammi–touko 2026<br>
+        • Closedwon-dealit 117 kpl tammi–touko 2026
+      </div>
+      <div class="ibox ibox-red">
+        <strong>⚠️ Huolestuttavaa:</strong><br>
+        • Myynti −10,2 % vs 2025 YTD<br>
+        • Tapaamiset laskevat: 662 → 625 → 531<br>
+        • Uudet kontaktit −27 % vs 2025 (helmi–touko)<br>
+        • Kattokeskus-ketju kadonnut, Anuco pienentynyt<br>
+        • Asiakaspoistuma 150–180/kk ilman retentio-ohjelmaa
+      </div>
+    </div>`;
+}
+
+// ── TAB: MYYNTI ──────────────────────────────────────────────────────────────
+function renderMyyntiKk(){
+  const rows=myyntiKk.map((r,i)=>`<tr>
+    <td style="font-weight:600">${r.kk}</td>
+    <td class="right" style="color:#94a3b8">${fmtE(r.y24)}</td>
+    <td class="right">${fmtE(r.y25)}</td>
+    <td class="right" style="font-weight:700">${fmtE(r.y26)}</td>
+    <td class="right">${deltaTag(r.y26,r.y25)}</td>
+    <td class="right">${deltaTag(r.y26,r.y24)}</td>
+  </tr>`).join('');
+  return `
+    <div class="section-title">Kuukausittainen myynti 2024–2026 (Veroton summa)</div>
+    <div class="card chart-wrap"><canvas id="myyntiChart" height="240"></canvas></div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Kuukausi</th><th class="right">2024</th><th class="right">2025</th><th class="right">2026</th><th class="right">vs 2025</th><th class="right">vs 2024</th></tr></thead>
+        <tbody>
+          ${rows}
+          <tr class="total-row">
+            <td>YTD YHTEENSÄ</td>
+            <td class="right" style="color:#94a3b8">${fmtE(YTD24)}</td>
+            <td class="right">${fmtE(YTD25)}</td>
+            <td class="right" style="color:#2563eb">${fmtE(YTD26)}</td>
+            <td class="right">${deltaTag(YTD26,YTD25)}</td>
+            <td class="right">${deltaTag(YTD26,YTD24)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ibox ibox-amber">
+      <strong>Huom huhtikuu 2024 (372 610 €):</strong> Poikkeuksellisen suuri kuukausi — Helen Oy:n iso kertatilaus ~52 050 €. Vääristää 2024 vertailua.
+    </div>`;
+}
+function renderMyyntiYTD(){
+  return `
+    <div class="section-title">YTD tammi–touko — vertailu 3 vuotta</div>
+    <div class="grid-3">
+      ${[{v:YTD24,y:'2024'},{v:YTD25,y:'2025'},{v:YTD26,y:'2026'}].map(({v,y})=>`
+        <div class="card" style="text-align:center">
+          <div style="font-size:11px;color:#64748b;margin-bottom:6px">${y} YTD tammi–touko</div>
+          <div style="font-size:28px;font-weight:800;color:#1a2e4a">${fmtE(v)}</div>
+        </div>`).join('')}
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-around;padding:16px">
+        ${[['2026 vs 2025',YTD26,YTD25],['2026 vs 2024',YTD26,YTD24],['2025 vs 2024',YTD25,YTD24]].map(([l,a,b])=>`
+          <div style="text-align:center">
+            <div style="font-size:11px;color:#64748b">${l}</div>
+            ${deltaTag(a,b)}
+            <div style="font-size:12px;color:#64748b;margin-top:4px">${fmtE(a-b)}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ── TAB: TUOTERYHMÄT ─────────────────────────────────────────────────────────
+function renderTuoteryhmätKk(){
+  const groups=[
+    {key:'työ',name:'Työvaatteet'},
+    {key:'ev',name:'Edustusvaatteet'},
+    {key:'pää',name:'Päähineet'},
+    {key:'kenk',name:'Kengät'},
+    {key:'liike',name:'Liikelahjat'},
+    {key:'logo',name:'Logomerkkaus'},
+  ];
+  const cards=groups.map(({key,name})=>`
+    <div class="card chart-wrap">
+      <div style="font-weight:700;color:#1a2e4a;margin-bottom:10px">${name}</div>
+      <canvas id="tr_${key}" height="160"></canvas>
+    </div>`).join('');
+  return `<div class="section-title">Kuukausittainen kehitys — tuoteryhmittäin</div>${cards}`;
+}
+function renderTuoteryhmätYTD(){
+  const sorted=[...tuoteryhmät].sort((a,b)=>b.y26-a.y26);
+  const totals={y24:tuoteryhmät.reduce((s,r)=>s+r.y24,0),y25:tuoteryhmät.reduce((s,r)=>s+r.y25,0),y26:tuoteryhmät.reduce((s,r)=>s+r.y26,0)};
+  const rows=sorted.map((r,i)=>`<tr>
+    <td style="font-weight:600">${r.nimi}</td>
+    <td class="right" style="color:#94a3b8">${fmtE(r.y24)}</td>
+    <td class="right">${fmtE(r.y25)}</td>
+    <td class="right" style="font-weight:700">${fmtE(r.y26)}</td>
+    <td class="right">${deltaTag(r.y26,r.y25)}</td>
+    <td class="right">${deltaTag(r.y26,r.y24)}</td>
+  </tr>`).join('');
+  return `
+    <div class="section-title">YTD tammi–touko — tuoteryhmät 3 vuotta (Veroton summa)</div>
+    <div class="card chart-wrap"><canvas id="trYtdChart" height="300"></canvas></div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Tuoteryhmä</th><th class="right">2024</th><th class="right">2025</th><th class="right">2026</th><th class="right">vs 2025</th><th class="right">vs 2024</th></tr></thead>
+        <tbody>
+          ${rows}
+          <tr class="total-row">
+            <td>YHTEENSÄ</td>
+            <td class="right" style="color:#94a3b8">${fmtE(totals.y24)}</td>
+            <td class="right">${fmtE(totals.y25)}</td>
+            <td class="right" style="color:#2563eb">${fmtE(totals.y26)}</td>
+            <td class="right">${deltaTag(totals.y26,totals.y25)}</td>
+            <td class="right">${deltaTag(totals.y26,totals.y24)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>`;
+}
+
+// ── TAB: ASIAKASANALYYSI ─────────────────────────────────────────────────────
+function renderAsiakasanalyysi(){
+  const kasvuRows=top10Kasvu.map(([a,v25,v26,chg],i)=>{
+    const pct=v25>0?((chg/v25)*100):null;
+    return `<tr>
+      <td style="font-weight:600">${a}</td>
+      <td class="right" style="color:#94a3b8">${v25>0?fmtE(v25):'<span class="tag tag-blue">uusi</span>'}</td>
+      <td class="right" style="font-weight:700">${fmtE(v26)}</td>
+      <td class="right"><span class="tag tag-green">+${fmt(chg)} €</span></td>
+      <td class="right">${pct!=null?makePctTag(pct):'<span class="tag tag-blue">uusi</span>'}</td>
+    </tr>`;
+  }).join('');
+  const laskuRows=top10Lasku.map(([a,v25,v26,chg],i)=>{
+    const pct=v25>0?((chg/v25)*100):null;
+    return `<tr>
+      <td style="font-weight:600">${a}</td>
+      <td class="right">${fmtE(v25)}</td>
+      <td class="right" style="color:#94a3b8">${v26>0?fmtE(v26):'<span class="tag tag-red">poistunut</span>'}</td>
+      <td class="right"><span class="tag tag-red">${fmt(chg)} €</span></td>
+      <td class="right">${pct!=null?makePctTag(pct):'<span class="tag tag-red">−100 %</span>'}</td>
+    </tr>`;
+  }).join('');
+
+  return `
+    <div class="ibox ibox-blue">
+      <strong>Huom vertailujaksosta:</strong> 2025 = maalis–touko (tammi–helmi 2025 ei saatavilla asiakaskohtaisella tuoteryhmäjaolla). 2026 = tammi–touko. Absoluuttiset luvut eivät ole täysin vertailukelpoisia — trendi on kuitenkin suuntaa-antava.
+    </div>
+
+    <div class="section-title">Osio 1 — Asiakashaku</div>
+    <input class="search-box" type="text" id="custSearch" placeholder="Kirjoita asiakkaan nimi (esim. Anuco, Scania, Chiller)..." oninput="searchCustomer(this.value)">
+    <div id="searchResult" class="search-result card"></div>
+
+    <div class="section-title">Osio 2 — Top 10 eniten kasvaneet (2025 maalis-touko → 2026 tammi-touko)</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Asiakas</th><th class="right">2025 (maalis-touko)</th><th class="right">2026 (tammi-touko)</th><th class="right">Muutos €</th><th class="right">Muutos %</th></tr></thead>
+        <tbody>${kasvuRows}</tbody>
+      </table>
+    </div>
+
+    <div class="section-title">Osio 3 — Top 10 eniten laskeneet (2025 maalis-touko → 2026 tammi-touko)</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Asiakas</th><th class="right">2025 (maalis-touko)</th><th class="right">2026 (tammi-touko)</th><th class="right">Muutos €</th><th class="right">Muutos %</th></tr></thead>
+        <tbody>${laskuRows}</tbody>
+      </table>
+    </div>`;
+}
+
+function searchCustomer(q){
+  const el=document.getElementById('searchResult');
+  if(!q||q.length<2){el.classList.remove('visible');el.innerHTML='';return;}
+  const matches=Object.entries(customerData).filter(([k])=>k.toLowerCase().includes(q.toLowerCase()));
+  if(!matches.length){el.classList.add('visible');el.innerHTML='<p style="color:#64748b;padding:12px">Ei hakutuloksia.</p>';return;}
+  
+  const [asiakas,data]=matches[0];
+  const CATS=['Työvaatteet','Edustusvaatteet','Kengät','Päähineet','Liikelahjat','Logomerkkaus','Promotuotteet','Suojaimet','Toimituskulut'];
+  const total25=Object.values(data.y25||{}).reduce((s,v)=>s+v,0);
+  const total26=Object.values(data.y26||{}).reduce((s,v)=>s+v,0);
+  
+  const catRows=CATS.map(cat=>{
+    const v25=(data.y25||{})[cat]||0;
+    const v26=(data.y26||{})[cat]||0;
+    if(!v25&&!v26)return '';
+    return `<tr>
+      <td>${cat}</td>
+      <td class="right" style="color:#94a3b8">${v25?fmtE(v25):'—'}</td>
+      <td class="right" style="font-weight:700">${v26?fmtE(v26):'—'}</td>
+      <td class="right">${deltaTag(v26,v25)}</td>
+    </tr>`;
+  }).filter(Boolean).join('');
+
+  el.classList.add('visible');
+  el.innerHTML=`
+    <div style="font-size:16px;font-weight:800;color:#1a2e4a;margin-bottom:12px">${asiakas}${matches.length>1?` <span style="font-size:12px;color:#64748b">(+ ${matches.length-1} muuta hakutulosta)</span>`:''}</div>
+    <div style="display:flex;gap:24px;margin-bottom:16px">
+      <div><div style="font-size:10px;color:#64748b">2025 maalis-touko</div><div style="font-size:22px;font-weight:800;color:#1a2e4a">${fmtE(total25)||'—'}</div></div>
+      <div><div style="font-size:10px;color:#64748b">2026 tammi-touko</div><div style="font-size:22px;font-weight:800;color:#2563eb">${fmtE(total26)||'—'}</div></div>
+      <div style="display:flex;align-items:center">${total25?deltaTag(total26,total25):'<span class="tag tag-blue">uusi asiakas</span>'}</div>
+    </div>
+    <table>
+      <thead><tr><th>Tuoteryhmä</th><th class="right">2025</th><th class="right">2026</th><th class="right">Muutos</th></tr></thead>
+      <tbody>${catRows||'<tr><td colspan="4" style="color:#64748b;padding:12px">Ei tuoteryhmädataa.</td></tr>'}</tbody>
+    </table>`;
+}
+
+// ── TAB: KONTAKTOINTI ────────────────────────────────────────────────────────
+function renderKontaktointiKk(){
+  return `
+    ${[{title:'Puhelut kuukausittain',k24:'puh24',k25:'puh25',k26:'puh26',id:'puhChart'},
+       {title:'Sähköpostit kuukausittain',k24:'sah24',k25:'sah25',k26:'sah26',id:'sahChart'},
+       {title:'Tapaamiset kuukausittain',k24:'tap24',k25:'tap25',k26:'tap26',id:'tapChart'}]
+    .map(({title,id})=>`
+      <div class="section-title">${title}</div>
+      <div class="card chart-wrap"><canvas id="${id}" height="200"></canvas></div>`).join('')}
+    <div class="ibox ibox-amber">
+      <strong>Tammikuu 2025 kontaktit (7 457):</strong> Massatuonti HubSpot-käyttöönottovaiheessa — poistettu vertailusta.
+    </div>`;
+}
+function renderKontaktointiYTD(){
+  const rows=[
+    ['📞 Puhelut',ytdPuh24,ytdPuh25,ytdPuh26],
+    ['✉️ Sähköpostit',ytdSah24,ytdSah25,ytdSah26],
+    ['🤝 Tapaamiset',ytdTap24,ytdTap25,ytdTap26],
+    ['👤 Uudet kontaktit*',ytdKon24,ytdKon25,ytdKon26],
+    ['💼 Dealit',ytdDeal24,ytdDeal25,ytdDeal26],
+  ].map(([a,v24,v25,v26])=>`<tr>
+    <td style="font-weight:600">${a}</td>
+    <td class="right" style="color:#94a3b8">${fmt(v24)}</td>
+    <td class="right">${fmt(v25)}</td>
+    <td class="right" style="font-weight:700">${fmt(v26)}</td>
+    <td class="right">${deltaTag(v26,v25)}</td>
+    <td class="right">${deltaTag(v26,v24)}</td>
+  </tr>`).join('');
+  return `
+    <div class="section-title">YTD tammi–touko — aktiviteetit 3 vuotta</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Aktiviteetti</th><th class="right">2024</th><th class="right">2025</th><th class="right">2026</th><th class="right">vs 2025</th><th class="right">vs 2024</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div style="font-size:10.5px;color:#94a3b8;margin-top:6px">* Helmi–touko. Tammikuu 2025 rajattu (7 457 kpl massatuonti).</div>
+    </div>`;
+}
+
+// ── TAB: DEALIT ──────────────────────────────────────────────────────────────
+function renderDealitKk(){
+  return `
+    <div class="section-title">Kaikki dealit kuukausittain</div>
+    <div class="card chart-wrap"><canvas id="dealChart" height="220"></canvas></div>
+    <div class="section-title">Closedwon-dealit kuukausittain 2026</div>
+    <div class="ibox ibox-green">Closedwon-dealeja tammi–touko 2026 yhteensä: <strong>${ytdWon26} kpl</strong> — yli 10-kertainen 2025-lukuihin nähden.</div>
+    <div class="card chart-wrap"><canvas id="wonChart" height="180"></canvas></div>`;
+}
+function renderDealitYTD(){
+  return `
+    <div class="section-title">YTD tammi–touko — dealit 3 vuotta</div>
+    <div class="grid-3">
+      ${[{v:ytdDeal24,y:'2024'},{v:ytdDeal25,y:'2025'},{v:ytdDeal26,y:'2026'}].map(({v,y})=>`
+        <div class="card" style="text-align:center">
+          <div style="font-size:11px;color:#64748b;margin-bottom:6px">${y} dealit yhteensä</div>
+          <div style="font-size:32px;font-weight:800;color:#1a2e4a">${v}</div>
+        </div>`).join('')}
+    </div>
+    <div class="ibox ibox-blue">
+      Dealimäärä 2026 (${ytdDeal26}) lähellä 2025-tasoa (${ytdDeal25}). Kasvua 2024:stä (${ytdDeal24}) selittää CRM-käyttöönotto.
+    </div>`;
+}
+
+// ── TAB: LEVELUP ─────────────────────────────────────────────────────────────
+function renderLevelup(){
+  const soittoRows=luSoitot.map(({kk,soitot,tarjouspyynnöt})=>{
+    const suhde=soitot>0?(tarjouspyynnöt/soitot*100):0;
+    return `<tr>
+      <td style="font-weight:600">${kk}</td>
+      <td class="right">${soitot}</td>
+      <td class="right">${tarjouspyynnöt}</td>
+      <td class="right"><strong>${suhde.toFixed(1)} %</strong></td>
+    </tr>`;
+  }).join('');
+  const totSoitot=luSoitot.reduce((s,r)=>s+r.soitot,0);
+  const totTarjous=luSoitot.reduce((s,r)=>s+r.tarjouspyynnöt,0);
+
+  return `
+    <div class="ibox ibox-blue">
+      <strong>Metodologia:</strong> LevelUp-dealit tunnistettu deal-nimen perusteella (sisältää "LevelUp" tai "Level-Up"). Yhteensä <strong>298 dealia</strong> tammi 2024 – touko 2026. Toiminta alkoi selkeästi <strong>huhtikuussa 2024</strong>, kiihtyi merkittävästi <strong>marraskuussa 2025</strong> (64 kpl).
+    </div>
+    <div class="ibox ibox-amber">
+      <strong>⚠️ Soitto → tarjouspyyntö -suhde:</strong> Luvut perustuvat arvioon (LevelUp-soitot / LevelUp-tarjouspyynnöt). Tarkka data haetaan HubSpotista owner=LevelUp (ID: 356597030), activity_type=call + deal_type=quote. Päivitetään seuraavassa kuukausipäivityksessä.
+    </div>
+
+    <div class="section-title">LevelUp-soitot ja tarjouspyynnöt — tammi–touko 2026</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Kuukausi</th><th class="right">Soitot</th><th class="right">Tarjouspyynnöt</th><th class="right">Soitto→tarjouspyyntö-%</th></tr></thead>
+        <tbody>
+          ${soittoRows}
+          <tr class="total-row">
+            <td>YTD YHTEENSÄ</td>
+            <td class="right">${totSoitot}</td>
+            <td class="right">${totTarjous}</td>
+            <td class="right"><strong>${(totTarjous/totSoitot*100).toFixed(1)} %</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-title">LevelUp-dealien volyymi kuukausittain</div>
+    <div class="card chart-wrap"><canvas id="luChart" height="220"></canvas></div>
+    <div class="ibox ibox-amber">
+      Marraskuu 2025: 64 dealia — selkeä huippu, todennäköisesti myyntikampanja. Toukokuu 2026: 34 dealia — tasainen kasvu jatkuu.
+    </div>
+
+    <div class="section-title">Tammi–touko 2026: LevelUp yhteenveto</div>
+    <div class="grid-2">
+      <div class="card">
+        <div style="font-weight:700;color:#1a2e4a;margin-bottom:12px">Avainluvut</div>
+        ${[
+          ['LevelUp-dealeja tammi–touko 2026',luYTD26+' kpl','#1a2e4a'],
+          ['Closedwon-dealeja (kaikki) 2026',ytdWon26+' kpl','#16a34a'],
+          ['Soittoja tammi–touko 2026',totSoitot+' kpl','#2563eb'],
+          ['Tarjouspyyntöjä tammi–touko 2026',totTarjous+' kpl','#2563eb'],
+          ['Soitto→tarjouspyyntö YTD',(totTarjous/totSoitot*100).toFixed(1)+' %','#1a2e4a'],
+          ['Marras 2025 huippu','64 kpl/kk','#d97706'],
+        ].map(([l,v,c])=>`
+          <div style="display:flex;justify-content:space-between;border-bottom:1px solid #e2e8f0;padding:7px 0;font-size:13px">
+            <span style="color:#64748b">${l}</span>
+            <strong style="color:${c}">${v}</strong>
+          </div>`).join('')}
+      </div>
+      <div class="card">
+        <div style="font-weight:700;color:#1a2e4a;margin-bottom:12px">Aikajana</div>
+        ${[
+          ['Tammi 2024','5 kpl','Toiminta käynnistyi'],
+          ['Huhti–touko 2024','86 kpl','Ensimmäinen aktiivinen jakso'],
+          ['Loka–joulu 2025','86 kpl','Toinen kampanjakierre'],
+          ['Tammi–touko 2026','88 kpl','Kasvava putki'],
+        ].map(([aika,n,huomio])=>`
+          <div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid #e2e8f0;font-size:12.5px">
+            <span style="color:#64748b;min-width:110px">${aika}</span>
+            <strong style="color:#1a2e4a;min-width:60px">${n}</strong>
+            <span style="color:#64748b">${huomio}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="ibox ibox-green">
+        <strong>✅ LevelUp toimii:</strong><br>
+        • 298 dealia haettu (tammi 2024 – touko 2026)<br>
+        • Kasvava kuukausittainen volyymi 2026<br>
+        • Toukokuu 2026: 34 dealia — korkein kuukausi<br>
+        • Closedwon 2026 YTD: ${ytdWon26} kpl
+      </div>
+      <div class="ibox ibox-amber">
+        <strong>⚠️ Huomioitavaa:</strong><br>
+        • Tarjouspyyntö-% tarvitsee tarkan HubSpot-haun<br>
+        • CRM-hygienia: closedwon vs. avoinna tarkistettava<br>
+        • Tapaamiset laskevat — vaikutus klousauksiin?<br>
+        • Marras 2025 huippu (64): mistä johtui — voidaanko toistaa?
+      </div>
+    </div>`;
+}
+
+// ── TAB: KV-MYYNTI ───────────────────────────────────────────────────────────
+function renderKV(){
+  return `
+    <div class="ibox ibox-blue">
+      <strong>SBX International (KV-putki):</strong> Käynnistyi toukokuussa 2026. Data kertyy. KV-tapaamisia: /meetings/matti/int. Tämä välilehti täydentyy kuukausittain.
+    </div>
+    <div class="section-title">KV-myynti — status toukokuu 2026</div>
+    <div class="card">
+      <div class="placeholder-box">
+        <div style="font-size:32px;margin-bottom:12px">🌐</div>
+        <div style="font-size:16px;font-weight:700;color:#1a2e4a;margin-bottom:8px">Kansainvälinen myynti — täydentyy</div>
+        <div style="font-size:13px;max-width:400px;margin:0 auto">SBX Int. -putki käynnistyi toukokuu 2026. Ensimmäiset luvut saatavilla kesäkuun päivityksessä.<br><br>
+        Seurattavat metriikat:<br>
+        • KV-tapaamisten määrä (Matti / /meetings/matti/int)<br>
+        • SBX Int. -putken dealit kuukausittain<br>
+        • Ensimmäiset KV-tilaukset (Veroton summa)</div>
+      </div>
+    </div>`;
+}
+
+// ── TAB: MYYNNIN LASKU ───────────────────────────────────────────────────────
+function renderMyynnin(){
+  const diff=YTD26-YTD25;
+  return `
+    <div class="ibox ibox-red">
+      <strong>Kokonaismyynnin lasku YTD tammi–touko 2026: ${fmtE(diff)} (${pct(YTD26,YTD25)}) vs 2025.</strong> Alla hypoteesit tarkasteltuna dataa vasten.
+    </div>
+    <div class="section-title">Hypoteesit ja evidenssi</div>
+    ${hypoteesit.map(h=>`
+      <div class="card" style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-weight:700;color:#1a2e4a;font-size:13px">${h.h}</div>
+          <span class="tag" style="color:${h.vc};background:${h.vbg}">${h.verdict}</span>
+        </div>
+        <div style="font-size:12.5px;color:#64748b;line-height:1.7">${h.t}</div>
+      </div>`).join('')}
+
+    <div class="section-title">Toimenpidesuositukset</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Toimenpide</th><th>Prioriteetti</th><th>Aikataulu</th></tr></thead>
+        <tbody>
+          ${toimenpiteet.map(([t,p,c,bg,a])=>`<tr>
+            <td>${t}</td>
+            <td><span class="tag" style="color:${c};background:${bg}">${p}</span></td>
+            <td style="color:#64748b">${a}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+// ── CHART INIT ───────────────────────────────────────────────────────────────
+function initCharts(){
+  const kks=MONTHS;
+  if(currentTab==='myynti'&&toggle==='kk'){
+    barChart('myyntiChart',kks,[
+      {label:'2024',data:myyntiKk.map(r=>r.y24),backgroundColor:'#cbd5e1',borderRadius:4},
+      {label:'2025',data:myyntiKk.map(r=>r.y25),backgroundColor:'#93c5fd',borderRadius:4},
+      {label:'2026',data:myyntiKk.map(r=>r.y26),backgroundColor:'#2563eb',borderRadius:4},
+    ]);
+  }
+  if(currentTab==='tuoteryhmät'&&toggle==='ytd'){
+    const sorted=[...tuoteryhmät].sort((a,b)=>b.y26-a.y26);
+    barChart('trYtdChart',sorted.map(r=>r.nimi),[
+      {label:'2024',data:sorted.map(r=>r.y24),backgroundColor:'#cbd5e1',borderRadius:4},
+      {label:'2025',data:sorted.map(r=>r.y25),backgroundColor:'#93c5fd',borderRadius:4},
+      {label:'2026',data:sorted.map(r=>r.y26),backgroundColor:'#2563eb',borderRadius:4},
+    ],{extra:{indexAxis:'y'}});
+  }
+  if(currentTab==='tuoteryhmät'&&toggle==='kk'){
+    const groups=[
+      {key:'työ',id:'tr_työ'},{key:'ev',id:'tr_ev'},{key:'pää',id:'tr_pää'},
+      {key:'kenk',id:'tr_kenk'},{key:'liike',id:'tr_liike'},{key:'logo',id:'tr_logo'},
+    ];
+    groups.forEach(({key,id})=>{
+      lineChart(id,kks,[
+        {label:'2024',data:trKk24.map(r=>r[key]),borderColor:'#cbd5e1',backgroundColor:'transparent',tension:.3,borderWidth:2,pointRadius:3},
+        {label:'2025',data:trKk25.map(r=>r[key]),borderColor:'#93c5fd',backgroundColor:'transparent',tension:.3,borderWidth:2,pointRadius:3},
+        {label:'2026',data:trKk26.map(r=>r[key]),borderColor:'#2563eb',backgroundColor:'transparent',tension:.3,borderWidth:2.5,pointRadius:4},
+      ]);
+    });
+  }
+  if(currentTab==='kontaktointi'&&toggle==='kk'){
+    [
+      {id:'puhChart',k24:'puh24',k25:'puh25',k26:'puh26'},
+      {id:'sahChart',k24:'sah24',k25:'sah25',k26:'sah26'},
+      {id:'tapChart',k24:'tap24',k25:'tap25',k26:'tap26'},
+    ].forEach(({id,k24,k25,k26})=>{
+      barCount(id,kks,[
+        {label:'2024',data:crmKk.map(r=>r[k24]),backgroundColor:'#cbd5e1',borderRadius:4},
+        {label:'2025',data:crmKk.map(r=>r[k25]),backgroundColor:'#93c5fd',borderRadius:4},
+        {label:'2026',data:crmKk.map(r=>r[k26]),backgroundColor:'#2563eb',borderRadius:4},
+      ]);
+    });
+  }
+  if(currentTab==='dealit'&&toggle==='kk'){
+    barCount('dealChart',kks,[
+      {label:'2024',data:crmKk.map(r=>r.deal24),backgroundColor:'#cbd5e1',borderRadius:4},
+      {label:'2025',data:crmKk.map(r=>r.deal25),backgroundColor:'#93c5fd',borderRadius:4},
+      {label:'2026',data:crmKk.map(r=>r.deal26),backgroundColor:'#2563eb',borderRadius:4},
+    ]);
+    barCount('wonChart',MONTHS,[
+      {label:'2025',data:wonKk.map(r=>r.w25),backgroundColor:'#93c5fd',borderRadius:4},
+      {label:'2026',data:wonKk.map(r=>r.w26),backgroundColor:'#16a34a',borderRadius:4},
+    ]);
+  }
+  if(currentTab==='levelup'){
+    barSimple('luChart',luKk.map(r=>r.kk),{label:'LevelUp-dealit',data:luKk.map(r=>r.n)},'#2563eb');
+  }
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function getTabContent(){
+  switch(currentTab){
+    case 'yhteenveto': return renderYhteenveto();
+    case 'myynti': return toggleHTML();
+    case 'tuoteryhmät': return toggleHTML();
+    case 'asiakasanalyysi': return renderAsiakasanalyysi();
+    case 'kontaktointi': return toggleHTML();
+    case 'dealit': return toggleHTML();
+    case 'levelup': return renderLevelup();
+    case 'kv': return renderKV();
+    case 'myynnin_lasku': return renderMyynnin();
+    default: return '';
+  }
+}
+
+function renderToggleContent(){
+  const el=document.getElementById('toggleContent');
+  if(!el) return;
+  let html='';
+  if(currentTab==='myynti') html=toggle==='kk'?renderMyyntiKk():renderMyyntiYTD();
+  else if(currentTab==='tuoteryhmät') html=toggle==='ytd'?renderTuoteryhmätYTD():renderTuoteryhmätKk();
+  else if(currentTab==='kontaktointi') html=toggle==='kk'?renderKontaktointiKk():renderKontaktointiYTD();
+  else if(currentTab==='dealit') html=toggle==='kk'?renderDealitKk():renderDealitYTD();
+  el.innerHTML=html;
+  setTimeout(initCharts,50);
+}
+
+function renderContent(){
+  const c=document.getElementById('content');
+  c.innerHTML=getTabContent()+'<div class="footer">Lähteet: Drive-asiakasraportit + tuoteryhmäraportit (Veroton summa) | HubSpot CRM live-haku 15.6.2026 | Luottamuksellinen — vain hallituksen käyttöön</div>';
+  renderToggleContent();
+  setTimeout(initCharts,100);
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+renderTabs();
+renderContent();
+</script>
+</body>
+</html>
