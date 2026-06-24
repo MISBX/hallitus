@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hallitusraportti — Toukokuu 2026</title>
+<style>
+:root{
+  --navy:#1f3864; --blue:#2e5496; --lt:#d9e1f2; --grey:#f2f2f2; --lblue:#a9c2e8;
+  --green:#2e7d32; --red:#c62828; --amber:#b7791f; --txt:#1a1a1a; --muted:#5f6b7a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",Arial,sans-serif;color:var(--txt);background:#eef1f5;line-height:1.5;padding-bottom:60px}
+.wrap{max-width:1040px;margin:0 auto;background:#fff;box-shadow:0 1px 14px rgba(0,0,0,.08)}
+header{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:34px 40px}
+header h1{font-size:26px;font-weight:700;letter-spacing:.2px}
+header .sub{font-size:15px;opacity:.92;margin-top:4px}
+header .meta{font-size:13px;opacity:.8;margin-top:10px}
+nav{display:flex;flex-wrap:wrap;background:var(--navy);border-top:1px solid rgba(255,255,255,.12)}
+nav button{flex:1;min-width:150px;background:none;border:none;color:#cdd7e8;padding:14px 10px;font-size:14px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;font-family:inherit}
+nav button:hover{color:#fff;background:rgba(255,255,255,.06)}
+nav button.active{color:#fff;border-bottom-color:#7da2d9;background:rgba(255,255,255,.10)}
+.panel{display:none;padding:32px 40px}
+.panel.active{display:block}
+h2{font-size:20px;color:var(--navy);margin:6px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--lt)}
+h3{font-size:15px;color:var(--blue);margin:22px 0 10px}
+p.lead{color:var(--muted);margin-bottom:14px;font-size:14px}
+table{width:100%;border-collapse:collapse;margin:10px 0 18px;font-size:13.5px}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid #e3e8ef}
+th{background:var(--blue);color:#fff;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
+tbody tr:nth-child(even){background:var(--grey)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tot td{background:var(--lt)!important;font-weight:700}
+.up{color:var(--green);font-weight:700}
+.down{color:var(--red);font-weight:700}
+.flat{color:var(--muted);font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:8px 0 20px}
+.card{background:#fff;border:1px solid #e3e8ef;border-left:5px solid var(--blue);border-radius:8px;padding:14px 16px}
+.card .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.card .v{font-size:24px;font-weight:700;color:var(--navy);margin:4px 0}
+.card .d{font-size:13px;font-weight:700}
+.card.g{border-left-color:var(--green)} .card.r{border-left-color:var(--red)} .card.a{border-left-color:var(--amber)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.box{border:1px solid #e3e8ef;border-radius:8px;padding:14px 18px}
+.box.pos{background:#f1f8f2;border-color:#cfe6d2}
+.box.neg{background:#fdf3f3;border-color:#f3d4d4}
+.box h4{font-size:14px;margin-bottom:8px}
+.box ul{margin-left:18px;font-size:13.5px;color:#33414f}
+.box.pos h4{color:var(--green)} .box.neg h4{color:var(--red)}
+.badge{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:700;color:#fff}
+.b-conf{background:var(--green)} .b-part{background:var(--amber)} .b-ref{background:#7a8595}
+.hyp{border:1px solid #e3e8ef;border-radius:8px;padding:12px 16px;margin-bottom:10px}
+.hyp .t{font-weight:700;margin-bottom:4px;font-size:14px}
+.hyp .x{font-size:13.5px;color:#33414f}
+.pri{display:inline-block;padding:2px 9px;border-radius:5px;font-size:11px;font-weight:700;color:#fff}
+.p-crit{background:var(--red)} .p-high{background:var(--amber)} .p-med{background:var(--blue)} .p-opp{background:var(--green)}
+.note{font-size:12.5px;color:var(--muted);margin-top:6px;font-style:italic}
+.pill{display:inline-block;background:var(--lt);color:var(--navy);font-size:11px;font-weight:700;padding:3px 10px;border-radius:11px;margin-bottom:12px}
+footer{padding:18px 40px;background:var(--navy);color:#b9c6dd;font-size:12px}
+/* bar chart */
+.chart{border:1px solid #e8edf3;border-radius:8px;padding:18px 18px 10px;background:#fbfcfe;max-width:660px}
+.bars{display:flex;align-items:flex-end;justify-content:space-around;height:300px;border-bottom:2px solid #cbd5e1;padding-top:18px}
+.grp{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.pair{display:flex;align-items:flex-end;gap:6px;height:100%}
+.bar{width:30px;border-radius:4px 4px 0 0;position:relative}
+.bar span{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:#374151}
+.y25{background:var(--lblue)} .y26{background:var(--blue)}
+.mlabel{margin-top:8px;font-size:12.5px;color:#475569;font-weight:600}
+.legend{display:flex;gap:18px;justify-content:center;margin-top:12px;font-size:12.5px;color:#475569}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block}
+@media(max-width:720px){.two{grid-template-columns:1fr}header,.panel,footer{padding-left:20px;padding-right:20px}table{font-size:12px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Suomen Brodeeraus Oy — Hallitusraportti</h1>
+  <div class="sub">HubSpot CRM — Myyntiaktiivisuus, dealit & myyntilinjat</div>
+  <div class="meta">Tammi–toukokuu 2025 vs. 2026 · Lähteet: HubSpot CRM + myyntiseuranta (liikevaihto) · Päivitetty 24.6.2026</div>
+</header>
+
+<nav>
+  <button class="active" onclick="show(event,'yht')">📊 Yhteenveto</button>
+  <button onclick="show(event,'kont')">📞 Kontaktointi</button>
+  <button onclick="show(event,'deal')">💼 Dealit</button>
+  <button onclick="show(event,'linjat')">📈 Myyntilinjat</button>
+  <button onclick="show(event,'levelup')">🚀 LevelUp</button>
+  <button onclick="show(event,'lasku')">🔍 Myynnin lasku</button>
+</nav>
+
+<section id="yht" class="panel active">
+  <h2>Yhteenveto</h2>
+  <p class="lead">Avainluvut tammi–toukokuu 2025 vs. 2026 (HubSpot CRM).</p>
+  <table>
+    <thead><tr><th>Mittari</th><th class="num">2025</th><th class="num">2026</th><th class="num">Muutos</th><th>Huomio</th></tr></thead>
+    <tbody>
+      <tr><td>📞 Puhelut</td><td class="num">1 198</td><td class="num">2 487</td><td class="num up">+108 %</td><td>Myyntiaktiivisuus selkeästi kasvanut</td></tr>
+      <tr><td>✉️ Sähköpostit</td><td class="num">14 898</td><td class="num">15 575</td><td class="num up">+5 %</td><td>Vakaa</td></tr>
+      <tr><td>🤝 Tapaamiset</td><td class="num">638</td><td class="num">532</td><td class="num down">−17 %</td><td>Kenttäkontakti vähentynyt</td></tr>
+      <tr><td>👤 Uudet kontaktit*</td><td class="num">1 996</td><td class="num">1 748</td><td class="num down">−12 %</td><td>Hieman laskenut</td></tr>
+      <tr><td>🛍️ Tuotemyynti-dealit</td><td class="num">406</td><td class="num">487</td><td class="num up">+20 %</td><td>Kasvanut</td></tr>
+      <tr><td>🚀 OK-myynti-dealit</td><td class="num">76</td><td class="num">41</td><td class="num down">−46 %</td><td>Eurooppa-strategian siirtymävaihe</td></tr>
+      <tr><td>🌍 SBX Int -dealit</td><td class="num">0</td><td class="num">8</td><td class="num flat">uusi</td><td>Uusi KV-putki 2026</td></tr>
+    </tbody>
+  </table>
+  <p class="note">* Helmi–toukokuu. Tammikuu 2025 rajattu (7 442 kpl massatuonti CRM-käyttöönotossa).</p>
+  <div class="two" style="margin-top:18px">
+    <div class="box pos"><h4>✅ Positiivista</h4><ul>
+      <li>Puhelut yli kaksinkertaistuneet (+108 %)</li>
+      <li>Tuotemyynti-dealit kasvussa (+20 %)</li>
+      <li>Uusi KV-putki (SBX Int.) käynnistynyt — 8 dealia, €508 000</li>
+      <li>LevelUp tuottanut 90 uutta dealia (€332 500) tammi–touko</li>
+    </ul></div>
+    <div class="box neg"><h4>⚠️ Huomioitavaa</h4><ul>
+      <li>Tapaamiset −17 % — kenttäkontakti vähentynyt</li>
+      <li>OK-myynti-dealit −46 % — eurooppastrategian siirtymä</li>
+      <li>Uudet kontaktit −12 %, retentio: 150–180 poistumaa/kk</li>
+      <li>Kokonaismyynti tam–touko 2026: −143 143 € (−9,8 %)</li>
+    </ul></div>
+  </div>
+</section>
+
+<section id="kont" class="panel">
+  <h2>Kontaktointi</h2>
+  <p class="lead">Aktiviteetit tammi–toukokuu 2025 vs. 2026 (koko yritys).</p>
+  <table>
+    <thead><tr><th>Aktiviteetti</th><th class="num">2025</th><th class="num">2026</th><th class="num">Muutos</th><th>Tulkinta</th></tr></thead>
+    <tbody>
+      <tr><td>📞 Puhelut</td><td class="num">1 198</td><td class="num">2 487</td><td class="num up">+108 %</td><td>Yli kaksinkertaistunut</td></tr>
+      <tr><td>✉️ Sähköpostit</td><td class="num">14 898</td><td class="num">15 575</td><td class="num up">+5 %</td><td>Vakaa</td></tr>
+      <tr><td>🤝 Tapaamiset</td><td class="num">638</td><td class="num">532</td><td class="num down">−17 %</td><td>−106 tapaamista</td></tr>
+      <tr><td>👤 Uudet kontaktit*</td><td class="num">1 996</td><td class="num">1 748</td><td class="num down">−12 %</td><td>Laskenut</td></tr>
+    </tbody>
+  </table>
+  <p class="note">* Helmi–toukokuu (tammikuu 2025 rajattu massatuonnin vuoksi).</p>
+
+  <h3>Tapaamiset kuukausittain (2025 vs. 2026)</h3>
+  <div class="chart">
+    <div class="bars">
+      <div class="grp"><div class="pair">
+        <div class="bar y25" style="height:81.8%"><span>139</span></div>
+        <div class="bar y26" style="height:47.1%"><span>80</span></div></div><div class="mlabel">Tammi</div></div>
+      <div class="grp"><div class="pair">
+        <div class="bar y25" style="height:92.4%"><span>157</span></div>
+        <div class="bar y26" style="height:55.9%"><span>95</span></div></div><div class="mlabel">Helmi</div></div>
+      <div class="grp"><div class="pair">
+        <div class="bar y25" style="height:56.5%"><span>96</span></div>
+        <div class="bar y26" style="height:94.1%"><span>160</span></div></div><div class="mlabel">Maalis</div></div>
+      <div class="grp"><div class="pair">
+        <div class="bar y25" style="height:70.6%"><span>120</span></div>
+        <div class="bar y26" style="height:62.4%"><span>106</span></div></div><div class="mlabel">Huhti</div></div>
+      <div class="grp"><div class="pair">
+        <div class="bar y25" style="height:74.1%"><span>126</span></div>
+        <div class="bar y26" style="height:53.5%"><span>91</span></div></div><div class="mlabel">Touko</div></div>
+    </div>
+    <div class="legend"><span><i class="sw" style="background:var(--lblue)"></i>2025</span><span><i class="sw" style="background:var(--blue)"></i>2026</span></div>
+  </div>
+  <p class="note">Tammi, helmi ja touko 2026 selkeästi alle 2025-tason. Maaliskuu 2026 poikkeuksellisen korkea (+67 %) — kevätpäivät (Jyväskylä/Kuopio). Koko jakso −17 %.</p>
+</section>
+
+<section id="deal" class="panel">
+  <h2>Dealit putkittain</h2>
+  <p class="lead">Tammi–toukokuu 2025 vs. 2026 · luodut dealit pipelineittäin.</p>
+  <table>
+    <thead><tr><th>Putki</th><th class="num">2025</th><th class="num">2026</th><th class="num">Muutos</th><th>Huomio</th></tr></thead>
+    <tbody>
+      <tr><td>🛍️ Tuotemyynti (Myynti)</td><td class="num">406</td><td class="num">487</td><td class="num up">+20 %</td><td>Kasvanut — myyntiaktiivisuus hyvä</td></tr>
+      <tr><td>🚀 OK-myynti (Ohituskaista)</td><td class="num">76</td><td class="num">41</td><td class="num down">−46 %</td><td>Eurooppa-strategian siirtymävaihe</td></tr>
+      <tr><td>🌍 KV (SBX Int.)</td><td class="num">0</td><td class="num">8</td><td class="num flat">uusi</td><td>Uusi kansainvälinen putki 2026</td></tr>
+      <tr class="tot"><td>📊 Yhteensä</td><td class="num">482</td><td class="num">536</td><td class="num up">+11 %</td><td>Kokonaisvolyymi kasvanut</td></tr>
+    </tbody>
+  </table>
+  <div class="cards">
+    <div class="card g"><div class="k">Dealien arvo 2026 (tam–touko)</div><div class="v">2 352 881 €</div><div class="d">Myynti + Ohituskaista + SBX Int.</div></div>
+    <div class="card r" style="max-width:420px"><div class="k">Kokonaismyynnin lasku tam–touko 2026</div><div class="v">−143 143 €</div><div class="d down">−9,8 %</div></div>
+  </div>
+  <p class="note">Putkikohtaiset konversiosuhteet ja eurot: ks. välilehti "📈 Myyntilinjat".</p>
+</section>
+
+<section id="linjat" class="panel">
+  <h2>Myyntilinjat — putken tila & kontaktoinnin funnel <span class="pill">hallituksen pyyntö</span></h2>
+  <p class="lead">Tammi–toukokuu 2025 vs. 2026. <strong>Putken tila</strong> = luodut dealit vaiheryhmittäin (Avoinna = työn alla, vielä klousattavissa). <strong>Funnel</strong> = kontaktoinnista kaupaksi. Lähde: HubSpot CRM.</p>
+
+  <h3>🛍️ Tuotemyynti (pipeline: Myynti)</h3>
+  <p class="lead" style="margin:6px 0 4px"><strong>Kontaktoinnin funnel</strong></p>
+  <table>
+    <thead><tr><th>Vaihe</th><th class="num">2025</th><th class="num">2026</th><th>Konversio (2026)</th></tr></thead>
+    <tbody>
+      <tr><td>📞 Soitot</td><td class="num">700</td><td class="num">1 155</td><td>—</td></tr>
+      <tr><td>🤝 Tapaamiset</td><td class="num">273</td><td class="num">294</td><td>25 % soitoista</td></tr>
+      <tr><td>💼 Dealit</td><td class="num">406</td><td class="num">487</td><td>1,66 dealia / tapaaminen</td></tr>
+      <tr><td>🟢 Voitetut</td><td class="num">243</td><td class="num">150</td><td>31 % dealeista</td></tr>
+    </tbody>
+  </table>
+  <p class="lead" style="margin:6px 0 4px"><strong>Putken tila (€)</strong></p>
+  <table>
+    <thead><tr><th>Vaiheryhmä</th><th class="num">2025 kpl</th><th class="num">2025 €</th><th class="num">2026 kpl</th><th class="num">2026 €</th></tr></thead>
+    <tbody>
+      <tr><td>🟡 Avoinna (työn alla)</td><td class="num">3</td><td class="num">42 000</td><td class="num">170</td><td class="num">430 568</td></tr>
+      <tr><td>🟢 Voitettu</td><td class="num">243</td><td class="num">482 445</td><td class="num">150</td><td class="num">352 113</td></tr>
+      <tr><td>🔴 Hävitty</td><td class="num">160</td><td class="num">347 175</td><td class="num">167</td><td class="num">311 200</td></tr>
+      <tr class="tot"><td>Yhteensä</td><td class="num">406</td><td class="num">871 620</td><td class="num">487</td><td class="num">1 093 881</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Tehokkuus 2026: 2,37 soittoa/deal · 3,93 soittoa/tapaaminen · 2 246 €/deal. Voitto-% (31 %) on 2026 alempi kuin 2025 (60 %) osin siksi, että suuri osa 2026 dealeista on vielä avoinna (€430 568 työn alla).</p>
+
+  <h3>🚀 Ohituskaista (pipeline: Ohituskaistamyynti)</h3>
+  <p class="lead" style="margin:6px 0 4px"><strong>Kontaktoinnin funnel</strong></p>
+  <table>
+    <thead><tr><th>Vaihe</th><th class="num">2025</th><th class="num">2026</th><th>Konversio (2026)</th></tr></thead>
+    <tbody>
+      <tr><td>🤝 Tapaamiset</td><td class="num">102</td><td class="num">65</td><td>—</td></tr>
+      <tr><td>💼 Dealit</td><td class="num">76</td><td class="num">41</td><td>63 % tapaamisista</td></tr>
+      <tr><td>🟢 Voitetut</td><td class="num">14</td><td class="num">4</td><td>10 % dealeista</td></tr>
+    </tbody>
+  </table>
+  <p class="lead" style="margin:6px 0 4px"><strong>Putken tila (€)</strong></p>
+  <table>
+    <thead><tr><th>Vaiheryhmä</th><th class="num">2025 kpl</th><th class="num">2025 €</th><th class="num">2026 kpl</th><th class="num">2026 €</th></tr></thead>
+    <tbody>
+      <tr><td>🟡 Avoinna (työn alla)</td><td class="num">14</td><td class="num">305 000</td><td class="num">28</td><td class="num">436 000</td></tr>
+      <tr><td>🟢 Voitettu</td><td class="num">14</td><td class="num">90 400</td><td class="num">4</td><td class="num">65 000</td></tr>
+      <tr><td>🔴 Hävitty</td><td class="num">48</td><td class="num">5 933 000</td><td class="num">9</td><td class="num">250 000</td></tr>
+      <tr class="tot"><td>Yhteensä</td><td class="num">76</td><td class="num">6 328 400</td><td class="num">41</td><td class="num">751 000</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Huom: 2025 "arvo" 6,3 M € on harhaanjohtava — siitä <strong>5,9 M € on Hävitty-vaiheessa</strong> (menetettyjä isoja kauppoja). 2026 putkessa avoinna €436 000.</p>
+
+  <h3>🌍 KV (pipeline: SBX Int.)</h3>
+  <p class="lead" style="margin:6px 0 4px"><strong>Kontaktoinnin funnel</strong></p>
+  <table>
+    <thead><tr><th>Vaihe</th><th class="num">2025</th><th class="num">2026</th><th>Konversio (2026)</th></tr></thead>
+    <tbody>
+      <tr><td>🤝 Tapaamiset</td><td class="num">0</td><td class="num">7</td><td>—</td></tr>
+      <tr><td>💼 Dealit</td><td class="num">0</td><td class="num">8</td><td>1,14 / tapaaminen</td></tr>
+      <tr><td>🟢 Voitetut</td><td class="num">0</td><td class="num">0</td><td>0 %</td></tr>
+    </tbody>
+  </table>
+  <p class="lead" style="margin:6px 0 4px"><strong>Putken tila (€)</strong></p>
+  <table>
+    <thead><tr><th>Vaiheryhmä</th><th class="num">2025 kpl</th><th class="num">2025 €</th><th class="num">2026 kpl</th><th class="num">2026 €</th></tr></thead>
+    <tbody>
+      <tr><td>🟡 Avoinna (työn alla)</td><td class="num">0</td><td class="num">0</td><td class="num">7</td><td class="num">508 000</td></tr>
+      <tr><td>🟢 Voitettu</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+      <tr><td>🔴 Hävitty</td><td class="num">0</td><td class="num">0</td><td class="num">1</td><td class="num">0</td></tr>
+      <tr class="tot"><td>Yhteensä</td><td class="num">0</td><td class="num">0</td><td class="num">8</td><td class="num">508 000</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Uusi 2026. Koko €508 000 on vielä <strong>avoinna putkessa</strong> (0 voitettu, 1 hävitty 0 €) — KV-strategian alkuvaihe, kauppoja ei vielä klousattu.</p>
+</section>
+
+<section id="levelup" class="panel">
+  <h2>LevelUp <span class="pill">vain 2026</span></h2>
+  <p class="lead">Tammi–toukokuu 2026. LevelUpia ei verrata 2025:een — merkintä otettiin käyttöön vasta 2026. LevelUp = dealit joiden nimessä "levelup", vain pipelineissä Myynti / Ohituskaista / SBX Int. (4 sisäistä prosessikorttia jätetty pois).</p>
+  <div class="cards">
+    <div class="card g"><div class="k">LevelUp-dealit</div><div class="v">90</div><div class="d">tammi–touko 2026</div></div>
+    <div class="card g"><div class="k">Dealien arvo</div><div class="v">332 501 €</div><div class="d">yhteensä</div></div>
+    <div class="card g"><div class="k">LevelUp-puhelut</div><div class="v">1 180</div><div class="d">tammi–touko 2026</div></div>
+  </div>
+
+  <h3>LevelUp-dealit vaiheittain ja putkittain</h3>
+  <table>
+    <thead><tr><th>Pipeline</th><th>Vaihe (dealstage)</th><th class="num">Dealit</th><th class="num">Arvo (€)</th></tr></thead>
+    <tbody>
+      <tr><td>Myynti</td><td>Level Up uudet</td><td class="num">2</td><td class="num">0 €</td></tr>
+      <tr><td>Myynti</td><td>LevelUp Kuvastot/Sähköpostit</td><td class="num">15</td><td class="num">18 €</td></tr>
+      <tr><td>Myynti</td><td>Tarjouspyyntö myyjä</td><td class="num">9</td><td class="num">0 €</td></tr>
+      <tr><td>Myynti</td><td>Tarjouksen läpikäynti</td><td class="num">7</td><td class="num">27 000 €</td></tr>
+      <tr><td>Myynti</td><td>Odottaa <span class="note">(closedwon)</span></td><td class="num">23</td><td class="num">141 600 €</td></tr>
+      <tr><td>Myynti</td><td>Voitettu <span class="note">(closedlost)</span></td><td class="num">5</td><td class="num">8 983 €</td></tr>
+      <tr><td>Myynti</td><td>Hävitty</td><td class="num">28</td><td class="num">129 900 €</td></tr>
+      <tr><td>Ohituskaistamyynti</td><td>Odottaa</td><td class="num">1</td><td class="num">25 000 €</td></tr>
+      <tr class="tot"><td>Yhteensä</td><td></td><td class="num">90</td><td class="num">332 501 €</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Vaihe-otsikot HubSpotin Myynti-putken konfiguraation mukaan (stage "closedwon" = "Odottaa", "closedlost" = "Voitettu").</p>
+
+  <h3>LevelUp-puhelut kuukausittain 2026</h3>
+  <p class="lead">Kaava: "Connected by Level Up" (HubSpot) + tapaaminen@-kalenterin varsinaiset tapaamiset (1 tapaaminen = 1 puhelu). "Etätapaaminen SBX /" sisältyy kalenteritapaamisiin; "x SBX – Google Meet" 0 kpl jaksolla.</p>
+  <table>
+    <thead><tr><th>Kuukausi</th><th class="num">Connected (HubSpot)</th><th class="num">Tapaamiset (kalenteri)</th><th class="num">LevelUp-puhelut yht.</th></tr></thead>
+    <tbody>
+      <tr><td>Tammikuu</td><td class="num">84</td><td class="num">7</td><td class="num">91</td></tr>
+      <tr><td>Helmikuu</td><td class="num">206</td><td class="num">17</td><td class="num">223</td></tr>
+      <tr><td>Maaliskuu</td><td class="num">124</td><td class="num">18</td><td class="num">142</td></tr>
+      <tr><td>Huhtikuu</td><td class="num">249</td><td class="num">19</td><td class="num">268</td></tr>
+      <tr><td>Toukokuu</td><td class="num">425</td><td class="num">31</td><td class="num">456</td></tr>
+      <tr class="tot"><td>Yhteensä</td><td class="num">1 088</td><td class="num">92</td><td class="num">1 180</td></tr>
+    </tbody>
+  </table>
+
+  <h3>LevelUp-tapaamisten onnistuminen <span class="pill">uusi</span></h3>
+  <p class="lead">Montako LevelUpin buukkaamasta tapaamisesta on syntynyt deali (mihin tahansa putkeen, dealin nimestä riippumatta), tapaamiskuukauden mukaan. € = näiden dealien arvo, jaettuna vaiheen mukaan.</p>
+  <table>
+    <thead><tr><th>Kuukausi</th><th class="num">Tapaamiset</th><th class="num">Joista deal</th><th class="num">Konv.</th><th class="num">Yhteensä €</th><th class="num">Voitettu €</th><th class="num">Hävitty €</th><th class="num">Avoinna €</th></tr></thead>
+    <tbody>
+      <tr><td>Tammikuu</td><td class="num">7</td><td class="num">3</td><td class="num">43 %</td><td class="num">163 000</td><td class="num">1 500</td><td class="num">11 500</td><td class="num">150 000</td></tr>
+      <tr><td>Helmikuu</td><td class="num">17</td><td class="num">5</td><td class="num">29 %</td><td class="num">58 190</td><td class="num">1 190</td><td class="num">7 000</td><td class="num">50 000</td></tr>
+      <tr><td>Maaliskuu</td><td class="num">18</td><td class="num">10</td><td class="num">56 %</td><td class="num">142 300</td><td class="num">31 000</td><td class="num">2 800</td><td class="num">108 500</td></tr>
+      <tr><td>Huhtikuu</td><td class="num">19</td><td class="num">9</td><td class="num">47 %</td><td class="num">30 191</td><td class="num">4 990</td><td class="num">16 700</td><td class="num">8 501</td></tr>
+      <tr><td>Toukokuu</td><td class="num">31</td><td class="num">11</td><td class="num">35 %</td><td class="num">146 161</td><td class="num">7 960</td><td class="num">103 200</td><td class="num">35 001</td></tr>
+      <tr class="tot"><td>Yhteensä</td><td class="num">92</td><td class="num">38</td><td class="num">41 %</td><td class="num">539 842</td><td class="num">46 640</td><td class="num">141 200</td><td class="num">352 002</td></tr>
+    </tbody>
+  </table>
+  <p class="note">"Joista deal" = tapaamiset, joiden kontaktilla on deal. 38 konvertoitunutta tapaamista tuotti yhteensä 59 dealia (osalla kontakteista useampi). Sisältää myös ei-LevelUp-nimettyjä dealeja.</p>
+
+  <h3>LevelUp-puheluiden onnistuminen <span class="pill">uusi</span></h3>
+  <p class="lead">Montako erillistä LevelUp-dealia on syntynyt Connected-puheluista, dealin luontikuukauden mukaan. € jaettuna vaiheen mukaan.</p>
+  <table>
+    <thead><tr><th>Kuukausi</th><th class="num">Connected-puhelut</th><th class="num">Dealit</th><th class="num">Konv.</th><th class="num">Yhteensä €</th><th class="num">Voitettu €</th><th class="num">Hävitty €</th><th class="num">Avoinna €</th></tr></thead>
+    <tbody>
+      <tr><td>Tammikuu</td><td class="num">84</td><td class="num">11</td><td class="num">13 %</td><td class="num">19 600</td><td class="num">3 500</td><td class="num">16 000</td><td class="num">100</td></tr>
+      <tr><td>Helmikuu</td><td class="num">206</td><td class="num">10</td><td class="num">5 %</td><td class="num">23 000</td><td class="num">0</td><td class="num">10 000</td><td class="num">13 000</td></tr>
+      <tr><td>Maaliskuu</td><td class="num">124</td><td class="num">21</td><td class="num">17 %</td><td class="num">133 997</td><td class="num">2 983</td><td class="num">54 000</td><td class="num">77 014</td></tr>
+      <tr><td>Huhtikuu</td><td class="num">249</td><td class="num">15</td><td class="num">6 %</td><td class="num">19 004</td><td class="num">1 000</td><td class="num">2 000</td><td class="num">16 004</td></tr>
+      <tr><td>Toukokuu</td><td class="num">425</td><td class="num">33</td><td class="num">8 %</td><td class="num">136 900</td><td class="num">1 500</td><td class="num">47 900</td><td class="num">87 500</td></tr>
+      <tr class="tot"><td>Yhteensä</td><td class="num">1 088</td><td class="num">90</td><td class="num">8 %</td><td class="num">332 501</td><td class="num">8 983</td><td class="num">129 900</td><td class="num">193 618</td></tr>
+    </tbody>
+  </table>
+  <p class="note">"Dealit" = erilliset LevelUp-nimetyt dealit luontikuukauden mukaan (sama deal voi saada monta puhelua, siksi erilliset dealit). €-summa täsmää LevelUp-dealien kokonaisarvoon. Voitettu/Hävitty/Avoinna luokiteltu vaiheen NIMEN mukaan (Myynnissä "Voitettu" = sisäisesti closedlost).</p>
+  <p class="note">LevelUp on poikkileikkaava osajoukko (lähes kokonaan Myynti-pipeline) — samat dealit sisältyvät myös Myyntilinjat- ja Dealit-välilehtien lukuihin.</p>
+</section>
+
+<section id="lasku" class="panel">
+  <h2>Myynnin lasku — hypoteesit</h2>
+  <p class="lead">Liikevaihto (veroton) tammi–toukokuu: 2025 <strong>1 464 507 €</strong> → 2026 <strong>1 321 365 €</strong>, eli <strong>−143 143 € (−9,8 %)</strong>. Toukokuu 2026 kääntyi hieman 2025:n yläpuolelle (+1,1 %), mikä paransi YTD-trendiä tammi–huhtikuun −12,8 %:sta. Lähde: myyntiseuranta (veroton liikevaihto).</p>
+  <div class="hyp"><div class="t">❌ H1: Myyntiaktiivisuus laskenut <span class="badge b-ref">KUMOTTU</span></div><div class="x">Puhelut +108 %, sähköpostit vakaa, uudet dealit +11 %. Myyntitiimi on selvästi aktiivisempi kuin vuosi sitten.</div></div>
+  <div class="hyp"><div class="t">⚠️ H2: Tapaamiset vähentyneet → klousaukset hidastuneet <span class="badge b-part">OSITTAIN</span></div><div class="x">Tapaamiset −17 % (638→532). Voi hidastaa isompia kauppoja, mutta ei selitä koko volyymin laskua.</div></div>
+  <div class="hyp"><div class="t">✅ H3: Anuco Oy & Scania Suomi Oy romahdus maaliskuussa <span class="badge b-conf">VAHVISTETTU</span></div><div class="x">Anuco −29 513 €, Scania −24 078 € maaliskuussa. Yhteensä yli 67 % koko maaliskuun laskusta. Anucon 2025 huippu oli poikkeuksellinen kertatilaus.</div></div>
+  <div class="hyp"><div class="t">✅ H4: Kattokeskus-ketjun hankintapäätös <span class="badge b-conf">VAHVISTETTU</span></div><div class="x">6+ Kattokeskus-toimipistettä laskenut tai poistunut joka kuukausi. Todennäköisesti ketjutason toimittajavaihto. Arvioitu vuosivaikutus 40–60 k€.</div></div>
+  <div class="hyp"><div class="t">✅ H5: Rakenteellinen asiakaspoistuma <span class="badge b-conf">VAHVISTETTU</span></div><div class="x">150–180 asiakasta/kk poistuu (ostivat 2025, ei 2026). Uusia tulee 124–152/kk. Nettomiinus ~30–50 asiakasta/kk.</div></div>
+  <div class="hyp"><div class="t">✅ H6: OK-myynti lasku — strateginen siirtymä Eurooppaan <span class="badge b-conf">VAHVISTETTU</span></div><div class="x">2025 tam–huhtikuussa 18/60 OK-myynti-dealista (30 %) tuli IHG- tai Buukkari-lähteestä kotimaisesta kontaktoinnista. 2026 resurssit siirretty Euroopan markkinoille (uusi SBX Int -putki) — kotimainen buukkariaktiivisuus lopetettu tietoisesti. Normaali viive uudelle markkina-alueelle mentäessä.</div></div>
+  <div class="hyp"><div class="t">❌ H7: Ohituskaistamyynti syönyt normaalia myyntiaikaa <span class="badge b-ref">EI EVIDENSSIÄ</span></div><div class="x">Tuotemyynti kasvoi +20 %. OK-myynti toimii normaalimyynnin päälle, ei sen sijasta.</div></div>
+
+  <h3>Toimenpidesuositukset</h3>
+  <table>
+    <thead><tr><th>Toimenpide</th><th>Prioriteetti</th><th>Aikataulu</th></tr></thead>
+    <tbody>
+      <tr><td>Kattokeskus-johdon kontakti — selvitä ketjupäätös</td><td><span class="pri p-crit">KRIITTINEN</span></td><td>Välittömästi</td></tr>
+      <tr><td>Retentio-ohjelma: 45 pv ostamatta → automaattinen yhteydenotto</td><td><span class="pri p-crit">KRIITTINEN</span></td><td>1–2 kk</td></tr>
+      <tr><td>Anuco Oy — johdon suorakontakti</td><td><span class="pri p-high">Korkea</span></td><td>1–2 vk</td></tr>
+      <tr><td>Tapaamisten lisääminen tammi–helmi 2027</td><td><span class="pri p-med">Tärkeä</span></td><td>Syksy 2026</td></tr>
+      <tr><td>NMC Cellfoam Oy — uusi avainasiakas, aktiivinen seuranta</td><td><span class="pri p-opp">Mahdollisuus</span></td><td>1 kk</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>Lähteet: HubSpot CRM (haku 24.6.2026) + Google Calendar + myyntiseuranta (veroton liikevaihto) · Tammi–toukokuu 2025 vs. 2026 · Luottamuksellinen</footer>
+</div>
+
+<script>
+function show(e,id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  e.currentTarget.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
