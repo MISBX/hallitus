@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suomen Brodeeraus Oy – Myyntiseuranta Toukokuu 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #1a2e4a;
+    --blue: #2563eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #d97706;
+    --muted: #64748b;
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --lgreen: #dcfce7;
+    --lred: #fee2e2;
+    --lblue: #dbeafe;
+    --lamber: #fef3c7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: #1e293b; }
+
+  /* HEADER */
+  .header {
+    background: var(--navy);
+    color: #fff;
+    padding: 20px 32px 14px;
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  .header-left .eyebrow { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; margin-bottom: 2px; }
+  .header-left h1 { font-size: 18px; font-weight: 700; }
+  .header-left .sub { font-size: 11px; opacity: 0.55; margin-top: 2px; }
+  .header-badge { background: var(--amber); color: #fff; border-radius: 6px; padding: 6px 14px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+
+  /* TABS */
+  .tabs { background: #fff; border-bottom: 1px solid var(--border); display: flex; padding: 0 32px; overflow-x: auto; gap: 0; }
+  .tab { border: none; background: none; padding: 13px 16px; font-size: 12.5px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: color .15s, border-color .15s; }
+  .tab.active { color: var(--blue); font-weight: 700; border-bottom-color: var(--blue); }
+  .tab:hover:not(.active) { color: var(--navy); }
+
+  /* LAYOUT */
+  .page { display: none; padding: 24px 32px; max-width: 1140px; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .card-title { font-size: 12px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 14px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 18px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 18px; }
+
+  /* KPI CARDS */
+  .kpi { padding: 16px 18px; }
+  .kpi-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 10px; }
+  .kpi-values { display: flex; gap: 16px; align-items: flex-end; }
+  .kpi-year { }
+  .kpi-year small { font-size: 10px; color: var(--muted); display: block; }
+  .kpi-year .val { font-size: 22px; font-weight: 800; color: var(--navy); }
+  .kpi-badge { margin-left: auto; }
+  .badge { border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; }
+  .badge-green { background: var(--lgreen); color: var(--green); }
+  .badge-red { background: var(--lred); color: var(--red); }
+  .badge-amber { background: var(--lamber); color: var(--amber); }
+  .badge-blue { background: var(--lblue); color: var(--blue); }
+  .kpi-note { font-size: 10px; color: var(--muted); margin-top: 6px; }
+
+  /* SECTION HEADERS */
+  .section-hdr { border-left: 4px solid var(--blue); padding-left: 12px; font-size: 13px; font-weight: 700; color: var(--navy); margin: 22px 0 12px; }
+  .section-hdr.green { border-color: var(--green); }
+  .section-hdr.red { border-color: var(--red); }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { background: var(--navy); color: #fff; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 600; }
+  th.right, td.right { text-align: right; }
+  th.center, td.center { text-align: center; }
+  td { padding: 7px 12px; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) td { background: var(--bg); }
+  tr.total td { background: var(--lblue); font-weight: 700; }
+  .pct-pos { color: var(--green); font-weight: 700; }
+  .pct-neg { color: var(--red); font-weight: 700; }
+  .badge-sm { font-size: 10px; padding: 2px 7px; border-radius: 12px; font-weight: 700; }
+  .pri-krit { background: var(--lred); color: var(--red); }
+  .pri-high { background: var(--lamber); color: var(--amber); }
+  .pri-mid { background: #f1f5f9; color: var(--muted); }
+  .pri-low { background: #f8fafc; color: #94a3b8; }
+
+  /* CHARTS */
+  .chart-wrap { position: relative; height: 260px; margin-bottom: 12px; }
+  .chart-wrap-sm { position: relative; height: 200px; }
+  .chart-wrap-lg { position: relative; height: 320px; margin-bottom: 12px; }
+
+  /* INFO BOXES */
+  .ibox { border-radius: 8px; padding: 10px 14px; font-size: 12px; line-height: 1.7; margin-bottom: 12px; }
+  .ibox.blue { background: #eff6ff; border: 1px solid #bfdbfe; }
+  .ibox.green { background: #f0fdf4; border: 1px solid #bbf7d0; }
+  .ibox.red { background: #fef2f2; border: 1px solid #fecaca; }
+  .ibox.amber { background: #fffbeb; border: 1px solid #fde68a; }
+
+  /* MONTH NAV */
+  .month-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .month-btn { border: 1px solid var(--border); background: #fff; border-radius: 20px; padding: 5px 14px; font-size: 11px; cursor: pointer; font-weight: 500; color: var(--muted); transition: all .15s; }
+  .month-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); font-weight: 700; }
+
+  @media (max-width: 700px) {
+    .header { padding: 14px 16px; }
+    .page { padding: 16px; }
+    .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .tabs { padding: 0 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="eyebrow">Suomen Brodeeraus Oy — Hallitusraportti</div>
+    <h1>Myyntiseuranta — Toukokuu 2026</h1>
+    <div class="sub">Tammi–Toukokuu 2026 | Päivitetty 22.6.2026 | Lähde: Drivestä haettu raportti</div>
+  </div>
+  <div class="header-badge">LV YTD: 1 321 365 €</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+  <button class="tab" onclick="showTab('tuoteryhmat')">📦 Tuoteryhmät</button>
+  <button class="tab" onclick="showTab('topassiakkaat')">🏆 Top Asiakkaat</button>
+  <button class="tab" onclick="showTab('uudet')">✅ Uudet Asiakkaat</button>
+  <button class="tab" onclick="showTab('menetetyt')">⚠️ Menetetyt Asiakkaat</button>
+  <button class="tab" onclick="showTab('budjetti')">💰 Budjetti</button>
+  <button class="tab" onclick="showTab('ennuste')">📈 Ennuste 2026</button>
+</div>
+
+<!-- ════════════════════════ DASHBOARD ════════════════════════ -->
+<div id="tab-dashboard" class="page active">
+  <div class="ibox amber">⚠️ <strong>Toukokuu 2026:</strong> LV 318 889 € (+1,1% vs 2025), mutta kate-% romahti 41,4% → 28,8%. Anuco Oy palasi isona (50 583 €) mutta vain 22% toimitettu — iso backlog. Kate-% lasku suurin varoitusmerkki.</div>
+
+  <div class="grid-4">
+    <div class="card kpi">
+      <div class="kpi-label">LV Toukokuu</div>
+      <div class="kpi-values">
+        <div class="kpi-year"><small>2025</small><div class="val">315 360 €</div></div>
+        <div class="kpi-year"><small>2026</small><div class="val">318 889 €</div></div>
+        <div class="kpi-badge"><span class="badge badge-green">+1,1 %</span></div>
+      </div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">Kate-% Toukokuu</div>
+      <div class="kpi-values">
+        <div class="kpi-year"><small>2025</small><div class="val">41,4 %</div></div>
+        <div class="kpi-year"><small>2026</small><div class="val">28,8 %</div></div>
+        <div class="kpi-badge"><span class="badge badge-red">−12,6 pp</span></div>
+      </div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">Tilauksia</div>
+      <div class="kpi-values">
+        <div class="kpi-year"><small>2025</small><div class="val">799</div></div>
+        <div class="kpi-year"><small>2026</small><div class="val">690</div></div>
+        <div class="kpi-badge"><span class="badge badge-red">−13,6 %</span></div>
+      </div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">Keskim. tilaus</div>
+      <div class="kpi-values">
+        <div class="kpi-year"><small>2025</small><div class="val">395 €</div></div>
+        <div class="kpi-year"><small>2026</small><div class="val">462 €</div></div>
+        <div class="kpi-badge"><span class="badge badge-green">+17 %</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-4" style="margin-bottom:18px">
+    <div class="card kpi">
+      <div class="kpi-label">LV YTD tammi–touko</div>
+      <div class="kpi-values">
+        <div class="kpi-year"><small>2025</small><div class="val" style="font-size:18px">1 464 507 €</div></div>
+        <div class="kpi-year"><small>2026</small><div class="val" style="font-size:18px">1 321 365 €</div></div>
+        <div class="kpi-badge"><span class="badge badge-red">−9,8 %</span></div>
+      </div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">Kate YTD</div>
+      <div class="kpi-values">
+        <div class="kpi-year"><small>2025</small><div class="val" style="font-size:18px">538 133 €</div></div>
+        <div class="kpi-year"><small>2026</small><div class="val" style="font-size:18px">436 133 €</div></div>
+        <div class="kpi-badge"><span class="badge badge-red">−19,0 %</span></div>
+      </div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">YTD vs Budjetti</div>
+      <div class="kpi-values">
+        <div class="kpi-year"><small>Budjetti</small><div class="val" style="font-size:18px">1 520 327 €</div></div>
+        <div class="kpi-year"><small>Toteuma</small><div class="val" style="font-size:18px">1 321 365 €</div></div>
+        <div class="kpi-badge"><span class="badge badge-red">−13,1 %</span></div>
+      </div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">Kate-% YTD</div>
+      <div class="kpi-values">
+        <div class="kpi-year"><small>2025</small><div class="val">36,7 %</div></div>
+        <div class="kpi-year"><small>2026</small><div class="val">33,0 %</div></div>
+        <div class="kpi-badge"><span class="badge badge-red">−3,7 pp</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Kuukausittainen LV — 2024 / 2025 / 2026</div>
+      <div class="chart-wrap"><canvas id="chartLV"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">LV vs Budjetti 2026 — Kuukausittain</div>
+      <div class="chart-wrap"><canvas id="chartBudget"></canvas></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Kate-% kehitys — 2025 vs 2026</div>
+      <div class="chart-wrap"><canvas id="chartKate"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">YTD kumulatiivinen LV — 2025 vs 2026 vs Budjetti</div>
+      <div class="chart-wrap"><canvas id="chartYTD"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ TUOTERYHMÄT ════════════════════════ -->
+<div id="tab-tuoteryhmat" class="page">
+  <div class="month-nav" id="tr-nav"></div>
+  <div id="tr-chart-wrap" class="grid-2" style="margin-bottom:18px">
+    <div class="card">
+      <div class="card-title">LV tuoteryhmittäin — <span id="tr-chart-label">Toukokuu</span></div>
+      <div class="chart-wrap-lg"><canvas id="chartTR_LV"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Kate-% tuoteryhmittäin — <span id="tr-chart-label2">Toukokuu</span></div>
+      <div class="chart-wrap-lg"><canvas id="chartTR_Kate"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Tuoteryhmät — 2025 vs 2026 <span id="tr-table-label">Toukokuu</span></div>
+    <table id="tr-table">
+      <thead><tr><th>Tuoteryhmä</th><th class="right">LV 2025 €</th><th class="right">Kate 2025 €</th><th class="center">Kate% 2025</th><th class="right">LV 2026 €</th><th class="right">Kate 2026 €</th><th class="center">Kate% 2026</th><th class="right">Muutos LV €</th><th class="center">Muutos %</th></tr></thead>
+      <tbody id="tr-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════ TOP ASIAKKAAT ════════════════════════ -->
+<div id="tab-topassiakkaat" class="page">
+  <div class="month-nav" id="top-nav"></div>
+  <div class="grid-2" style="margin-bottom:18px">
+    <div class="card">
+      <div class="card-title">Top 10 asiakkaat LV — <span id="top-chart-label">Toukokuu 2026</span></div>
+      <div class="chart-wrap-lg"><canvas id="chartTopCustomers"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top 5 — Muutos 2025 → 2026</div>
+      <div class="chart-wrap-lg"><canvas id="chartTopChange"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Top 10 asiakkaat — rinnakkain <span id="top-table-label"></span></div>
+    <table id="top-table">
+      <thead><tr><th class="center">#</th><th>Asiakas 2025</th><th class="right">Myynti 2025 €</th><th>Asiakas 2026</th><th class="right">Myynti 2026 €</th><th>Huomio</th></tr></thead>
+      <tbody id="top-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════ UUDET ════════════════════════ -->
+<div id="tab-uudet" class="page">
+  <div class="month-nav" id="new-nav"></div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">Uusien asiakkaiden LV — <span id="new-chart-label">Toukokuu 2026</span></div>
+    <div class="chart-wrap"><canvas id="chartNew"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Uudet asiakkaat — <span id="new-table-label">Toukokuu 2026</span></div>
+    <table>
+      <thead><tr><th class="center">#</th><th>Uusi asiakas 2026</th><th class="right">Myynti 2026 €</th><th>Osti aiemmin?</th><th class="center">Kate%</th><th>Tulkinta</th></tr></thead>
+      <tbody id="new-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════ MENETETYT ════════════════════════ -->
+<div id="tab-menetetyt" class="page">
+  <div class="month-nav" id="lost-nav"></div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">Menetettyjen asiakkaiden LV 2025 — <span id="lost-chart-label">Toukokuu</span></div>
+    <div class="chart-wrap"><canvas id="chartLost"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Menetetyt asiakkaat — <span id="lost-table-label">Toukokuu 2026</span></div>
+    <table>
+      <thead><tr><th class="center">#</th><th>Menetetty asiakas</th><th class="right">Myynti 2025 €</th><th>Osti 2026?</th><th class="center">Prioriteetti</th><th>Toimenpide</th></tr></thead>
+      <tbody id="lost-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════ BUDJETTI ════════════════════════ -->
+<div id="tab-budjetti" class="page">
+  <div class="ibox blue"><strong>Budjetti 2026 yhteensä: 5 428 753 €</strong> | YTD tammi–touko toteuma: 1 321 365 € | Budjetti YTD: 1 520 327 € | Vajaus: −198 962 € (−13,1%)</div>
+  <div class="grid-2" style="margin-bottom:18px">
+    <div class="card">
+      <div class="card-title">Toteuma vs Budjetti — kuukausittain</div>
+      <div class="chart-wrap"><canvas id="chartBud1"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Toteutuma-% budjetista</div>
+      <div class="chart-wrap"><canvas id="chartBud2"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Kuukausi</th><th class="right">Budjetti 2026 €</th><th class="right">Toteuma 2026 €</th><th class="right">Toteuma 2025 €</th><th class="right">Ero €</th><th class="center">Ero %</th><th class="center">Status</th></tr></thead>
+      <tbody id="bud-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════ ENNUSTE ════════════════════════ -->
+<div id="tab-ennuste" class="page">
+  <div class="ibox amber">Ennuste perustuu 2024/2025 trendeihin ja toteutuneisiin lukuihin. Konservatiivinen skenaario. <strong>Koko vuosi 2026 ennuste: ~2 771 000 €</strong></div>
+  <div class="grid-2" style="margin-bottom:18px">
+    <div class="card">
+      <div class="card-title">Ennuste vs Budjetti vs Toteuma 2025</div>
+      <div class="chart-wrap-lg"><canvas id="chartEnn"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Ennuste vs Budjetti — muutos %</div>
+      <div class="chart-wrap-lg"><canvas id="chartEnn2"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Kuukausi</th><th class="right">Tot. 2025 €</th><th class="right">Tot. 2026 €</th><th class="right">Budjetti 2026 €</th><th class="right">Ennuste 2026 €</th><th class="center">Enn vs 2025</th><th class="center">Enn vs Bud</th><th class="center">Status</th></tr></thead>
+      <tbody id="enn-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const months = ['Tammikuu','Helmikuu','Maaliskuu','Huhtikuu','Toukokuu'];
+const months_full = ['Tammi','Helmi','Maalis','Huhti','Touko','Kesä','Heinä','Elo','Syys','Loka','Marras','Joulu'];
+
+const lv2024 = [215430, 176651, 196150, 352026, 357488];
+const lv2025 = [179868, 226864, 342016, 400398, 315360];
+const lv2026 = [192772, 210886, 263139, 335678, 318889];
+const kate2025pct = [36.2, 36.2, 29.2, 40.0, 41.4];
+const kate2026pct = [35.1, 33.6, 35.5, 33.5, 28.8];
+
+const budget_all = [202906, 200313, 330155, 443274, 343680, 308021, 155900, 282139, 717923, 780218, 800193, 864033];
+const lv2025_all = [179868, 226864, 342016, 400398, 315360, 263945, 126793, 264736, 283143, 335895, 349581, 139998];
+
+// YTD
+const ytd25 = lv2025.reduce((a,b,i)=>[...a, (a[i-1]||0)+b], []);
+const ytd26 = lv2026.reduce((a,b,i)=>[...a, (a[i-1]||0)+b], []);
+const ytd_bud = budget_all.slice(0,5).reduce((a,b,i)=>[...a, (a[i-1]||0)+b], []);
+
+// TUOTERYHMÄT
+const trData = {
+  'Toukokuu': {
+    rows: [
+      ['Edustusvaatteet',  74124, 35703, 48.71, 64201, 29581, 46.82],
+      ['Kengät',           28903,  5097, 17.63, 22912,  3873, 16.94],
+      ['Liikelahjat',      10830,  4645, 43.10,  9622,  3831, 39.81],
+      ['Logomerkkaus',     15904, 15295, 99.48, 14250, 12441,100.00],
+      ['Päähineet',        39615, 19822, 51.29, 29626,  8445, 49.19],
+      ['Promotuotteet',     9528,  2104, 22.08,  8042,   501, 49.65],
+      ['Suojaimet',         5079,  1176, 23.15,  5938,  1442, 24.68],
+      ['Toimituskulut',     4980,  4896,100.00,  4970,  4523,100.00],
+      ['Työvaatteet',     123958, 39796, 32.48,144482, 24651, 24.19],
+      ['EI-VALIKOIMARYHMÄÄ',5599,   528, 11.91, 11983,   719,  8.58],
+      ['YHTEENSÄ',        319329,130832, 40.60,316906, 90686, 28.60],
+    ]
+  },
+  'Huhtikuu': {
+    rows: [
+      ['Edustusvaatteet', 111219, 47752, 42.9,  87332, 35776, 42.10],
+      ['Kengät',           35452,  5587, 15.8,  25734,  3925, 15.38],
+      ['Liikelahjat',       7854,  3301, 42.0,  20405,  6930, 41.54],
+      ['Logomerkkaus',     22794, 22637, 99.3,  19224, 18382, 99.85],
+      ['Päähineet',        44216, 23687, 53.6,  37529, 16416, 55.90],
+      ['Promotuotteet',    13242,  6645, 50.2,   2180,  1058, 55.68],
+      ['Suojaimet',         6889,  2042, 29.6,   8843,  2649, 30.56],
+      ['Toimituskulut',     5444,  5444,100.0,   4626,  4602,100.00],
+      ['Työvaatteet',     147162, 41019, 27.9, 123905, 30932, 25.98],
+      ['YHTEENSÄ',        394272,158115, 40.1, 332532,121891, 36.70],
+    ]
+  },
+  'Maaliskuu': {
+    rows: [
+      ['Edustusvaatteet',  58112, 20749, 35.7,  59883, 24930, 46.43],
+      ['Kengät',           37030,  5818, 15.7,  26270,  4911, 18.70],
+      ['Liikelahjat',       6899,  1944, 28.2,   6988,  2796, 40.27],
+      ['Logomerkkaus',     12013, 11545, 96.1,  11411, 11287,100.00],
+      ['Päähineet',        33709,  9941, 29.5,  17294,  9792, 56.71],
+      ['Promotuotteet',     7374,  2397, 32.5,   6342,  2151, 34.57],
+      ['Suojaimet',         6823,  2068, 30.3,   7176,  1808, 25.46],
+      ['Toimituskulut',     3819,  3687, 96.5,   4231,  4191,100.00],
+      ['Työvaatteet',     162389, 39581, 24.4, 113269, 28373, 25.31],
+      ['YHTEENSÄ',        339470, 98748, 29.1, 260256, 93144, 35.80],
+    ]
+  },
+  'Helmikuu': {
+    rows: [
+      ['Edustusvaatteet',  51191, 18996, 37.1,  42386, 14581, 35.02],
+      ['Kengät',           14172,  2707, 19.1,  25788,  2305, 19.87],
+      ['Liikelahjat',       2568,  1335, 52.0,   6858,  3213, 46.85],
+      ['Logomerkkaus',      8417,  8326, 98.9,  12504, 12443,100.00],
+      ['Päähineet',        16842,  9380, 55.7,  11495,  5354, 52.58],
+      ['Promotuotteet',    11225,  4929, 43.9,   7661,  3991, 52.91],
+      ['Suojaimet',         3624,  1080, 29.8,   2156,   579, 26.87],
+      ['Toimituskulut',     6590,  6534, 99.2,   2970,  2950,100.00],
+      ['Työvaatteet',     104717, 26921, 25.7,  90877, 23376, 25.94],
+      ['YHTEENSÄ',        225563, 81556, 36.2, 208784, 70481, 33.80],
+    ]
+  },
+  'Tammikuu': {
+    rows: [
+      ['Edustusvaatteet',  38292, 11237, 29.3,  44259, 18154, 42.85],
+      ['Kengät',           15939,  2578, 16.2,  19607,  2933, 20.83],
+      ['Liikelahjat',       5878,  2692, 45.8,   8470,  4235, 60.76],
+      ['Logomerkkaus',      9096,  8856, 97.4,  11452, 10924, 99.84],
+      ['Päähineet',        10485,  6280, 59.9,  26971,  9079, 56.47],
+      ['Promotuotteet',     5898,  1463, 24.8,   8416,  3260, 38.74],
+      ['Suojaimet',         1898,   640, 33.7,   4713,  1419, 31.40],
+      ['Toimituskulut',     2813,  2720, 96.8,   3272,  3182,100.00],
+      ['Työvaatteet',      86488, 26827, 31.0,  62581, 15636, 26.58],
+      ['YHTEENSÄ',        178544, 64125, 35.9, 191927, 67140, 35.00],
+    ]
+  }
+};
+
+// TOP ASIAKKAAT
+const topData = {
+  'Toukokuu 2026': [
+    [1,'Kattotutka Oy',21837,'Anuco Oy',50583,'⚠️ Vain 22% toimitettu — iso backlog'],
+    [2,'Katsuta Takamoto',14105,'Kattotutka Oy',16718,'↔ Vakio'],
+    [3,'Bolt.Works Oy',12754,'Niemi Palvelut Oy',10919,'↑ Nousi TOP 3'],
+    [4,'Jyväskylän Kaupunki',7967,'Scania Suomi Oy',9957,'Palasi huhtikuun jälkeen'],
+    [5,'Scania Suomi Oy',7596,'KSBR Keski-Suomen Betonirakenne Oy',8417,'↔ Vakioasiakas'],
+    [6,'Anaika Wood Group',6757,'Anaika Wood Group',7542,'⚠️ Vain 12% toimitettu'],
+    [7,'HimosLomat Oy',6373,'SAVOX Communications Oy Ab',7305,'✅ Uusi iso asiakas'],
+    [8,'Salvos Finland Oy',6299,'TL-Maint Oy',4931,'↑ Kasvoi TOP 10'],
+    [9,'Sakela Rakennus Oy',4981,'LVI Kurikka Oy',4900,'↑ Vakioasiakas'],
+    [10,'KSBR Keski-Suomen Betonirakenne Oy',4683,'Valokuitunen Oy',4223,'✅ Uusi 2026'],
+  ],
+  'Huhtikuu 2026': [
+    [1,'Kattotutka Oy',31463,'Kattotutka Oy',30175,'↔ Vakio'],
+    [2,'Kymppiremontit Oy',16397,'Kymppiremontit Oy',14495,'↓ Laski'],
+    [3,'Wetteri Power Oy - Oulu',13401,'Scania Suomi Oy',13885,'↑ Palasi'],
+    [4,'Valoo Oy',8798,'KSBR',8082,'↓ Valoo hävisi'],
+    [5,'Meltex Oy Plastics',8638,'Sorcolor Oy',7739,'Uusi'],
+    [6,'Harvia Finland Oy',8067,'Metsätyö Oy',6995,'Palasi'],
+    [7,'Niemi Palvelut Oy',7613,'Rakennus-Kaseva Oy',6313,'Kasvaa'],
+    [8,'Scania Suomi Oy',7542,'Keski-Suomen hyvinvointialue',6229,'Uusi julkinen'],
+    [9,'KSBR',7435,'Alva-yhtiöt Oy',5951,'Hyvä kate'],
+    [10,'Osuuskauppa PeeÄssä',7186,'Meltex Oy Plastics',5513,'↓ Laski'],
+  ],
+  'Maaliskuu 2026': [
+    [1,'Anuco Oy',29935,'KSBR',21317,'Anuco romahti'],
+    [2,'Scania Suomi Oy',28246,'NMC Cellfoam Oy',20755,'Uusi avainasiakas'],
+    [3,'KSBR',22554,'Kattotutka Oy',13410,'↔'],
+    [4,'Putkiwuorio Oy',13487,'Laattapiste-Pukkila Oy',11362,'Uusi'],
+    [5,'Kattotutka Oy',11915,'Tana Oy',8093,'↑ Kasvaa'],
+    [6,'Osuma Henkilöstöpalvelut',8088,'Bolt.Works Oy',5130,'Uusi'],
+    [7,'Kattokeskus Pohjois-Pohjanmaa',7820,'Mestarinikkarit Oy',4937,'Uusi'],
+    [8,'Kattokeskus Uusimaa Oy',7495,'Calderys Finland Oy',4895,'Uusi'],
+    [9,'Osuuskauppa PeeÄssä',7186,'Meltex Oy Plastics',4740,'↔'],
+    [10,'Veljekset Hokkanen Oy',6490,'Kattokeskus Suomi Oy',4658,'↔'],
+  ],
+  'Helmikuu 2026': [
+    [1,'Mustankorkea Oy',13610,'Äänekosken Energia Oy',21895,'Iso kertatilaamus'],
+    [2,'Helen Oy',9862,'Alva-yhtiöt Oy',14458,'Kertatilaamus'],
+    [3,'Scania Suomi Oy',7613,'Servica Oy',12747,'Uusi'],
+    [4,'Voimatel Oy',7352,'Kattoyksikkö Oy',6175,'Kasvaa'],
+    [5,'Metsätyö Oy',5720,'Tankki Oy',5959,'Uusi'],
+    [6,'Anuco Oy',5598,'Porvoon Hamarinranta Oy',5763,'Uusi'],
+    [7,'Kattokeskus Uusimaa Oy',5031,'Chiller Oy',4816,'Kasvaa'],
+    [8,'Elomatic Consulting',4466,'Harvia Finland Oy',4539,'Palasi'],
+    [9,'Awa Tour Oy',4409,'Calderys Finland Oy',4217,'Uusi'],
+    [10,'Tana Oy',3846,'Salvos Finland Oy',4007,'Uusi'],
+  ],
+  'Tammikuu 2026': [
+    [1,'AiCan Oy',6936,'Kx-Treeshears Oy',13603,'Uusi iso'],
+    [2,'Kattotutka Oy',5712,'Kattotutka Oy',6916,'↑ Kasvoi'],
+    [3,'Jyväskylän Kaupunki',5218,'Kattoyksikkö Oy',5916,'Uusi'],
+    [4,'Mustankorkea Oy',5104,'P2V Rakennus Oy',5851,'Uusi'],
+    [5,'Osuuskauppa PeeÄssä',4763,'Puhdas Group Oy',5478,'Uusi'],
+    [6,'Elomatic Consulting',4644,'Despro Engineering Oy',4981,'Kasvoi'],
+    [7,'Tana Oy',3902,'Securitas Oy',4322,'Kasvoi'],
+    [8,'Urakointiasennus M Rautio',3764,'SensorFu Oy',4180,'Uusi'],
+    [9,'Anuco Oy',3756,'Pohjois-Savon hyvinvointialue',3969,'Julkinen uusi'],
+    [10,'Scania Suomi Oy',3744,'Helen Oy',3876,'↓ Laski'],
+  ],
+};
+
+// UUDET ASIAKKAAT
+const newData = {
+  'Toukokuu 2026': [
+    [1,'SAVOX Communications Oy Ab',7305,'Ei touko 2025','40.6%','✅ Iso uusi — turvallisuusala'],
+    [2,'Valokuitunen Oy',4223,'Ei touko 2025','50.2%','✅ Kasvupotentiaali — teleala'],
+    [3,'Sorcolor Oy',3860,'Kyllä (aiemmat kk)','34.8%','Kolmas peräkkäinen — pysyvä'],
+    [4,'Eumer Oy',3340,'Ei touko 2025','38.9%','✅ Teollisuusala — uusi 2026'],
+    [5,'Hiab Finland Oy',3250,'Ei touko 2025','0% (ei toimitusta)','⚠️ Iso tilaus — toimitus kesken'],
+    [6,'Karjalaisen Rahti Oy',2733,'Ei touko 2025','61.0%','✅ Kuljetusala — erinomainen kate'],
+    [7,'ISOPartner Oy',2760,'Ei touko 2025','29.0%','Uusi teollisuusasiakas'],
+    [8,'Alajärven Sähkö Oy',2338,'Ei touko 2025','66.6%','✅ Energiasektori — erinomainen kate'],
+    [9,'Flender Finland Oy',2137,'Ei touko 2025','59.3%','✅ Uusi teollisuusasiakas'],
+    [10,'Fristads Finland Oy',2120,'Ei touko 2025','54.4%','✅ Teollisuusvaatteet'],
+    [11,'TenderX Oy',2463,'Ei touko 2025','55.7%','✅ Hyvä kate, teknologia'],
+    [12,'Porvoon Hamarinranta Oy',3442,'Kyllä (helmikuu)','56.5%','Palasi — 2 kk sykli'],
+    [13,'Sacotec Components Oy',2108,'Ei touko 2025','43.5%','Uusi teollisuusasiakas'],
+    [14,'Finnfoam Oy',1927,'Ei touko 2025','31.2%','Uusi rakennusala-asiakas'],
+    [15,'Koneurakointi J-M Kinnunen Oy',1846,'Ei touko 2025','41.6%','Uusi'],
+  ],
+  'Huhtikuu 2026': [
+    [1,'Sorcolor Oy',7739,'Ei (maaliskuussa kyllä)','34.8%','Kasvava — seuraa aktiivisesti'],
+    [2,'Metsätyö Oy',6995,'Poissa helmikuussa','—','Palaava — tilausrytmi epäsäännöllinen'],
+    [3,'Keski-Suomen hyvinvointialue',6229,'Ei','0%','Aidosti uusi — julkissektori'],
+    [4,'Rakennus-Kaseva Oy',6313,'Kyllä (pienempi)','33.7%','Kasvava asiakas'],
+    [5,'Nostokonepalvelu JK Oy',4625,'69€ (lähes uusi)','—','Aidosti uusi'],
+  ],
+  'Maaliskuu 2026': [
+    [1,'Laattapiste-Pukkila Oy',11362,'Ei','46.0%','✅ Uusi — erinomainen kate'],
+    [2,'Mestarinikkarit Oy',4937,'Ei','46.0%','Rakennusala — kasvava segmentti'],
+    [3,'Huiskulan Puutarha Oy',4004,'Poissa tammikuussa','—','Palaava'],
+    [4,'Jämsän Ykkösvaraosa Oy',2591,'Ei','—','Uusi 2026'],
+    [5,'Harjawa Oy',2513,'Ei','—','Rakennusala — uusi'],
+  ],
+  'Helmikuu 2026': [
+    [1,'Äänekosken Energia Oy',21895,'Ei','—','Iso kertatilaamus'],
+    [2,'Alva-yhtiöt Oy',14458,'Kyllä (pieni)','7.0%','Kertatilaamus — kate matala'],
+    [3,'Servica Oy',12747,'Ei','0%','Uusi — kate 0%, tarkistettava'],
+    [4,'Kattoyksikkö Oy',6175,'Ei','—','Kolmas peräkkäinen — pysyvä'],
+    [5,'Tankki Oy',5959,'Ei','57.7%','✅ Hyvä kate'],
+    [6,'Porvoon Hamarinranta Oy',5763,'Ei','61.8%','✅ Erinomainen kate'],
+  ],
+  'Tammikuu 2026': [
+    [1,'Kx-Treeshears Oy',13603,'Ei','50.4%','Suurin uusi'],
+    [2,'Kattoyksikkö Oy',5916,'Ei','—','Pysyvä — jatkoi kolme kuukautta'],
+    [3,'P2V Rakennus Oy',5851,'Kyllä (pienempi)','—','Kasvava'],
+    [4,'Puhdas Group Oy',5478,'Ei','—','Uusi 2026'],
+    [5,'Despro Engineering Oy',4981,'Kyllä (pienempi)','—','Merkittävä kasvu'],
+    [6,'Securitas Oy',4322,'Ei','78.9%','✅ Turvallisuusala'],
+    [7,'SensorFu Oy',4180,'Ei','57.2%','Teknologiayritys'],
+    [8,'Pohjois-Savon hyvinvointialue',3969,'Ei','—','Julkissektori'],
+  ],
+};
+
+// MENETETYT
+const lostData = {
+  'Toukokuu 2026': [
+    [1,'Katsuta Takamoto',14105,'Ei (Rally-sykli)','KRIITTINEN','Vuosittainen — varmista seuraava tilaus syksylle'],
+    [2,'Jyväskylän Kaupunki / Kaupunkirakennepalvelut',7967,'Ei','KRIITTINEN','Julkinen asiakas — hankintasopimus päättyi? Selvitettävä'],
+    [3,'HimosLomat Oy',6373,'Ei','KORKEA','Kausiluonteinen — tarkista syy poissaoloon'],
+    [4,'Sakela Rakennus Oy',4981,'Ei','KORKEA','Rakennusala — selvitettävä syy'],
+    [5,'Kattokeskus Itä-Suomi Oy',4119,'Kyllä (pienemmät)','KORKEA','Ketjun myynti romahtanut — ketjupäätös?'],
+    [6,'AT Aurinkopaneelit Oy',3822,'Ei','KORKEA','Energiala — siirtyi kilpailijalle?'],
+    [7,'Finn-Savotta Oy',3430,'Ei','KESKI','Varustebrändi — hankintapäätös muuttunut?'],
+    [8,'Maa- ja Viherrakennus Laitinen Oy',2937,'Ei','KESKI','Kausiluonteinen — seuraa'],
+    [9,'Tahkonrinteet',2784,'Ei','KESKI','Matkailuala — kausivaihtelua'],
+    [10,'Elomatic Consulting & Engineering',2493,'Ei','KORKEA','3. kuukausi poissa — toimenpide tarpeellinen'],
+    [11,'Kx-Treeshears Oy',2313,'Kyllä (tammikuu)','KESKI','Iso tammikuu — tilausrytmi pidempi'],
+    [12,'KS Eliittieristys Oy',1638,'Ei','MATALA','Rakennusala — seuraa'],
+    [13,'Kylpylähotelli Kunnonpaikka',1524,'Ei','MATALA','Matkailuala — kausivaihtelua'],
+  ],
+  'Huhtikuu 2026': [
+    [1,'Wetteri Power Oy - Oulu',13401,'Kyllä (touko: 2 080€)','KRIITTINEN','Palasi pienemmällä — selvitettävä romahdus'],
+    [2,'Osuuskauppa PeeÄssä',6958,'Kyllä (pienempi)','KORKEA','Toistuvat — kolmas peräkkäinen lasku'],
+    [3,'Euroports Hanko Oy',6150,'Kyllä (touko: 1 750€)','KORKEA','Lasku merkittävä'],
+    [4,'Adara Pakkaus Oy',5273,'Kyllä (touko: 963€)','KESKI','Lasku −60% — syy tuntematon'],
+    [5,'NK Tekniikka Oy',4066,'Ei','KESKI','Poistunut — selvitettävä'],
+  ],
+  'Maaliskuu 2026': [
+    [1,'Anuco Oy',29935,'Kyllä (touko: 50 583€!)','KRIITTINEN','✅ Palasi TOUKOKUUSSA isona — seuraa toimitusta'],
+    [2,'Scania Suomi Oy',28246,'Kyllä (touko: 9 957€)','KRIITTINEN','✅ Palasi — tilausrytmi epäsäännöllinen'],
+    [3,'Putkiwuorio Oy',13487,'Ei toukokuussa','KORKEA','Pitkä poissaolo — selvitettävä'],
+    [4,'Kattokeskus Pohjois-Pohjanmaa',7820,'Ei','KORKEA','Ketjun tilanne'],
+    [5,'Kattokeskus Uusimaa Oy',7495,'Kyllä (pienempi)','KORKEA','Ketjun tilanne'],
+    [6,'Osuma Henkilöstöpalvelut',8088,'Kyllä (pienempi)','KORKEA','Merkittävä lasku'],
+  ],
+  'Helmikuu 2026': [
+    [1,'Mustankorkea Oy',13610,'Ei','KRIITTINEN','Lähes nolla — iso asiakas kadonnut'],
+    [2,'Helen Oy',9862,'Kyllä (touko: 1 617€)','KRIITTINEN','Romahtanut −84%'],
+    [3,'Scania Suomi Oy',7613,'Kyllä (palasi)','KORKEA','✅ Palasi huhtikuussa — OK'],
+    [4,'Anuco Oy',5598,'Kyllä (palasi)','KORKEA','✅ Palasi toukokuussa isona'],
+    [5,'Voimatel Oy',7352,'Kyllä (touko: 3 657€)','KESKI','Kausivaihtelua — taso laskenut'],
+  ],
+  'Tammikuu 2026': [
+    [1,'AiCan Oy',6936,'Kyllä (pienempi)','KESKI','Kausiluonteinen — toistui pienempänä'],
+    [2,'Elomatic Consulting',4644,'Ei','KORKEA','Poistunut koko alkuvuodesta'],
+    [3,'Core Staffing Oy',3321,'Ei','KORKEA','Poistunut'],
+    [4,'Osuuskauppa PeeÄssä',4763,'Kyllä (pienempi)','KORKEA','Laskeva trendi'],
+    [5,'Viafin Industrial Service Oy',2860,'Ei','KESKI','Poistunut'],
+  ],
+};
+
+// BUDJETTI
+const budgetData = [
+  ['Tammikuu',202906,192772,179868],
+  ['Helmikuu',200313,210886,226864],
+  ['Maaliskuu',330155,263139,342016],
+  ['Huhtikuu',443274,335678,400398],
+  ['Toukokuu',343680,318889,315360],
+  ['Kesäkuu',308021,null,263945],
+  ['Heinäkuu',155900,null,126793],
+  ['Elokuu',282139,null,264736],
+  ['Syyskuu',717923,null,283143],
+  ['Lokakuu',780218,null,335895],
+  ['Marraskuu',800193,null,349581],
+  ['Joulukuu',864033,null,139998],
+];
+
+// ENNUSTE
+const ennData = [
+  ['Tammikuu',179868,192772,202906,192772,'Toteutunut'],
+  ['Helmikuu',226864,210886,200313,210886,'Toteutunut'],
+  ['Maaliskuu',342016,263139,330155,263139,'Toteutunut'],
+  ['Huhtikuu',400398,335678,443274,335678,'Toteutunut'],
+  ['Toukokuu',315360,318889,343680,318889,'Toteutunut'],
+  ['Kesäkuu',263945,null,308021,290000,'Ennuste'],
+  ['Heinäkuu',126793,null,155900,140000,'Ennuste'],
+  ['Elokuu',264736,null,282139,270000,'Ennuste'],
+  ['Syyskuu',283143,null,717923,310000,'Ennuste'],
+  ['Lokakuu',335895,null,780218,360000,'Ennuste'],
+  ['Marraskuu',349581,null,800193,370000,'Ennuste'],
+  ['Joulukuu',139998,null,864033,180000,'Ennuste'],
+];
+
+// ─── HELPERS ────────────────────────────────────────────────────────────────
+const fmt = v => v == null ? '—' : Math.round(v).toLocaleString('fi-FI') + ' €';
+const pctFmt = v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(1) + ' %';
+function colorBadge(v){ return v >= 0 ? 'badge-green' : 'badge-red'; }
+
+let charts = {};
+function destroyChart(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
+
+// ─── DASHBOARD CHARTS ───────────────────────────────────────────────────────
+const BLUE = '#2563eb', GREEN = '#16a34a', NAVY = '#1a2e4a', AMBER = '#d97706', RED = '#dc2626', MUTED = '#94a3b8';
+const gridOpts = { color: '#f1f5f9' };
+
+function initDashboard(){
+  const lbls = months;
+  // LV comparison
+  charts.lv = new Chart(document.getElementById('chartLV'), { type:'bar', data:{
+    labels: lbls,
+    datasets:[
+      {label:'2024', data:lv2024, backgroundColor:'#bfdbfe', borderRadius:4},
+      {label:'2025', data:lv2025, backgroundColor:'#86efac', borderRadius:4},
+      {label:'2026', data:lv2026, backgroundColor:BLUE, borderRadius:4},
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},
+    scales:{y:{grid:gridOpts,ticks:{callback:v=>v.toLocaleString('fi-FI')+'€'}},x:{grid:{display:false}}}}});
+
+  // Budget vs actual
+  charts.budget = new Chart(document.getElementById('chartBudget'), { type:'bar', data:{
+    labels: months,
+    datasets:[
+      {label:'Budjetti', data:budget_all.slice(0,5), backgroundColor:'#e2e8f0', borderRadius:4},
+      {label:'Toteuma 2026', data:lv2026, backgroundColor:BLUE, borderRadius:4},
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},
+    scales:{y:{grid:gridOpts,ticks:{callback:v=>v.toLocaleString('fi-FI')+'€'}},x:{grid:{display:false}}}}});
+
+  // Kate%
+  charts.kate = new Chart(document.getElementById('chartKate'), { type:'line', data:{
+    labels: months,
+    datasets:[
+      {label:'Kate% 2025', data:kate2025pct, borderColor:GREEN, backgroundColor:'#bbf7d030', fill:true, tension:.4, pointRadius:5},
+      {label:'Kate% 2026', data:kate2026pct, borderColor:RED, backgroundColor:'#fecaca30', fill:true, tension:.4, pointRadius:5},
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},
+    scales:{y:{min:20,max:50,grid:gridOpts,ticks:{callback:v=>v+'%'}},x:{grid:{display:false}}}}});
+
+  // YTD
+  charts.ytd = new Chart(document.getElementById('chartYTD'), { type:'line', data:{
+    labels: months,
+    datasets:[
+      {label:'YTD 2025', data:ytd25, borderColor:GREEN, backgroundColor:'transparent', tension:.4, pointRadius:5},
+      {label:'YTD 2026', data:ytd26, borderColor:BLUE, backgroundColor:'transparent', tension:.4, pointRadius:5},
+      {label:'Budjetti YTD', data:ytd_bud, borderColor:AMBER, borderDash:[6,3], backgroundColor:'transparent', tension:.1, pointRadius:3},
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},
+    scales:{y:{grid:gridOpts,ticks:{callback:v=>v.toLocaleString('fi-FI')+'€'}},x:{grid:{display:false}}}}});
+}
+
+// ─── TUOTERYHMÄT ────────────────────────────────────────────────────────────
+const trMonths = ['Toukokuu','Huhtikuu','Maaliskuu','Helmikuu','Tammikuu'];
+let currentTR = 'Toukokuu';
+let trLVChart, trKateChart;
+
+function renderTR(m){
+  currentTR = m;
+  document.querySelectorAll('#tr-nav .month-btn').forEach(b=>b.classList.toggle('active', b.textContent===m));
+  document.getElementById('tr-chart-label').textContent = m;
+  document.getElementById('tr-chart-label2').textContent = m;
+  document.getElementById('tr-table-label').textContent = m;
+  const rows = trData[m].rows;
+  const main = rows.filter(r=>r[0]!=='YHTEENSÄ');
+  const labels = main.map(r=>r[0]);
+  const lv25 = main.map(r=>r[1]);
+  const lv26 = main.map(r=>r[4]);
+  const k25 = main.map(r=>r[3]);
+  const k26 = main.map(r=>r[6]);
+
+  destroyChart('trLV'); destroyChart('trKate');
+  charts.trLV = new Chart(document.getElementById('chartTR_LV'), {type:'bar',data:{
+    labels, datasets:[
+      {label:'LV 2025', data:lv25, backgroundColor:'#86efac', borderRadius:3},
+      {label:'LV 2026', data:lv26, backgroundColor:BLUE, borderRadius:3},
+    ]
+  },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},
+    scales:{x:{grid:gridOpts,ticks:{callback:v=>v.toLocaleString('fi-FI')+'€'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+
+  charts.trKate = new Chart(document.getElementById('chartTR_Kate'), {type:'bar',data:{
+    labels, datasets:[
+      {label:'Kate% 2025', data:k25, backgroundColor:'#86efac', borderRadius:3},
+      {label:'Kate% 2026', data:k26, backgroundColor:BLUE, borderRadius:3},
+    ]
+  },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},
+    scales:{x:{grid:gridOpts,ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+
+  const tbody = document.getElementById('tr-tbody');
+  tbody.innerHTML = rows.map((r,i)=>{
+    const isTotal = r[0]==='YHTEENSÄ';
+    const chg = r[4] && r[1] ? r[4]-r[1] : null;
+    const pct = chg && r[1] ? chg/r[1]*100 : null;
+    return `<tr${isTotal?' class="total"':''}>
+      <td>${r[0]}</td>
+      <td class="right">${r[1]?r[1].toLocaleString('fi-FI')+' €':'—'}</td>
+      <td class="right">${r[2]?r[2].toLocaleString('fi-FI')+' €':'—'}</td>
+      <td class="center">${r[3]?r[3].toFixed(1)+'%':'—'}</td>
+      <td class="right">${r[4]?r[4].toLocaleString('fi-FI')+' €':'—'}</td>
+      <td class="right">${r[5]?r[5].toLocaleString('fi-FI')+' €':'—'}</td>
+      <td class="center">${r[6]?r[6].toFixed(1)+'%':'—'}</td>
+      <td class="right ${chg?chg<0?'pct-neg':'pct-pos':''}">${chg?chg.toLocaleString('fi-FI')+' €':'—'}</td>
+      <td class="center ${pct?pct<0?'pct-neg':'pct-pos':''}">${pct?pctFmt(pct):'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── TOP ASIAKKAAT ────────────────────────────────────────────────────────────
+const topMonths = ['Toukokuu 2026','Huhtikuu 2026','Maaliskuu 2026','Helmikuu 2026','Tammikuu 2026'];
+let currentTop = 'Toukokuu 2026';
+
+function renderTop(m){
+  currentTop = m;
+  document.querySelectorAll('#top-nav .month-btn').forEach(b=>b.classList.toggle('active', b.textContent===m));
+  document.getElementById('top-chart-label').textContent = m;
+  document.getElementById('top-table-label').textContent = m;
+  const rows = topData[m];
+  const names26 = rows.map(r=>r[3].length>20?r[3].substring(0,18)+'…':r[3]);
+  const vals26 = rows.map(r=>r[4]);
+  const vals25 = rows.map(r=>r[2]);
+
+  destroyChart('topC'); destroyChart('topChg');
+  charts.topC = new Chart(document.getElementById('chartTopCustomers'),{type:'bar',data:{
+    labels: names26, datasets:[
+      {label:'2025', data:vals25, backgroundColor:'#86efac', borderRadius:3},
+      {label:'2026', data:vals26, backgroundColor:BLUE, borderRadius:3},
+    ]
+  },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},
+    scales:{x:{grid:gridOpts,ticks:{callback:v=>v.toLocaleString('fi-FI')+'€'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+
+  const top5 = rows.slice(0,5);
+  const chgs = top5.map(r=>r[4]-r[2]);
+  charts.topChg = new Chart(document.getElementById('chartTopChange'),{type:'bar',data:{
+    labels: top5.map(r=>r[3].length>18?r[3].substring(0,16)+'…':r[3]),
+    datasets:[{label:'Muutos €', data:chgs, backgroundColor:chgs.map(v=>v>=0?'#86efac':'#fca5a5'), borderRadius:3}]
+  },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:gridOpts,ticks:{callback:v=>v.toLocaleString('fi-FI')+'€'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+
+  document.getElementById('top-tbody').innerHTML = rows.map(r=>`<tr>
+    <td class="center">${r[0]}</td>
+    <td>${r[1]}</td><td class="right">${r[2].toLocaleString('fi-FI')} €</td>
+    <td>${r[3]}</td><td class="right">${r[4].toLocaleString('fi-FI')} €</td>
+    <td style="font-size:11px">${r[5]}</td></tr>`).join('');
+}
+
+// ─── UUDET ────────────────────────────────────────────────────────────────────
+const newMonths = ['Toukokuu 2026','Huhtikuu 2026','Maaliskuu 2026','Helmikuu 2026','Tammikuu 2026'];
+
+function renderNew(m){
+  document.querySelectorAll('#new-nav .month-btn').forEach(b=>b.classList.toggle('active', b.textContent===m));
+  document.getElementById('new-chart-label').textContent = m;
+  document.getElementById('new-table-label').textContent = m;
+  const rows = newData[m];
+  destroyChart('newC');
+  charts.newC = new Chart(document.getElementById('chartNew'),{type:'bar',data:{
+    labels: rows.map(r=>r[1].length>22?r[1].substring(0,20)+'…':r[1]),
+    datasets:[{label:'Myynti 2026 €', data:rows.map(r=>r[2]), backgroundColor:GREEN, borderRadius:3}]
+  },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:gridOpts,ticks:{callback:v=>v.toLocaleString('fi-FI')+'€'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+
+  document.getElementById('new-tbody').innerHTML = rows.map(r=>`<tr>
+    <td class="center">${r[0]}</td><td>${r[1]}</td>
+    <td class="right">${r[2].toLocaleString('fi-FI')} €</td>
+    <td style="font-size:11px">${r[3]}</td>
+    <td class="center">${r[4]}</td>
+    <td style="font-size:11px">${r[5]}</td></tr>`).join('');
+}
+
+// ─── MENETETYT ────────────────────────────────────────────────────────────────
+function priCls(p){ return p==='KRIITTINEN'?'pri-krit':p==='KORKEA'?'pri-high':p==='KESKI'?'pri-mid':'pri-low'; }
+
+function renderLost(m){
+  document.querySelectorAll('#lost-nav .month-btn').forEach(b=>b.classList.toggle('active', b.textContent===m));
+  document.getElementById('lost-chart-label').textContent = m;
+  document.getElementById('lost-table-label').textContent = m;
+  const rows = lostData[m];
+  destroyChart('lostC');
+  charts.lostC = new Chart(document.getElementById('chartLost'),{type:'bar',data:{
+    labels: rows.map(r=>r[1].length>22?r[1].substring(0,20)+'…':r[1]),
+    datasets:[{label:'Myynti 2025 €', data:rows.map(r=>r[2]), backgroundColor:'#fca5a5', borderRadius:3}]
+  },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:gridOpts,ticks:{callback:v=>v.toLocaleString('fi-FI')+'€'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+
+  document.getElementById('lost-tbody').innerHTML = rows.map(r=>`<tr>
+    <td class="center">${r[0]}</td><td>${r[1]}</td>
+    <td class="right">${r[2].toLocaleString('fi-FI')} €</td>
+    <td style="font-size:11px">${r[3]}</td>
+    <td class="center"><span class="badge-sm ${priCls(r[4])}">${r[4]}</span></td>
+    <td style="font-size:11px">${r[5]}</td></tr>`).join('');
+}
+
+// ─── BUDJETTI ────────────────────────────────────────────────────────────────
+function initBudjetti(){
+  const actuals = budgetData.map(r=>r[1]);
+  const toteuma = budgetData.map(r=>r[2]);
+  const toteuma25 = budgetData.map(r=>r[3]);
+
+  charts.bud1 = new Chart(document.getElementById('chartBud1'),{type:'bar',data:{
+    labels: months_full,
+    datasets:[
+      {label:'Budjetti', data:actuals, backgroundColor:'#e2e8f0', borderRadius:3},
+      {label:'Toteuma 2026', data:toteuma, backgroundColor:BLUE, borderRadius:3},
+      {label:'Toteuma 2025', data:toteuma25, backgroundColor:'#86efac', borderRadius:3},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},
+    scales:{y:{grid:gridOpts,ticks:{callback:v=>v.toLocaleString('fi-FI')+'€'}},x:{grid:{display:false}}}}});
+
+  const pcts = budgetData.map(r=>r[2]?Math.round(r[2]/r[1]*100):null);
+  charts.bud2 = new Chart(document.getElementById('chartBud2'),{type:'bar',data:{
+    labels: months_full,
+    datasets:[{label:'Toteutuma-%', data:pcts, backgroundColor:pcts.map(v=>v==null?'#e2e8f0':v>=100?'#86efac':'#fca5a5'), borderRadius:3}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{y:{grid:gridOpts,ticks:{callback:v=>v+'%'}},x:{grid:{display:false}},},
+    plugins:{annotation:{annotations:{line100:{type:'line',y:100,borderColor:'#64748b',borderDash:[4,4]}}}}}});
+
+  document.getElementById('bud-tbody').innerHTML = budgetData.map(([kk,bud,tot,tot25])=>{
+    const chg = tot?tot-bud:null;
+    const pct = chg?chg/bud*100:null;
+    const status = tot==null?'⏳ Tulossa':pct>=0?'✅ Yli budjetin':pct<-10?'⚠️ Alle −10%':'📊 Lähellä';
+    const cls = tot==null?'':'pct-'+(pct>=0?'pos':'neg');
+    return `<tr${tot==null?' style="opacity:.65"':''}>
+      <td>${kk}</td>
+      <td class="right">${bud.toLocaleString('fi-FI')} €</td>
+      <td class="right">${tot?tot.toLocaleString('fi-FI')+' €':'—'}</td>
+      <td class="right">${tot25?tot25.toLocaleString('fi-FI')+' €':'—'}</td>
+      <td class="right ${cls}">${chg?(chg>0?'+':'')+chg.toLocaleString('fi-FI')+' €':'—'}</td>
+      <td class="center ${cls}">${pct?pctFmt(pct):'—'}</td>
+      <td class="center">${status}</td></tr>`;
+  }).join('');
+}
+
+// ─── ENNUSTE ────────────────────────────────────────────────────────────────
+function initEnnuste(){
+  const lv = ennData.map(r=>r[4]||r[3]||null);
+  charts.enn = new Chart(document.getElementById('chartEnn'),{type:'bar',data:{
+    labels: months_full,
+    datasets:[
+      {label:'Toteuma 2025', data:ennData.map(r=>r[0]), backgroundColor:'#86efac', borderRadius:3},
+      {label:'Toteuma/Ennuste 2026', data:lv, backgroundColor:ennData.map(r=>r[4]==='Ennuste'?'#93c5fd':BLUE), borderRadius:3},
+      {label:'Budjetti 2026', data:ennData.map(r=>r[2]), backgroundColor:'transparent', type:'line', borderColor:AMBER, borderDash:[6,3], pointRadius:3, tension:.1},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},
+    scales:{y:{grid:gridOpts,ticks:{callback:v=>v.toLocaleString('fi-FI')+'€'}},x:{grid:{display:false}}}}});
+
+  const vs_bud = ennData.map(r=>{
+    const val=r[4]||r[3]||null;
+    const bud=r[2];
+    return val?(val-bud)/bud*100:null;
+  });
+  charts.enn2 = new Chart(document.getElementById('chartEnn2'),{type:'bar',data:{
+    labels: months_full,
+    datasets:[{label:'Ennuste/Tot vs Budjetti %', data:vs_bud, backgroundColor:vs_bud.map(v=>v==null?'#e2e8f0':v>=0?'#86efac':'#fca5a5'), borderRadius:3}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{y:{grid:gridOpts,ticks:{callback:v=>v+'%'}},x:{grid:{display:false}}}}});
+
+  document.getElementById('enn-tbody').innerHTML = ennData.map(([kk,v25,v26,bud,enn,status])=>{
+    const val=v26||enn;
+    const vs25=v25?((val-v25)/v25*100):null;
+    const vsbud=bud?((val-bud)/bud*100):null;
+    const isFc=status==='Ennuste';
+    return `<tr${isFc?' style="background:#fffbeb"':''}>
+      <td>${kk}${isFc?' <span style="font-size:10px;color:#d97706">(Ennuste)</span>':''}</td>
+      <td class="right">${v25?v25.toLocaleString('fi-FI')+' €':'—'}</td>
+      <td class="right">${v26?v26.toLocaleString('fi-FI')+' €':'—'}</td>
+      <td class="right">${bud.toLocaleString('fi-FI')} €</td>
+      <td class="right">${enn.toLocaleString('fi-FI')} €</td>
+      <td class="center ${vs25?vs25<0?'pct-neg':'pct-pos':''}">${vs25?pctFmt(vs25):'—'}</td>
+      <td class="center ${vsbud?vsbud<0?'pct-neg':'pct-pos':''}">${vsbud?pctFmt(vsbud):'—'}</td>
+      <td class="center">${isFc?'📊':'✅'}</td></tr>`;
+  }).join('');
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────────
+function showTab(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ─── NAV BUTTONS ────────────────────────────────────────────────────────────
+function makeNav(id, items, fn, activeIdx=0){
+  const nav = document.getElementById(id);
+  items.forEach((item,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'month-btn' + (i===activeIdx?' active':'');
+    btn.textContent = item;
+    btn.onclick = ()=>fn(item);
+    nav.appendChild(btn);
+  });
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', ()=>{
+  initDashboard();
+  makeNav('tr-nav', trMonths, renderTR); renderTR('Toukokuu');
+  makeNav('top-nav', topMonths, renderTop); renderTop('Toukokuu 2026');
+  makeNav('new-nav', newMonths, renderNew); renderNew('Toukokuu 2026');
+  makeNav('lost-nav', ['Toukokuu 2026','Huhtikuu 2026','Maaliskuu 2026','Helmikuu 2026','Tammikuu 2026'], renderLost);
+  renderLost('Toukokuu 2026');
+  initBudjetti();
+  initEnnuste();
+});
+</script>
+</body>
+</html>
