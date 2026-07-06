@@ -156,18 +156,19 @@ const ytdDeal26=crmKk.reduce((s,r)=>s+r.deal26,0);
 const luKk=[
   {kk:'Tammi 24',n:5},{kk:'Huhti 24',n:40},{kk:'Touko 24',n:46},{kk:'Kesä 24',n:12},
   {kk:'Loka 25',n:12},{kk:'Marras 25',n:64},{kk:'Joulu 25',n:10},
-  {kk:'Tammi 26',n:8},{kk:'Helmi 26',n:10},{kk:'Maalis 26',n:21},{kk:'Huhti 26',n:15},{kk:'Touko 26',n:34},
+  {kk:'Tammi 26',n:71},{kk:'Helmi 26',n:76},{kk:'Maalis 26',n:154},{kk:'Huhti 26',n:119},{kk:'Touko 26',n:113},{kk:'Kesä 26',n:103},
 ];
-// LevelUp soitot (saatavilla HubSpotista — päivitetään kuukausipäivityksessä)
-// HUOM: Tarjouspyyntö-suhde tulee hakea erikseen HubSpotista (owner=LevelUp, activity type=quote request)
+// LevelUp soitot — haettu HubSpotista 16.6.2026 (owner ID 356597030)
+// Tarjouspyynnöt = LevelUp-dealien lkm ko. kuussa (soitto → deal = tarjouspyyntö)
 const luSoitot=[
-  {kk:'Tammi 26',soitot:42,tarjouspyynnöt:8},
-  {kk:'Helmi 26',soitot:55,tarjouspyynnöt:10},
-  {kk:'Maalis 26',soitot:87,tarjouspyynnöt:21},
-  {kk:'Huhti 26',soitot:61,tarjouspyynnöt:15},
-  {kk:'Touko 26',soitot:114,tarjouspyynnöt:34},
+  {kk:'Tammi 26',soitot:149,tarjouspyynnöt:71},
+  {kk:'Helmi 26',soitot:217,tarjouspyynnöt:76},
+  {kk:'Maalis 26',soitot:127,tarjouspyynnöt:154},
+  {kk:'Huhti 26',soitot:353,tarjouspyynnöt:119},
+  {kk:'Touko 26',soitot:489,tarjouspyynnöt:113},
+  {kk:'Kesä 26',soitot:562,tarjouspyynnöt:103},
 ];
-const luYTD26=8+10+21+15+34;
+const luYTD26=71+76+154+119+113+103;
 
 const wonKk=[
   {kk:'Tammi',w25:0,w26:11},{kk:'Helmi',w25:0,w26:10},
@@ -709,7 +710,7 @@ function renderLevelup(){
       <div class="card">
         <div style="font-weight:700;color:#1a2e4a;margin-bottom:12px">Avainluvut</div>
         ${[
-          ['LevelUp-dealeja tammi–touko 2026',luYTD26+' kpl','#1a2e4a'],
+          ['LevelUp-dealeja tammi–kesä 2026',luYTD26+' kpl','#1a2e4a'],
           ['Closedwon-dealeja (kaikki) 2026',ytdWon26+' kpl','#16a34a'],
           ['Soittoja tammi–touko 2026',totSoitot+' kpl','#2563eb'],
           ['Tarjouspyyntöjä tammi–touko 2026',totTarjous+' kpl','#2563eb'],
