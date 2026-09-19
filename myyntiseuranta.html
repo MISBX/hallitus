@@ -4,9 +4,506 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SB Myyntiseuranta – Tammi–Elokuu 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;font-size:13.5px}
+.header{background:#1a2e4a;color:#fff;padding:22px 32px 16px}
+.header-label{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;opacity:.45;margin-bottom:4px}
+.header-title{font-size:20px;font-weight:700;letter-spacing:-.3px}
+.header-sub{font-size:12px;opacity:.55;margin-top:3px}
+.tabs{background:#fff;border-bottom:1px solid #e2e8f0;display:flex;padding:0 32px;overflow-x:auto;gap:2px}
+.tab{background:none;border:none;border-bottom:3px solid transparent;padding:12px 16px;font-size:12.5px;font-weight:500;color:#64748b;cursor:pointer;white-space:nowrap;transition:color .15s}
+.tab.active{border-bottom-color:#2563eb;color:#2563eb;font-weight:700}
+.tab:hover{color:#2563eb}
+.content{padding:24px 32px;max-width:1100px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:16px}
+.section-title{border-left:4px solid #2563eb;padding-left:12px;font-size:14px;font-weight:700;color:#1a2e4a;margin-bottom:14px;margin-top:22px}
+.section-title:first-child{margin-top:0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.kpi{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px 18px}
+.kpi-label{font-size:10px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.kpi-row{display:flex;gap:14px;align-items:flex-end;margin-bottom:6px}
+.kpi-yr{text-align:left}
+.kpi-yr-l{font-size:10px;color:#94a3b8}
+.kpi-yr-v{font-size:20px;font-weight:800;color:#1a2e4a}
+.kpi-delta{margin-left:auto}
+.tag{display:inline-block;border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:700}
+.tag-g{background:#dcfce7;color:#16a34a}
+.tag-r{background:#fee2e2;color:#dc2626}
+.tag-b{background:#dbeafe;color:#2563eb}
+.tag-a{background:#fef3c7;color:#d97706}
+.ibox{border-radius:8px;padding:10px 14px;font-size:12.5px;line-height:1.75;margin-bottom:12px}
+.ibox-g{background:#f0fdf4;border:1px solid #bbf7d0}
+.ibox-r{background:#fff1f2;border:1px solid #fecdd3}
+.ibox-b{background:#eff6ff;border:1px solid #bfdbfe}
+.ibox-a{background:#fffbeb;border:1px solid #fde68a}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead tr{background:#1a2e4a;color:#fff}
+th{text-align:left;padding:9px 13px;font-weight:600;font-size:11.5px}
+th.r,td.r{text-align:right}
+th.c,td.c{text-align:center}
+tbody tr:nth-child(even){background:#f8fafc}
+tbody tr{border-bottom:1px solid #e2e8f0}
+td{padding:8px 13px}
+.total-row{background:#eff6ff!important;font-weight:700;border-top:2px solid #2563eb}
+.pri-k{color:#dc2626;font-weight:700}
+.pri-h{color:#d97706;font-weight:700}
+.pri-m{color:#64748b}
+.up{color:#16a34a}
+.dn{color:#dc2626}
+.ytd-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px 20px;margin-bottom:16px}
+.ytd-title{font-size:12px;font-weight:700;color:#1e40af;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.ytd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.ytd-stat{text-align:center}
+.ytd-stat-v{font-size:22px;font-weight:800;color:#1a2e4a}
+.ytd-stat-l{font-size:10px;color:#64748b;margin-top:2px}
+</style>
 </head>
 <body>
-<p>Katso raportti osoitteessa: https://misbx.github.io/hallitus/myyntiseuranta.html</p>
-<p>Tämä on Drive-kopio. Alkuperäinen HTML-tiedosto on ladattu GitHubiin.</p>
+
+<div class="header">
+  <div class="header-label">Suomen Brodeeraus Oy — Hallitusraportti</div>
+  <div class="header-title">Myyntiseuranta — Tammi–Elokuu 2026</div>
+  <div class="header-sub">Vertailu 2025 | Budjetti | Asiakkaat | Tuoteryhmät &nbsp;|&nbsp; Data: Tehden 1.8.2026</div>
+</div>
+
+<div class="tabs" id="tabBar"></div>
+<div class="content" id="content"></div>
+
+<script>
+const C={navy:"#1a2e4a",blue:"#2563eb",green:"#16a34a",red:"#dc2626",amber:"#d97706",muted:"#64748b"};
+const fmt=(v,dec=0)=>v==null?"—":v.toLocaleString("fi-FI",{minimumFractionDigits:dec,maximumFractionDigits:dec});
+const fmtE=(v)=>v==null?"—":fmt(v)+" €";
+const pct=(v)=>v==null?"—":(v>0?"+":"")+v.toFixed(1)+"%";
+const tag=(v,pos=true,label=null)=>{let cl=v>0?"tag-g":"tag-r";return`<span class="tag ${cl}">${label||pct(v)}</span>`};
+
+// ── DATA ──────────────────────────────────────────────────────────────────
+const months=["Tammikuu","Helmikuu","Maaliskuu","Huhtikuu","Toukokuu","Kesäkuu","Heinäkuu","Elokuu"];
+
+const data25=[179868,226864,342016,400398,315360,260556,125962,263968];
+const data26=[192772,210886,263139,335678,318889,274241,128435,235482];
+const kate25=[36.2,36.2,29.2,40.0,41.4,34.4,34.5,38.0];
+const kate26=[35.1,33.6,35.5,33.5,28.8,37.3,38.2,33.5];
+const bud26=[202906,200313,330155,443274,343680,308021,155900,282139];
+const til25=[522,599,832,748,799,1255,878,1184];
+const til26=[488,450,588,737,690,610,419,521];
+
+const ytd25=data25.reduce((a,b)=>a+b,0);
+const ytd26=data26.reduce((a,b)=>a+b,0);
+const ytdBud=bud26.reduce((a,b)=>a+b,0);
+const ytdKate25=data25.map((v,i)=>v*kate25[i]/100).reduce((a,b)=>a+b,0);
+const ytdKate26=data26.map((v,i)=>v*kate26[i]/100).reduce((a,b)=>a+b,0);
+const ytdTil25=til25.reduce((a,b)=>a+b,0);
+const ytdTil26=til26.reduce((a,b)=>a+b,0);
+
+// Product groups
+const tuoteryhmat={
+  kesa2025:[
+    ["Edustusvaatteet",59150,24674,42.6],["Kengät",18856,3124,16.6],
+    ["Liikelahjat",13880,5300,38.2],["Logomerkkaus",10215,9828,99.4],
+    ["Promotuotteet",14373,5094,35.4],["Päähineet",23295,7292,37.2],
+    ["Suojaimet",3807,1107,29.1],["Toimituskulut",4359,4289,100],
+    ["Työvaatteet",97408,30214,31.4],["Muut",14223,-10527,-73.9],
+    ["YHTEENSÄ",260556,87415,34.4]
+  ],
+  kesa2026:[
+    ["Edustusvaatteet",60997,25386,46.3],["Kengät",14583,3082,21.1],
+    ["Liikelahjat",8390,2158,28.9],["Logomerkkaus",14758,14334,99.9],
+    ["Promotuotteet",9091,6021,66.2],["Päähineet",17899,8854,54.5],
+    ["Suojaimet",2967,924,31.1],["Toimituskulut",3961,3746,100],
+    ["Työvaatteet",128995,28787,24.2],["Muut",9572,-708,-7.4],
+    ["YHTEENSÄ",274241,93472,37.3]
+  ],
+  heina2025:[
+    ["Edustusvaatteet",19982,7878,43.1],["Kengät",13512,398,3.0],
+    ["Liikelahjat",1622,777,47.9],["Logomerkkaus",10461,8393,99.8],
+    ["Promotuotteet",6166,3553,57.6],["Päähineet",9608,2108,24.8],
+    ["Suojaimet",1923,538,29.1],["Toimituskulut",3336,3291,100],
+    ["Työvaatteet",51387,12725,25.1],["Muut",4965,1815,36.6],
+    ["YHTEENSÄ",125962,41478,34.5]
+  ],
+  heina2026:[
+    ["Edustusvaatteet",27635,9551,36.4],["Kengät",13636,2725,20.0],
+    ["Liikelahjat",418,-50,-170.7],["Logomerkkaus",9594,9451,100],
+    ["Promotuotteet",2842,1304,45.9],["Päähineet",8894,4624,57.1],
+    ["Suojaimet",3673,1122,31.8],["Toimituskulut",2257,2164,100],
+    ["Työvaatteet",53542,12571,27.6],["Muut",4645,523,11.3],
+    ["YHTEENSÄ",128435,44789,38.2]
+  ],
+  elo2025:[
+    ["Edustusvaatteet",49888,21716,45.7],["Kengät",17504,3147,18.1],
+    ["Liikelahjat",3686,1617,43.9],["Logomerkkaus",10090,8421,93.6],
+    ["Promotuotteet",14606,6246,42.8],["Päähineet",46822,18236,39.3],
+    ["Suojaimet",5031,1300,25.8],["Toimituskulut",4033,3948,100],
+    ["Työvaatteet",85557,14006,16.6],["Muut",26132,19243,73.6],
+    ["YHTEENSÄ",263968,98478,38.0]
+  ],
+  elo2026:[
+    ["Edustusvaatteet",48849,17174,48.4],["Kengät",27014,5318,20.2],
+    ["Liikelahjat",3493,1516,53.2],["Logomerkkaus",9580,7012,93.7],
+    ["Promotuotteet",8623,2889,53.9],["Päähineet",10349,3457,56.8],
+    ["Suojaimet",3798,779,27.5],["Toimituskulut",2976,2387,100],
+    ["Työvaatteet",99525,17512,21.7],["Muut",9155,-219,-5.2],
+    ["YHTEENSÄ",235482,61958,33.5]
+  ],
+};
+
+// Top customers
+const top={
+  elo26:[
+    ["Jyväskylän koulutuskuntayhtymä Gradia",47165,"⭐ Uusi suurasikas"],
+    ["Niemi Palvelut Oy",10269,"↑ Kasvaa"],
+    ["Tana Oy",7252,"↑ Kasvaa"],
+    ["Kattotutka Oy",7030,"↑"],
+    ["KSBR Sverige AB",6035,"✅ Uusi kv-asiakas"],
+    ["KSBR Keski-Suomen Betonirakenne Oy",5942,"↔"],
+    ["Viafin Process Piping Oy",4990,"↑"],
+    ["Calderys Finland Oy",4253,"↔"],
+    ["Elega Oy",3920,"↔"],
+    ["Kx-Treeshears Oy",3316,"Palasi"],
+  ],
+  heina26:[
+    ["Anuco Oy",7853,"↑"],
+    ["Kattotutka Oy",6492,"↑"],
+    ["KSBR Keski-Suomen Betonirakenne Oy",5424,"↑"],
+    ["Tana Oy",4760,"↑"],
+    ["Scania Suomi Oy",4251,"Palasi"],
+    ["Salvos Finland Oy",4217,"↑"],
+    ["Niemi Palvelut Oy",3902,"↑"],
+    ["Elega Oy",3338,"↔"],
+    ["Maansiirto Harry Mäkelä Oy",2716,"Uusi top 10"],
+    ["LVI Kurikka Oy",2544,"↔"],
+  ],
+  kesa26:[
+    ["Anuco Oy",37297,"⚠️ Iso backlog"],
+    ["Lillbacka Powerco Oy",18667,"✅ Uusi suuri asiakas"],
+    ["Kattotutka Oy",9138,"↑"],
+    ["Scania Suomi Oy",8517,"↑"],
+    ["Niemi Palvelut Oy",7477,"↑"],
+    ["LLP Farm Machinery Group Oy",6508,"Uusi top 10"],
+    ["Alltvex Oy",5337,"✅ Uusi"],
+    ["Harvia Austria GmbH",5135,"Kv-asiakas"],
+    ["KSBR Keski-Suomen Betonirakenne Oy",5069,"↑"],
+    ["Eezy Oyj",5008,"Uusi top 10"],
+  ],
+};
+
+// ── TABS ──────────────────────────────────────────────────────────────────
+const tabs=[
+  {id:"yhteenveto",label:"📊 Yhteenveto"},
+  {id:"tuoteryhmät",label:"📦 Tuoteryhmät"},
+  {id:"top",label:"🏆 Top Asiakkaat"},
+  {id:"uudet",label:"✅ Uudet"},
+  {id:"menetetyt",label:"⚠️ Menetetyt"},
+  {id:"budjetti",label:"🎯 Budjetti"},
+  {id:"ennuste",label:"📈 Ennuste 2026"},
+];
+
+let currentTab="yhteenveto";
+const bar=document.getElementById("tabBar");
+tabs.forEach(t=>{
+  const btn=document.createElement("button");
+  btn.className="tab"+(t.id===currentTab?" active":"");
+  btn.textContent=t.label;
+  btn.onclick=()=>{ currentTab=t.id; render(); tabs.forEach((x,i)=>bar.children[i].className="tab"+(x.id===t.id?" active":"")); };
+  bar.appendChild(btn);
+});
+
+function kpiCard(label,v25,v26,v26fmt,chgPct,suffix=""){
+  const neg=chgPct<0;
+  return`<div class="kpi">
+    <div class="kpi-label">${label}</div>
+    <div class="kpi-row">
+      <div class="kpi-yr"><div class="kpi-yr-l">2025</div><div class="kpi-yr-v">${v25}</div></div>
+      <div class="kpi-yr"><div class="kpi-yr-l">2026</div><div class="kpi-yr-v">${v26fmt}</div></div>
+      <div class="kpi-delta">${tag(chgPct)}</div>
+    </div>${suffix}</div>`;
+}
+
+function monthlyTable(){
+  const rows=months.map((m,i)=>{
+    const chg=(data26[i]-data25[i])/data25[i]*100;
+    const neg=chg<0;
+    return`<tr>
+      <td>${m}</td>
+      <td class="r">${fmtE(data25[i])}</td>
+      <td class="r">${fmtE(data26[i])}</td>
+      <td class="r">${fmtE(bud26[i])}</td>
+      <td class="r ${neg?"dn":"up"}">${pct(chg)}</td>
+      <td class="c">${kate25[i].toFixed(1)}%</td>
+      <td class="c">${kate26[i].toFixed(1)}%</td>
+      <td class="c ${kate26[i]-kate25[i]<0?"dn":"up"}">${(kate26[i]-kate25[i]).toFixed(1)} pp</td>
+    </tr>`;
+  }).join("");
+  const chgYtd=(ytd26-ytd25)/ytd25*100;
+  return`<table>
+    <thead><tr>
+      <th>Kuukausi</th><th class="r">LV 2025 €</th><th class="r">LV 2026 €</th>
+      <th class="r">Budjetti €</th><th class="r">Muutos %</th>
+      <th class="c">Kate% 2025</th><th class="c">Kate% 2026</th><th class="c">Δ pp</th>
+    </tr></thead>
+    <tbody>${rows}
+    <tr class="total-row">
+      <td>TAMMI–ELO YTD</td>
+      <td class="r">${fmtE(ytd25)}</td><td class="r">${fmtE(ytd26)}</td>
+      <td class="r">${fmtE(ytdBud)}</td>
+      <td class="r ${chgYtd<0?"dn":"up"}">${pct(chgYtd)}</td>
+      <td class="c">${(ytdKate25/ytd25*100).toFixed(1)}%</td>
+      <td class="c">${(ytdKate26/ytd26*100).toFixed(1)}%</td>
+      <td class="c ${ytdKate26/ytd26<ytdKate25/ytd25?"dn":"up"}">${((ytdKate26/ytd26-ytdKate25/ytd25)*100).toFixed(1)} pp</td>
+    </tr></tbody></table>`;
+}
+
+function render(){
+  const el=document.getElementById("content");
+
+  if(currentTab==="yhteenveto"){
+    const chgLV=(ytd26-ytd25)/ytd25*100;
+    const chgKate=(ytdKate26/ytd26-ytdKate25/ytd25)*100;
+    const chgBud=(ytd26-ytdBud)/ytdBud*100;
+    el.innerHTML=`
+    <div class="ytd-box">
+      <div class="ytd-title">🏁 YTD Tammi–Elokuu 2026 — Neljän tunnusluvun yhteenveto</div>
+      <div class="ytd-grid">
+        <div class="ytd-stat"><div class="ytd-stat-v">${(ytd26/1e6).toFixed(2)} M€</div><div class="ytd-stat-l">Liikevaihto 2026</div></div>
+        <div class="ytd-stat"><div class="ytd-stat-v ${chgLV<0?"dn":"up"}">${pct(chgLV)}</div><div class="ytd-stat-l">vs 2025 (${(ytd25/1e6).toFixed(2)} M€)</div></div>
+        <div class="ytd-stat"><div class="ytd-stat-v ${chgBud<0?"dn":"up"}">${pct(chgBud)}</div><div class="ytd-stat-l">vs Budjetti (${(ytdBud/1e6).toFixed(2)} M€)</div></div>
+        <div class="ytd-stat"><div class="ytd-stat-v ${chgKate<0?"dn":"up"}">${(ytdKate26/ytd26*100).toFixed(1)}%</div><div class="ytd-stat-l">Kate-% 2026 (oli ${(ytdKate25/ytd25*100).toFixed(1)}%)</div></div>
+      </div>
+    </div>
+    <div class="section-title">Elokuu 2026 — Tuorein kuukausi</div>
+    <div class="grid-3">
+      ${kpiCard("Liikevaihto",fmtE(data25[7]),fmtE(data26[7]),fmtE(data26[7]),(data26[7]-data25[7])/data25[7]*100)}
+      ${kpiCard("Myyntikate %",kate25[7].toFixed(1)+"%",kate26[7].toFixed(1)+"%",kate26[7].toFixed(1)+"%",kate26[7]-kate25[7])}
+      ${kpiCard("Tilauksia",fmt(til25[7]),fmt(til26[7]),fmt(til26[7]),(til26[7]-til25[7])/til25[7]*100)}
+    </div>
+    <div class="ibox ibox-g">✅ <strong>Elokuun iso uutuus:</strong> Jyväskylän koulutuskuntayhtymä Gradia 47 164 € — elokuun ylivoimainen #1. Uusi merkittävä julkinen asiakkuus, seuraa aktiivisesti.</div>
+    <div class="ibox ibox-r">⚠️ <strong>Elokuu −10.8% vs 2025</strong> — Anuco Oy lähes kokonaan poissa (21 726€ 2025 → 1 313€ 2026). Kattotutka-ketjun lasku jatkuu.</div>
+    <div class="section-title">Kuukausittainen kehitys — Tammi–Elokuu 2026</div>
+    <div class="card">${monthlyTable()}</div>
+    <div class="grid-2">
+      <div class="ibox ibox-g">✅ <strong>Positiivista:</strong><br>• Kesäkuu +5.2% (274 241€)<br>• Heinäkuu +1.9% (128 435€)<br>• Kate-% heinäkuussa hyvä 38.2%<br>• KSBR Sverige AB — uusi kv-asiakas</div>
+      <div class="ibox ibox-r">⚠️ <strong>Seurattavaa:</strong><br>• YTD −12.7% vs 2025 (1.96 M€ vs 2.25 M€)<br>• YTD −14.5% vs budjetti<br>• Kate-% YTD laskenut 35.3% → 34.1%<br>• Kattokeskus-ketjun poistumat jatkuvat</div>
+    </div>`;
+  }
+
+  else if(currentTab==="tuoteryhmät"){
+    const buildTR=(m,d25k,d26k)=>{
+      const d25=tuoteryhmat[d25k];
+      const d26=tuoteryhmat[d26k];
+      const rows=d25.map((r,i)=>{
+        const r2=d26[i];
+        const chg=r[1]?((r2[1]-r[1])/r[1]*100):null;
+        const isTotal=r[0]==="YHTEENSÄ";
+        const neg=chg&&chg<0;
+        return`<tr class="${isTotal?"total-row":""}">
+          <td>${r[0]}</td>
+          <td class="r">${fmtE(r[1])}</td><td class="c">${r[3].toFixed(1)}%</td>
+          <td class="r">${fmtE(r2[1])}</td><td class="c">${r2[3].toFixed(1)}%</td>
+          <td class="r ${neg?"dn":"up"}">${chg!=null?pct(chg):"—"}</td>
+        </tr>`;
+      }).join("");
+      return`<div class="section-title">▶ ${m}</div><div class="card"><table>
+        <thead><tr><th>Tuoteryhmä</th><th class="r">LV 2025 €</th><th class="c">Kate%</th><th class="r">LV 2026 €</th><th class="c">Kate%</th><th class="r">Muutos %</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>`;
+    };
+    el.innerHTML=
+      buildTR("Elokuu 2026 vs 2025","elo2025","elo2026")+
+      buildTR("Heinäkuu 2026 vs 2025","heina2025","heina2026")+
+      buildTR("Kesäkuu 2026 vs 2025","kesa2025","kesa2026");
+  }
+
+  else if(currentTab==="top"){
+    const buildTop=(m,key)=>{
+      const rows=top[key].map((r,i)=>`<tr><td>${i+1}</td><td>${r[0]}</td><td class="r">${fmtE(r[1])}</td><td>${r[2]}</td></tr>`).join("");
+      return`<div class="section-title">▶ ${m} — Top 10 asiakkaat</div>
+      <div class="card"><table>
+        <thead><tr><th class="c">#</th><th>Asiakas</th><th class="r">Myynti 2026 €</th><th>Huomio</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>`;
+    };
+    el.innerHTML=
+      buildTop("Elokuu 2026","elo26")+
+      buildTop("Heinäkuu 2026","heina26")+
+      buildTop("Kesäkuu 2026","kesa26");
+  }
+
+  else if(currentTab==="uudet"){
+    el.innerHTML=`
+    <div class="ytd-box">
+      <div class="ytd-title">✅ YTD UUDET ASIAKKAAT — Tammi–Elokuu 2026</div>
+      <div class="ytd-grid">
+        <div class="ytd-stat"><div class="ytd-stat-v">~124–152</div><div class="ytd-stat-l">Uusia/kk (arvio)</div></div>
+        <div class="ytd-stat"><div class="ytd-stat-v">~1 100</div><div class="ytd-stat-l">YTD uusia yhteensä</div></div>
+        <div class="ytd-stat"><div class="ytd-stat-v">~150–180</div><div class="ytd-stat-l">Poistuvia/kk (arvio)</div></div>
+        <div class="ytd-stat"><div class="ytd-stat-v dn">−30–50</div><div class="ytd-stat-l">Nettomiinus/kk</div></div>
+      </div>
+    </div>
+    <div class="section-title">▶ Elokuu 2026 — Merkittävimmät uudet asiakkaat</div>
+    <div class="card"><table>
+      <thead><tr><th>#</th><th>Asiakas</th><th class="r">Myynti €</th><th class="c">Kate%</th><th>Potentiaali</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Jyväskylän koulutuskuntayhtymä Gradia</td><td class="r">47 165 €</td><td class="c">21.2%</td><td>⭐ Julkinen suurasikas — seuraa!</td></tr>
+        <tr><td>2</td><td>Jose Kuljetus Oy</td><td class="r">4 234 €</td><td class="c">57.1%</td><td>✅ Hyvä kate — kuljetusala</td></tr>
+        <tr><td>3</td><td>KSBR Sverige AB</td><td class="r">6 035 €</td><td class="c">20.8%</td><td>✅ Uusi kv-asiakas (Ruotsi)</td></tr>
+        <tr><td>4</td><td>Reaktor Innovations Oy</td><td class="r">2 470 €</td><td class="c">51.4%</td><td>✅ Teknologia</td></tr>
+        <tr><td>5</td><td>Havi Logistics Oy</td><td class="r">1 407 €</td><td class="c">45.5%</td><td>Logistiikka-ala</td></tr>
+        <tr><td>6</td><td>Laukaa Stars ry</td><td class="r">2 957 €</td><td class="c">67.0%</td><td>✅ Korkea kate</td></tr>
+      </tbody>
+    </table></div>
+    <div class="section-title">▶ Heinäkuu 2026 — Merkittävimmät uudet asiakkaat</div>
+    <div class="card"><table>
+      <thead><tr><th>#</th><th>Asiakas</th><th class="r">Myynti €</th><th class="c">Kate%</th><th>Potentiaali</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Mäntän Kaukolämpö ja Vesihuolto Oy</td><td class="r">1 415 €</td><td class="c">53.4%</td><td>✅ Energia-ala</td></tr>
+        <tr><td>2</td><td>Lyyraks Oy</td><td class="r">1 200 €</td><td class="c">79.3%</td><td>✅ Erinomainen kate</td></tr>
+        <tr><td>3</td><td>HPV-Invest Oy</td><td class="r">572 €</td><td class="c">80.5%</td><td>✅ Korkea kate</td></tr>
+      </tbody>
+    </table></div>
+    <div class="section-title">▶ Kesäkuu 2026 — Merkittävimmät uudet asiakkaat</div>
+    <div class="card"><table>
+      <thead><tr><th>#</th><th>Asiakas</th><th class="r">Myynti €</th><th class="c">Kate%</th><th>Potentiaali</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Lillbacka Powerco Oy</td><td class="r">18 667 €</td><td class="c">19.5%</td><td>⭐ Iso uusi — koneteollisuus</td></tr>
+        <tr><td>2</td><td>LLP Farm Machinery Group Oy</td><td class="r">6 508 €</td><td class="c">40.8%</td><td>✅ Maatalous</td></tr>
+        <tr><td>3</td><td>Alltvex Oy</td><td class="r">5 337 €</td><td class="c">88.3%</td><td>✅ Erinomainen kate</td></tr>
+        <tr><td>4</td><td>Multimek Oy</td><td class="r">4 896 €</td><td class="c">33.9%</td><td>Koneteollisuus</td></tr>
+      </tbody>
+    </table></div>`;
+  }
+
+  else if(currentTab==="menetetyt"){
+    el.innerHTML=`
+    <div class="ibox ibox-a">📌 <strong>Rakenteellinen asiakaspoistuma:</strong> Joka kuukausi 150–180 asiakasta poistuu (ostivat 2025, ei 2026). Uusia tulee 124–152/kk. Nettomiinus ~30–50 asiakasta/kk. Retentio-ohjelma tarvitaan.</div>
+    <div class="section-title">▶ Elokuu 2026 — Kriittisimmät menetykset</div>
+    <div class="card"><table>
+      <thead><tr><th>Asiakas</th><th class="r">Myynti 2025 €</th><th class="c">Prioriteetti</th><th>Huomio</th></tr></thead>
+      <tbody>
+        <tr><td>Anuco Oy</td><td class="r">21 726 €</td><td class="c"><span class="pri-k">KRIITTINEN</span></td><td>Epäsäännöllinen rytmi — elo 2025 oli poikkeuksellinen</td></tr>
+        <tr><td>Bolt.Works Oy</td><td class="r">7 328 €</td><td class="c"><span class="pri-h">KORKEA</span></td><td>Merkittävä lasku — selvitettävä</td></tr>
+        <tr><td>Agrihuolto Pitkänen Oy</td><td class="r">3 152 €</td><td class="c"><span class="pri-h">KORKEA</span></td><td>Poistunut — maatalouskone-ala</td></tr>
+        <tr><td>Elomatic Consulting & Engineering Oy</td><td class="r">2 192 €</td><td class="c"><span class="pri-h">KORKEA</span></td><td>Poistunut koko 2026 alkuvuodesta</td></tr>
+        <tr><td>Endomines Oy</td><td class="r">2 384 €</td><td class="c"><span class="pri-h">KORKEA</span></td><td>Kaivosyhtiö — poistunut</td></tr>
+      </tbody>
+    </table></div>
+    <div class="section-title">▶ Heinäkuu 2026 — Kriittisimmät menetykset</div>
+    <div class="card"><table>
+      <thead><tr><th>Asiakas</th><th class="r">Myynti 2025 €</th><th class="c">Prioriteetti</th><th>Huomio</th></tr></thead>
+      <tbody>
+        <tr><td>BUCHEN Industrial Services Baltikum OÜ</td><td class="r">3 635 €</td><td class="c"><span class="pri-h">KORKEA</span></td><td>Kv-asiakas — iso kertatilaus 2025</td></tr>
+        <tr><td>Euroports Hanko Oy</td><td class="r">1 850 €</td><td class="c"><span class="pri-h">KORKEA</span></td><td>Lasku merkittävä — selvitettävä</td></tr>
+        <tr><td>Eltel Networks Oy</td><td class="r">462 €</td><td class="c"><span class="pri-m">KESKI</span></td><td>Poistunut</td></tr>
+      </tbody>
+    </table></div>
+    <div class="section-title">▶ Kesäkuu 2026 — Kriittisimmät menetykset</div>
+    <div class="card"><table>
+      <thead><tr><th>Asiakas</th><th class="r">Myynti 2025 €</th><th class="c">Prioriteetti</th><th>Huomio</th></tr></thead>
+      <tbody>
+        <tr><td>AGCO Suomi Oy</td><td class="r">10 164 €</td><td class="c"><span class="pri-k">KRIITTINEN</span></td><td>Isoin kesäkuun menetys — selvitettävä</td></tr>
+        <tr><td>Anuco Oy</td><td class="r">15 431 €</td><td class="c"><span class="pri-k">KRIITTINEN</span></td><td>Merkittävä lasku vs 2025</td></tr>
+        <tr><td>AJ Tuotteet Oy</td><td class="r">2 060 €</td><td class="c"><span class="pri-h">KORKEA</span></td><td>Poistunut — iso kertatilaus 2025</td></tr>
+      </tbody>
+    </table></div>
+    <div class="ibox ibox-b">📋 <strong>Toimenpidesuositus:</strong> Retentio-ohjelma — 45 pv ostamatta → automaattinen yhteydenotto. Kattokeskus-johdon kontakti ketjupäätöksestä. Anuco Oy suora yhteys johdon tasolla.</div>`;
+  }
+
+  else if(currentTab==="budjetti"){
+    const budData=[
+      ["Tammikuu",202906,192772],["Helmikuu",200313,210886],["Maaliskuu",330155,263139],
+      ["Huhtikuu",443274,335678],["Toukokuu",343680,318889],["Kesäkuu",308021,274241],
+      ["Heinäkuu",155900,128435],["Elokuu",282139,235482],
+      ["Syyskuu",717923,null],["Lokakuu",780218,null],["Marraskuu",800193,null],["Joulukuu",864033,null],
+    ];
+    const rows=budData.map(([kk,bud,tot])=>{
+      const has=tot!=null;
+      const chg=has?(tot-bud)/bud*100:null;
+      const neg=chg&&chg<0;
+      const status=chg==null?"⏳ Tulossa":chg>=0?"✅ Yli budjetin":chg>=-5?"📊 Lähellä":"⚠️ Alle";
+      return`<tr>
+        <td>${kk}</td>
+        <td class="r">${fmtE(bud)}</td>
+        <td class="r">${has?fmtE(tot):"—"}</td>
+        <td class="r ${has?(neg?"dn":"up"):""}">${chg!=null?pct(chg):"—"}</td>
+        <td>${status}</td>
+      </tr>`;
+    }).join("");
+    const ytdChg=(ytd26-ytdBud)/ytdBud*100;
+    el.innerHTML=`
+    <div class="ytd-box">
+      <div class="ytd-title">🎯 YTD vs Budjetti — Tammi–Elokuu 2026</div>
+      <div class="ytd-grid">
+        <div class="ytd-stat"><div class="ytd-stat-v">${(ytdBud/1e6).toFixed(2)} M€</div><div class="ytd-stat-l">Budjetti YTD</div></div>
+        <div class="ytd-stat"><div class="ytd-stat-v">${(ytd26/1e6).toFixed(2)} M€</div><div class="ytd-stat-l">Toteuma YTD</div></div>
+        <div class="ytd-stat"><div class="ytd-stat-v dn">${fmtE(ytd26-ytdBud)}</div><div class="ytd-stat-l">Ero €</div></div>
+        <div class="ytd-stat"><div class="ytd-stat-v dn">${pct(ytdChg)}</div><div class="ytd-stat-l">Ero %</div></div>
+      </div>
+    </div>
+    <div class="section-title">Budjetti vs Toteuma — kaikki kuukaudet</div>
+    <div class="card"><table>
+      <thead><tr><th>Kuukausi</th><th class="r">Budjetti €</th><th class="r">Toteuma €</th><th class="r">Ero %</th><th>Status</th></tr></thead>
+      <tbody>${rows}
+      <tr class="total-row">
+        <td>YTD Tammi–Elo</td>
+        <td class="r">${fmtE(ytdBud)}</td><td class="r">${fmtE(ytd26)}</td>
+        <td class="r dn">${pct(ytdChg)}</td><td>⚠️ YTD alle budjetin</td>
+      </tr></tbody></table></div>`;
+  }
+
+  else if(currentTab==="ennuste"){
+    const ennData=[
+      ["Tammikuu",179868,192772,202906,192772,true],
+      ["Helmikuu",226864,210886,200313,210886,true],
+      ["Maaliskuu",342016,263139,330155,263139,true],
+      ["Huhtikuu",400398,335678,443274,335678,true],
+      ["Toukokuu",315360,318889,343680,318889,true],
+      ["Kesäkuu",260556,274241,308021,274241,true],
+      ["Heinäkuu",125962,128435,155900,128435,true],
+      ["Elokuu",263968,235482,282139,235482,true],
+      ["Syyskuu",283143,null,717923,310000,false],
+      ["Lokakuu",335895,null,780218,360000,false],
+      ["Marraskuu",349581,null,800193,370000,false],
+      ["Joulukuu",139998,null,864033,175000,false],
+    ];
+    const rows=ennData.map(([kk,v25,v26,bud,enn,actual])=>{
+      const val=v26||enn;
+      const vs25=(val-v25)/v25*100;
+      const vsBud=(val-bud)/bud*100;
+      return`<tr style="${!actual?"background:#fffbeb":""}"}>
+        <td>${kk}${!actual?' <span class="tag tag-a">Ennuste</span>':''}</td>
+        <td class="r">${fmtE(v25)}</td>
+        <td class="r">${v26?fmtE(v26):"—"}</td>
+        <td class="r">${fmtE(bud)}</td>
+        <td class="r">${actual?fmtE(enn):fmtE(enn)}</td>
+        <td class="r ${vs25<0?"dn":"up"}">${pct(vs25)}</td>
+        <td class="r ${vsBud<0?"dn":"up"}">${pct(vsBud)}</td>
+      </tr>`;
+    }).join("");
+    const totEnn=ennData.map(r=>r[3]||r[4]).reduce((a,b)=>a+b,0);
+    const totEnn2=ennData.map(r=>r[4]).reduce((a,b)=>a+b,0);
+    const tot25=ennData.map(r=>r[1]).reduce((a,b)=>a+b,0);
+    el.innerHTML=`
+    <div class="ytd-box">
+      <div class="ytd-title">📈 Ennuste 2026 — Koko vuosi</div>
+      <div class="ytd-grid">
+        <div class="ytd-stat"><div class="ytd-stat-v">${(tot25/1e6).toFixed(2)} M€</div><div class="ytd-stat-l">Toteuma 2025</div></div>
+        <div class="ytd-stat"><div class="ytd-stat-v">${(ytd26/1e6).toFixed(2)} M€</div><div class="ytd-stat-l">Toteuma YTD 2026</div></div>
+        <div class="ytd-stat"><div class="ytd-stat-v">${(totEnn2/1e6).toFixed(2)} M€</div><div class="ytd-stat-l">Ennuste koko 2026</div></div>
+        <div class="ytd-stat"><div class="ytd-stat-v dn">${pct((totEnn2-tot25)/tot25*100)}</div><div class="ytd-stat-l">vs 2025</div></div>
+      </div>
+    </div>
+    <div class="section-title">Toteuma + Ennuste — kuukausittain</div>
+    <div class="card"><table>
+      <thead><tr><th>Kuukausi</th><th class="r">Tot. 2025 €</th><th class="r">Tot. 2026 €</th><th class="r">Budjetti €</th><th class="r">Ennuste €</th><th class="r">vs 2025</th><th class="r">vs Bud</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>`;
+  }
+}
+
+render();
+</script>
+
+<div style="padding:12px 32px;font-size:10px;color:#94a3b8;border-top:1px solid #e2e8f0;margin-top:24px">
+  Lähde: Tehden myyntijärjestelmä, Veroton summa | Tammi–Elokuu 2026 | Luottamuksellinen — vain hallituksen käyttöön
+</div>
 </body>
 </html>
