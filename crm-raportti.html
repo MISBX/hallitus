@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRM-raportti kesä–elokuu 2026 | Suomen Brodeeraus Oy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a2e4a; --ink:#1f2a37; --muted:#5f6b7a; --line:#dfe4ea; --bg:#f5f7fa; --card:#fff;
+  --thread:#b8862b; --good:#1e7a46; --goodbg:#e3f3e9; --bad:#b42318; --badbg:#fde8e6;
+  --warn:#9a6700; --warnbg:#fdf3dc; --info:#1d4ed8; --infobg:#e6eefc;
+  --y25:#9fb3cc; --y26:#1a2e4a;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --navy:#0f1c2e; --ink:#e6ebf1; --muted:#9aa6b5; --line:#2c3a4c; --bg:#111a26; --card:#172333;
+    --goodbg:#16372a; --badbg:#3a1c1a; --warnbg:#3a2e14; --infobg:#1a2a4a; --good:#5fcf8f; --bad:#f28b82; --warn:#e5b454; --info:#8ab4f8;
+    --y25:#4c5f78; --y26:#c9d6e6;
+  }
+}
+:root[data-theme="dark"]{
+  --navy:#0f1c2e; --ink:#e6ebf1; --muted:#9aa6b5; --line:#2c3a4c; --bg:#111a26; --card:#172333;
+  --goodbg:#16372a; --badbg:#3a1c1a; --warnbg:#3a2e14; --infobg:#1a2a4a; --good:#5fcf8f; --bad:#f28b82; --warn:#e5b454; --info:#8ab4f8;
+  --y25:#4c5f78; --y26:#c9d6e6;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.55;font-variant-numeric:tabular-nums}
+header{background:var(--navy);color:#fff;padding:26px 28px 20px;border-bottom:3px solid var(--thread)}
+header .co{font-size:13px;opacity:.7}
+header h1{margin:4px 0 2px;font-size:26px;font-weight:800;letter-spacing:-.01em}
+header .sub{font-size:14px;opacity:.75}
+nav{background:var(--card);border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:0 20px;position:sticky;top:0;z-index:5}
+nav button{background:none;border:0;border-bottom:3px solid transparent;padding:13px 14px;font:inherit;font-size:14px;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav button[aria-selected="true"]{color:var(--ink);font-weight:700;border-bottom-color:var(--thread)}
+nav button:focus-visible{outline:2px solid var(--info);outline-offset:-2px}
+main{max-width:1100px;padding:24px 28px 40px}
+section[role="tabpanel"]{display:none}
+section[role="tabpanel"].on{display:block}
+h2{font-size:18px;margin:28px 0 12px;color:var(--ink)}
+h2:first-child{margin-top:0}
+p.lead{max-width:78ch;margin:0 0 16px;color:var(--ink)}
+.grid{display:grid;gap:12px}
+.g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:1fr 1fr}
+@media(max-width:820px){.g3,.g4,.g2{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.g3,.g4,.g2{grid-template-columns:1fr}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.kpi .l{font-size:13px;color:var(--muted);font-weight:600}
+.kpi .v{display:flex;align-items:baseline;gap:14px;margin-top:6px;flex-wrap:wrap}
+.kpi .yr{font-size:11px;color:var(--muted);display:block}
+.kpi .n{font-size:22px;font-weight:800}
+.kpi .n.old{color:var(--muted);font-weight:600;font-size:18px}
+.kpi .note{font-size:12px;color:var(--muted);margin-top:6px}
+.tag{display:inline-block;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:700;margin-left:auto}
+.up{background:var(--goodbg);color:var(--good)} .dn{background:var(--badbg);color:var(--bad)} .nt{background:var(--warnbg);color:var(--warn)} .inf{background:var(--infobg);color:var(--info)}
+.box{border-radius:8px;padding:12px 16px;margin:0 0 12px;border:1px solid var(--line);background:var(--card);max-width:100%}
+.box.bad{border-left:4px solid var(--bad)} .box.good{border-left:4px solid var(--good)} .box.warn{border-left:4px solid var(--warn)} .box.info{border-left:4px solid var(--info)}
+.box strong{display:block;margin-bottom:2px}
+.box ul{margin:4px 0 0;padding-left:18px}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{background:var(--navy);color:#fff;text-align:left;padding:9px 12px;font-weight:600;white-space:nowrap}
+td{padding:8px 12px;border-top:1px solid var(--line);vertical-align:top}
+td.r,th.r{text-align:right;white-space:nowrap}
+tr.sum td{font-weight:700;background:var(--bg)}
+.chart{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px 10px;margin-bottom:14px}
+.chart .t{font-weight:700;margin-bottom:10px}
+.bars{display:flex;gap:18px;align-items:flex-end;height:170px;border-bottom:1px solid var(--line);padding:0 4px}
+.grp{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end}
+.pair{display:flex;gap:4px;align-items:flex-end;height:100%;width:100%;justify-content:center}
+.bar{width:38%;max-width:44px;border-radius:3px 3px 0 0;position:relative;min-height:1px}
+.bar span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--muted);white-space:nowrap}
+.b25{background:var(--y25)} .b26{background:var(--y26)}
+.xl{display:flex;gap:18px;padding:6px 4px 0}
+.xl div{flex:1;text-align:center;font-size:13px;color:var(--muted)}
+.legend{font-size:12px;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:-1px}
+.hyp{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin-bottom:10px}
+.hyp .h{display:flex;gap:10px;align-items:center;font-weight:700;flex-wrap:wrap}
+.hyp p{margin:6px 0 0;color:var(--muted);max-width:90ch}
+footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){section[role="tabpanel"].on{animation:f .18s ease-out}@keyframes f{from{opacity:.4}to{opacity:1}}}
+</style>
+</head>
+<body>
+<header>
+  <div class="co">Suomen Brodeeraus Oy, hallitusraportti</div>
+  <h1>CRM-raportti: kesä–elokuu 2026</h1>
+  <div class="sub">Vertailu kesä–elokuu 2025 | HubSpot-haku 19.9.2026 | Liikevaihto Myyntiseuranta v3 (elokuu 2026)</div>
+</header>
+
+<nav role="tablist" aria-label="Raportin osiot">
+  <button role="tab" aria-selected="true" data-t="yv">Yhteenveto</button>
+  <button role="tab" aria-selected="false" data-t="ko">Kontaktointi</button>
+  <button role="tab" aria-selected="false" data-t="de">Dealit</button>
+  <button role="tab" aria-selected="false" data-t="ml">Myyntilinjat</button>
+  <button role="tab" aria-selected="false" data-t="lu">LevelUp</button>
+  <button role="tab" aria-selected="false" data-t="la">Myynnin kehitys</button>
+</nav>
+
+<main>
+
+<!-- ============ YHTEENVETO ============ -->
+<section role="tabpanel" id="yv" class="on">
+  <div class="box bad"><strong>Tärkein havainto: HubSpotin vaiheiden nimet ovat ristissä normaalissa myyntiputkessa</strong>
+  Vaihe, jonka nimi on ”Voitettu”, on HubSpotin sisäisesti <em>closed lost</em>, ja vaihe ”Odottaa” on sisäisesti <em>closed won</em>. HubSpotin omat voitto-, liikevaihto- ja ennusteraportit laskevat siksi väärin: odottavat dealit näkyvät voittoina ja voitetut häviöinä. Tässä raportissa luvut on laskettu vaiheen <em>nimen</em> mukaan. Sama selittää todennäköisesti kevään raportin ”12 virheellisesti voitetuksi merkittyä LevelUp-dealia”: ne olivat Odottaa-vaiheessa, eivät myyjän virhemerkintöjä.</div>
+
+  <div class="grid g4" id="kpiTop"></div>
+
+  <h2>Kesä–elokuu lyhyesti</h2>
+  <div class="grid g2">
+    <div class="box good"><strong>Positiivista</strong><ul>
+      <li>Puhelut +169 % ja sähköpostit +20 % vuodentakaisesta</li>
+      <li>Uusia kontakteja 1 064 (+76 %)</li>
+      <li>Ohituskaista: voitettu 147 500 € (2025: 66 000 €), voittoaste 42 % (19 %)</li>
+      <li>Liikevaihto kesä–heinä yli vuoden 2025 (+5,3 % ja +2,0 %)</li>
+    </ul></div>
+    <div class="box bad"><strong>Seurattavaa</strong><ul>
+      <li>Tapaamiset −22 %, elokuussa −60 % (38 vs 95)</li>
+      <li>Elokuun LV −10,8 %; ilman Gradian 47 k€ kertatilausta −28,7 %</li>
+      <li>Kate −11,3 % (−25 700 €), kate-% 35,0 → 31,6</li>
+      <li>LevelUp-kesäkampanja: 2 voittoa, 28 häviötä</li>
+      <li>Toteuma 85,5 % budjetista (−107 900 €)</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ============ KONTAKTOINTI ============ -->
+<section role="tabpanel" id="ko">
+  <h2>Aktiviteetit kesä–elokuu 2025 vs 2026</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Aktiviteetti</th><th class="r">2025</th><th class="r">2026</th><th class="r">Muutos</th><th>Tulkinta</th></tr></thead>
+    <tbody>
+      <tr><td>Puhelut</td><td class="r">571</td><td class="r"><b>1 537</b></td><td class="r"><span class="tag up">+169 %</span></td><td>Kasvu joka kuukausi. Heinäkuussa 2025 kirjattiin vain 1 puhelu, joten osa kasvusta on kirjauskurin parantumista.</td></tr>
+      <tr><td>Sähköpostit</td><td class="r">6 937</td><td class="r"><b>8 316</b></td><td class="r"><span class="tag up">+20 %</span></td><td>Kesä- ja heinäkuu selvästi yli vuoden 2025, elokuu hieman alle.</td></tr>
+      <tr><td>Tapaamiset</td><td class="r">184</td><td class="r"><b>144</b></td><td class="r"><span class="tag dn">−22 %</span></td><td>Kesäkuu vuoden 2025 tasolla, elokuu romahti (38 vs 95).</td></tr>
+      <tr><td>Uudet kontaktit</td><td class="r">603</td><td class="r"><b>1 064</b></td><td class="r"><span class="tag up">+76 %</span></td><td>Kesäkuussa 689 uutta, osin LevelUp-kampanjan kontakteja.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="grid g2">
+    <div class="chart" id="chCalls"></div>
+    <div class="chart" id="chMeet"></div>
+    <div class="chart" id="chMail"></div>
+    <div class="chart" id="chCont"></div>
+  </div>
+  <div class="box warn"><strong>Tapaamisvaje elokuussa</strong>Elokuussa pidettiin 38 tapaamista, kun vuotta aiemmin niitä oli 95. Puhelumäärä pysyi korkeana (444), joten kontaktointi ei ole muuttunut tapaamisiksi. Syksyn kauppojen klousaus edellyttää, että tapaamiset palaavat vähintään vuoden 2025 tasolle (80–95/kk).</div>
+</section>
+
+<!-- ============ DEALIT ============ -->
+<section role="tabpanel" id="de">
+  <h2>Luodut dealit putkittain (luontipäivän mukaan)</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Putki</th><th class="r">Dealit 2025</th><th class="r">Dealit 2026</th><th class="r">Arvo 2025</th><th class="r">Arvo 2026</th><th class="r">Muutos kpl</th></tr></thead>
+    <tbody>
+      <tr><td>Myynti (normaali)</td><td class="r">214</td><td class="r">211</td><td class="r">426 000 €</td><td class="r">489 100 €</td><td class="r"><span class="tag nt">−1 %</span></td></tr>
+      <tr><td>Ohituskaistamyynti</td><td class="r">23</td><td class="r">18</td><td class="r">730 000 €</td><td class="r">1 898 000 €</td><td class="r"><span class="tag dn">−22 %</span></td></tr>
+      <tr><td>SBX Int.</td><td class="r">0</td><td class="r">6</td><td class="r">0 €</td><td class="r">215 000 €</td><td class="r"><span class="tag inf">uusi</span></td></tr>
+      <tr class="sum"><td>Yhteensä</td><td class="r">237</td><td class="r">235</td><td class="r">1 156 000 €</td><td class="r">2 602 100 €</td><td class="r">−1 %</td></tr>
+    </tbody>
+  </table></div>
+  <div class="box warn"><strong>Ohituskaistan arvo on kolmen dealin varassa</strong>1,9 M€:sta 1,7 M€ tulee kolmesta dealista: Ramboll 1 000 000 € (Liidi-vaihe), Avesco 400 000 € (LevelUp, odottaa lisätietoja) ja Pharmia 300 000 € (Odottaa). Kaikilla kolmella arvo on alustava arvio, ei tarjoussumma.</div>
+
+  <h2>Suljetut dealit (sulkemispäivän mukaan)</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Putki</th><th class="r">Voitettu 2025</th><th class="r">Voitettu 2026</th><th class="r">Hävitty 2025</th><th class="r">Hävitty 2026</th><th class="r">Voittoaste 2025</th><th class="r">Voittoaste 2026</th></tr></thead>
+    <tbody>
+      <tr><td>Myynti (normaali)</td><td class="r">66 | 101 800 €</td><td class="r">79 | 100 500 €</td><td class="r">64 | 101 500 €</td><td class="r">111 | 164 800 €</td><td class="r">51 %</td><td class="r"><span class="tag dn">42 %</span></td></tr>
+      <tr><td>Ohituskaistamyynti</td><td class="r">7 | 66 000 €</td><td class="r">5 | 147 500 €</td><td class="r">29 | 5,6 M€*</td><td class="r">7 | 225 000 €</td><td class="r">19 %</td><td class="r"><span class="tag up">42 %</span></td></tr>
+      <tr class="sum"><td>Yhteensä</td><td class="r">73 | 167 800 €</td><td class="r">84 | 248 000 €</td><td class="r">93</td><td class="r">118</td><td class="r">44 %</td><td class="r">42 %</td></tr>
+    </tbody>
+  </table></div>
+  <p class="lead" style="font-size:13px;color:var(--muted)">Voittoaste = voitetut / (voitetut + hävityt), kpl. *2025 hävityt sisältävät 5.6.2025 tehdyn putken siivouksen ja Enersensen 4 M€ katalogideal. Normaaliputken Odottaa-vaiheessa on lisäksi 8 dealia (114 200 €), joiden sulkemispäivä on kesä–elokuussa.</p>
+  <div class="grid g2">
+    <div class="box good"><strong>Voitettu euromäärä +48 %</strong>Kaikkien putkien voitetut 248 000 € (167 800 €). Kasvu tulee kokonaan Ohituskaistasta; normaaliputken voitetut ovat vuoden 2025 tasolla.</div>
+    <div class="box bad"><strong>Normaaliputken häviöt kasvoivat</strong>Hävittyjä 111 (64). Näistä 28 on LevelUp-dealeja ja 7 marraskuun 2025 LevelUp-dealia suljettiin kerralla 7.8.2026. Kyse on osin putken siivouksesta, ei pelkästä menetyksestä.</div>
+  </div>
+</section>
+
+<!-- ============ MYYNTILINJAT ============ -->
+<section role="tabpanel" id="ml">
+  <h2>Ohituskaista: kesä–elokuu 2025 ja 2026 rinnakkain</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Mittari</th><th class="r">2025</th><th class="r">2026</th><th class="r">Muutos</th></tr></thead>
+    <tbody>
+      <tr><td>Tapaamiset (dealeihin liitetyt)</td><td class="r">16</td><td class="r">21</td><td class="r"><span class="tag up">+31 %</span></td></tr>
+      <tr><td>Uudet dealit</td><td class="r">23</td><td class="r">18</td><td class="r"><span class="tag dn">−22 %</span></td></tr>
+      <tr><td>Voitetut dealit</td><td class="r">7</td><td class="r">5</td><td class="r"><span class="tag dn">−2</span></td></tr>
+      <tr><td>Voitettu arvo</td><td class="r">66 000 €</td><td class="r">147 500 €</td><td class="r"><span class="tag up">+123 %</span></td></tr>
+      <tr><td>Hävityt dealit</td><td class="r">29</td><td class="r">7</td><td class="r"><span class="tag up">−22</span></td></tr>
+      <tr><td>Voittoaste (kpl)</td><td class="r">19 %</td><td class="r">42 %</td><td class="r"><span class="tag up">+23 pp</span></td></tr>
+      <tr><td>Keskim. voitettu deal</td><td class="r">9 400 €</td><td class="r">29 500 €</td><td class="r"><span class="tag up">×3,1</span></td></tr>
+      <tr><td>Tapaamisia / voitettu deal</td><td class="r">2,3</td><td class="r">4,2</td><td class="r"><span class="tag nt">raskaampi</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="chart" id="chOhitusMeet"></div>
+
+  <div class="grid g2">
+    <div>
+      <h2>Voitetut 2026</h2>
+      <div class="tw"><table>
+        <thead><tr><th>Deal</th><th class="r">Suljettu</th><th class="r">Arvo</th></tr></thead>
+        <tbody>
+          <tr><td>Niemi Palvelut, turvakengät</td><td class="r">11.8.</td><td class="r">50 000 €</td></tr>
+          <tr><td>Eerola, työvaatteet</td><td class="r">2.7.</td><td class="r">50 000 €</td></tr>
+          <tr><td>Eilakaisla, edustusvaatteet (LevelUp)</td><td class="r">3.7.</td><td class="r">25 000 €</td></tr>
+          <tr><td>Eerola-Yhtiöt, työvaatteet</td><td class="r">1.6.</td><td class="r">20 000 €</td></tr>
+          <tr><td>Eerola-Yhtiöt, palosuojatut</td><td class="r">1.6.</td><td class="r">2 500 €</td></tr>
+          <tr class="sum"><td>Yhteensä</td><td></td><td class="r">147 500 €</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div>
+      <h2>Voitetut 2025</h2>
+      <div class="tw"><table>
+        <thead><tr><th>Deal</th><th class="r">Suljettu</th><th class="r">Arvo</th></tr></thead>
+        <tbody>
+          <tr><td>AT Aurinkopaneelit, kilpailutus</td><td class="r">21.8.</td><td class="r">17 000 €</td></tr>
+          <tr><td>Mustankorkea, palosuojatut</td><td class="r">9.6.</td><td class="r">14 000 €</td></tr>
+          <tr><td>Link Henkilöstöpalvelut</td><td class="r">26.6.</td><td class="r">10 000 €</td></tr>
+          <tr><td>Kattoyksikkö</td><td class="r">9.6.</td><td class="r">10 000 €</td></tr>
+          <tr><td>Kuljetus Weeman</td><td class="r">7.8.</td><td class="r">10 000 €</td></tr>
+          <tr><td>Club Corvette, kerhokauppa</td><td class="r">24.6.</td><td class="r">5 000 €</td></tr>
+          <tr><td>Meltex, tuotevaihdot</td><td class="r">6.7.</td><td class="r">0 €</td></tr>
+          <tr class="sum"><td>Yhteensä</td><td></td><td class="r">66 000 €</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="box warn"><strong>Keskittymisriski</strong>Kolme viidestä vuoden 2026 voitosta (72 500 €) on Eerola-konsernia. Ilman Eerolaa voitettu arvo olisi 75 000 €, eli lähellä vuotta 2025.</div>
+
+  <h2>Suurimmat avoimet Ohituskaista-dealit</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Deal</th><th>Vaihe</th><th class="r">Sulkemispäivä HubSpotissa</th><th class="r">Arvo</th></tr></thead>
+    <tbody>
+      <tr><td>Ramboll, työvaatteet</td><td>Liidi</td><td class="r"><span class="tag dn">20.8. ohi</span></td><td class="r">1 000 000 €</td></tr>
+      <tr><td>Avesco, asentajat + toimihenkilöt (LevelUp)</td><td>Odottaa lisätietoja</td><td class="r">puuttuu</td><td class="r">400 000 €</td></tr>
+      <tr><td>Pharmia, työvaatteet</td><td>Odottaa</td><td class="r"><span class="tag dn">5.7. ohi</span></td><td class="r">300 000 €</td></tr>
+      <tr><td>Pohjola Rakennus Group PRG (LevelUp)</td><td>Tarkastettavana</td><td class="r">puuttuu</td><td class="r">50 000 €</td></tr>
+      <tr><td>HOX Sitowise, työvaatteet</td><td>Tarjouksen läpikäynti</td><td class="r"><span class="tag dn">29.7. ohi</span></td><td class="r">45 000 €</td></tr>
+      <tr><td>Jaatimet, työvaatteet</td><td>Tarjouksen läpikäynti</td><td class="r"><span class="tag dn">25.7. ohi</span></td><td class="r">20 000 €</td></tr>
+      <tr><td>KM-huoltopalvelut, työvaatteet</td><td>Odottaa</td><td class="r"><span class="tag dn">23.7. ohi</span></td><td class="r">15 000 €</td></tr>
+    </tbody>
+  </table></div>
+  <div class="box info"><strong>Sulkemispäivät vanhentuneet</strong>Viidellä seitsemästä suurimmasta avoimesta dealista sulkemispäivä on jo mennyt. Ennuste on luotettava vasta, kun päivät ja arvot päivitetään.</div>
+</section>
+
+<!-- ============ LEVELUP ============ -->
+<section role="tabpanel" id="lu">
+  <p class="lead">LevelUp-dealit tunnistettu dealin nimestä (”LevelUp”). Vertailua kesä–elokuuhun 2025 ei ole, koska toiminta alkoi syksyllä 2025. Level-Up Oy (asiakas) on rajattu pois.</p>
+  <div class="grid g4">
+    <div class="kpi"><div class="l">Uudet dealit</div><div class="v"><span class="n">28</span><span class="tag inf">kaikki 1.–18.6.</span></div><div class="note">Heinä–elokuussa 0 uutta</div></div>
+    <div class="kpi"><div class="l">Voitettu</div><div class="v"><span class="n">2</span><span class="tag up">25 500 €</span></div><div class="note">Eilakaisla 25 000 €, Sydbevakning 500 €</div></div>
+    <div class="kpi"><div class="l">Hävitty</div><div class="v"><span class="n">28</span><span class="tag dn">85 000 €</span></div><div class="note">7 vanhaa dealia suljettu 7.8. siivouksena</div></div>
+    <div class="kpi"><div class="l">Voittoaste</div><div class="v"><span class="n">7 %</span><span class="tag dn">kpl</span></div><div class="note">Euroissa 23 %</div></div>
+  </div>
+
+  <h2>Avoinna olevat LevelUp-dealit</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Deal</th><th>Putki</th><th>Vaihe</th><th class="r">Arvo</th></tr></thead>
+    <tbody>
+      <tr><td>Avesco Oy, työvaatteet</td><td>Ohituskaista</td><td>Odottaa lisätietoja</td><td class="r">400 000 €</td></tr>
+      <tr><td>Pohjola Rakennus Group PRG</td><td>Ohituskaista</td><td>Tarkastettavana</td><td class="r">50 000 €</td></tr>
+      <tr><td>Veikko Lehti Oy (soitto 11/2026)</td><td>Myynti</td><td>Odottaa</td><td class="r">5 000 €</td></tr>
+      <tr><td>Bilar99e Oy</td><td>Myynti</td><td>Tarjouksen läpikäynti</td><td class="r">2 500 €</td></tr>
+      <tr><td>Pesupalvelu Hans Langh (4/2027)</td><td>Myynti</td><td>Odottaa</td><td class="r">2 300 €</td></tr>
+      <tr><td>Eurajoen Romu, Duodecim, Trimet, Mika Lankinen</td><td>Myynti</td><td>Odottaa</td><td class="r">6 000 €</td></tr>
+      <tr><td>Lukkoluket, Transpeltola, Camtronic</td><td>Myynti</td><td>Level Up uudet / Kuvastot</td><td class="r">ei arvoa</td></tr>
+      <tr class="sum"><td>Yhteensä (arvolliset)</td><td></td><td></td><td class="r">465 800 €</td></tr>
+    </tbody>
+  </table></div>
+  <div class="grid g2">
+    <div class="box bad"><strong>Pienet dealit eivät konvertoi</strong>Hävityistä 22 oli arvoltaan 2 500 € tai alle. Kampanjan tuottamat pienet kyselyt (t-paidat, pipot) eivät etene kaupaksi nykyisellä prosessilla.</div>
+    <div class="box good"><strong>Isot LevelUp-liidit etenevät Ohituskaistassa</strong>Eilakaisla voitettiin (25 000 €), ja Avesco (400 000 €) sekä PRG (50 000 €) ovat auki. LevelUpin arvo on isoissa liideissä, ei volyymissa.</div>
+  </div>
+</section>
+
+<!-- ============ MYYNNIN KEHITYS ============ -->
+<section role="tabpanel" id="la">
+  <div class="grid g4">
+    <div class="kpi"><div class="l">Liikevaihto kesä–elo</div><div class="v"><span><span class="yr">2025</span><span class="n old">650 486 €</span></span><span><span class="yr">2026</span><span class="n">638 158 €</span></span></div><div class="note"><span class="tag nt">−1,9 %</span></div></div>
+    <div class="kpi"><div class="l">Myyntikate</div><div class="v"><span><span class="yr">2025</span><span class="n old">227 371 €</span></span><span><span class="yr">2026</span><span class="n">201 680 €</span></span></div><div class="note"><span class="tag dn">−11,3 %</span></div></div>
+    <div class="kpi"><div class="l">Kate-%</div><div class="v"><span><span class="yr">2025</span><span class="n old">35,0 %</span></span><span><span class="yr">2026</span><span class="n">31,6 %</span></span></div><div class="note"><span class="tag dn">−3,4 pp</span></div></div>
+    <div class="kpi"><div class="l">vs budjetti</div><div class="v"><span><span class="yr">Budjetti</span><span class="n old">746 060 €</span></span><span><span class="yr">Toteuma</span><span class="n">85,5 %</span></span></div><div class="note"><span class="tag dn">−107 902 €</span></div></div>
+  </div>
+  <div class="chart" id="chLV"></div>
+
+  <h2>Hypoteesit</h2>
+  <div id="hyps"></div>
+
+  <h2>Toimenpidesuositukset</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Toimenpide</th><th>Prioriteetti</th><th>Aikataulu</th></tr></thead>
+    <tbody>
+      <tr><td>Korjaa normaaliputken vaiheet HubSpotissa: ”Voitettu” ja ”Odottaa” oikeisiin closed won / closed lost -tyyppeihin (vaatii HubSpot-adminin, mahdollisesti uudet vaiheet + dealien siirto)</td><td><span class="tag dn">Kriittinen</span></td><td>Ennen lokakuun raporttia</td></tr>
+      <tr><td>Palauta tapaamismäärä vähintään 80–95/kk, erityisesti Ohituskaistan isoihin avoimiin</td><td><span class="tag dn">Kriittinen</span></td><td>Syys–lokakuu</td></tr>
+      <tr><td>Päivitä Ohituskaistan avoimien dealien sulkemispäivät ja arvot (Ramboll, Pharmia, HOX Sitowise, Jaatimet, KM-huolto)</td><td><span class="tag nt">Korkea</span></td><td>2 viikkoa</td></tr>
+      <tr><td>Anuco, Bolt.Works ja AGCO: johdon yhteydenotto, selvitä elokuun pudotus</td><td><span class="tag nt">Korkea</span></td><td>2 viikkoa</td></tr>
+      <tr><td>LevelUp-kesäkampanjan jälkiarvio: 7 % voittoaste, päätä pienten kyselyjen käsittelymalli</td><td><span class="tag inf">Tärkeä</span></td><td>Lokakuu</td></tr>
+      <tr><td>Gradia (47 k€): varmista jatkotilaukset ja kate (21 %)</td><td><span class="tag up">Mahdollisuus</span></td><td>Syyskuu</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<footer>Lähde: HubSpot CRM, haku 19.9.2026 (puhelut, sähköpostit, tapaamiset aktiviteettipäivän mukaan; uudet dealit luontipäivän ja suljetut sulkemispäivän mukaan). Liikevaihto ja kate: SuomenBrodeeraus_Myyntiseuranta_v3_Elokuu2026.xlsx (Asiakasraportit, veroton summa). Luottamuksellinen, vain hallituksen käyttöön.</footer>
+</main>
+
+<script>
+// Tabs
+const tabs=[...document.querySelectorAll('[role="tab"]')];
+tabs.forEach(b=>b.addEventListener('click',()=>{
+  tabs.forEach(x=>x.setAttribute('aria-selected',x===b));
+  document.querySelectorAll('[role="tabpanel"]').forEach(p=>p.classList.toggle('on',p.id===b.dataset.t));
+}));
+
+const fi=n=>n.toLocaleString('fi-FI');
+function chart(id,title,labels,a,b,fmt=fi){
+  const el=document.getElementById(id); if(!el) return;
+  const max=Math.max(...a,...b)||1;
+  let h=`<div class="t">${title}</div><div class="bars">`;
+  labels.forEach((l,i)=>{h+=`<div class="grp"><div class="pair">
+    <div class="bar b25" style="height:${a[i]/max*88}%" title="2025: ${fmt(a[i])}"><span>${fmt(a[i])}</span></div>
+    <div class="bar b26" style="height:${b[i]/max*88}%" title="2026: ${fmt(b[i])}"><span>${fmt(b[i])}</span></div>
+  </div></div>`});
+  h+=`</div><div class="xl">${labels.map(l=>`<div>${l}</div>`).join('')}</div>
+  <div class="legend"><i class="b25"></i>2025<i class="b26"></i>2026</div>`;
+  el.innerHTML=h;
+}
+const M=['Kesä','Heinä','Elo'];
+chart('chCalls','Puhelut',M,[82,1,488],[811,282,444]);
+chart('chMeet','Tapaamiset',M,[83,6,95],[92,14,38]);
+chart('chMail','Sähköpostit',M,[2766,1370,2801],[3427,2200,2689]);
+chart('chCont','Uudet kontaktit',M,[316,133,154],[689,162,213]);
+chart('chOhitusMeet','Ohituskaistan tapaamiset kuukausittain',M,[9,0,7],[16,3,2]);
+chart('chLV','Liikevaihto kuukausittain (€)',M,[260556,125962,263968],[274241,128435,235482],n=>Math.round(n/1000)+' k€');
+
+// KPI top
+const k=[
+ ['Puhelut','571','1 537','+169 %','up'],
+ ['Tapaamiset','184','144','−22 %','dn'],
+ ['Voitettu (kaikki putket)','167 800 €','248 000 €','+48 %','up'],
+ ['Liikevaihto','650 486 €','638 158 €','−1,9 %','nt'],
+ ['Sähköpostit','6 937','8 316','+20 %','up'],
+ ['Uudet kontaktit','603','1 064','+76 %','up'],
+ ['Uudet dealit','237','235','−1 %','nt'],
+ ['Myyntikate','227 371 €','201 680 €','−11,3 %','dn'],
+];
+document.getElementById('kpiTop').innerHTML=k.map(([l,a,b,d,c])=>`<div class="kpi"><div class="l">${l}</div>
+<div class="v"><span><span class="yr">2025</span><span class="n old">${a}</span></span><span><span class="yr">2026</span><span class="n">${b}</span></span><span class="tag ${c}">${d}</span></div></div>`).join('');
+
+// Hypotheses
+const H=[
+ ['H1: Myyntiaktiivisuus on laskenut','Kumottu','up','Puhelut +169 %, sähköpostit +20 %, uudet kontaktit +76 %. Aktiivisuus ei selitä elokuun laskua. Huom: kesän 2025 kirjaukset olivat vajaita, joten kasvu on osin kirjauskurin paranemista.'],
+ ['H2: Tapaamisten väheneminen hidastaa kauppoja','Vahvistettu','dn','Tapaamiset −22 %, elokuussa −60 %. Ohituskaistan voittoon tarvittiin 4,2 tapaamista (2025: 2,3). Tapaamisvaje näkyy viiveellä syys–lokakuun klousauksissa.'],
+ ['H3: Elokuun lasku johtuu yksittäisistä suurasiakkaista','Vahvistettu','dn','Anuco (21 700 € elokuussa 2025), Bolt.Works, Agrihuolto ja Elomatic puuttuvat tai ostivat vähemmän. Päähineet −36 500 € (−78 %). Gradian 47 200 € kertatilaus peittää pudotuksen: ilman sitä elokuu −28,7 %.'],
+ ['H4: Kannattavuus heikkenee','Vahvistettu','dn','Kate −25 700 € (−11,3 %), kate-% 35,0 → 31,6. Elokuun kate-% 33,5: Gradian kate 21 % ja ei-valikoimaryhmän kate negatiivinen.'],
+ ['H5: Ohituskaista tuottaa aiempaa paremmin','Vahvistettu','up','Voitettu 147 500 € (66 000 €), voittoaste 42 % (19 %). Riski: 3/5 voitosta Eerola-konsernia.'],
+ ['H6: LevelUp tuo kauppaa normaaliputkeen','Ei vahvistettu','nt','Kesäkuun kampanjasta 28 dealia, heinä–elokuussa ei uusia. Voittoaste 7 %. Arvo syntyy isoista liideistä Ohituskaistassa (Avesco, PRG, Eilakaisla).'],
+ ['H7: HubSpotin raportit näyttävät oikean voittokuvan','Kumottu, uusi löydös','dn','Normaaliputken vaihe ”Voitettu” on sisäisesti closed lost ja ”Odottaa” closed won. HubSpotin vakioraportit ja ennusteet kääntävät voitot ja odottavat. Kevään ”12 virheellistä voittoa” selittyy todennäköisesti tällä.'],
+];
+document.getElementById('hyps').innerHTML=H.map(([h,v,c,t])=>`<div class="hyp"><div class="h">${h}<span class="tag ${c}">${v}</span></div><p>${t}</p></div>`).join('');
+</script>
+</body>
+</html>
