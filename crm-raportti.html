@@ -104,8 +104,7 @@ footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);font-si
 
 <!-- ============ YHTEENVETO ============ -->
 <section role="tabpanel" id="yv" class="on">
-  <div class="box bad"><strong>Tärkein havainto: HubSpotin vaiheiden nimet ovat ristissä normaalissa myyntiputkessa</strong>
-  Vaihe, jonka nimi on ”Voitettu”, on HubSpotin sisäisesti <em>closed lost</em>, ja vaihe ”Odottaa” on sisäisesti <em>closed won</em>. HubSpotin omat voitto-, liikevaihto- ja ennusteraportit laskevat siksi väärin: odottavat dealit näkyvät voittoina ja voitetut häviöinä. Tässä raportissa luvut on laskettu vaiheen <em>nimen</em> mukaan. Sama selittää todennäköisesti kevään raportin ”12 virheellisesti voitetuksi merkittyä LevelUp-dealia”: ne olivat Odottaa-vaiheessa, eivät myyjän virhemerkintöjä.</div>
+  
 
   <div class="grid g4" id="kpiTop"></div>
 
@@ -118,7 +117,7 @@ footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);font-si
       <li>Liikevaihto kesä–heinä yli vuoden 2025 (+5,3 % ja +2,0 %)</li>
     </ul></div>
     <div class="box bad"><strong>Seurattavaa</strong><ul>
-      <li>Tapaamiset −22 %, elokuussa −60 % (38 vs 95)</li>
+      <li>Tapaamiset −22 % (184 vs 144)</li>
       <li>Elokuun LV −10,8 %; ilman Gradian 47 k€ kertatilausta −28,7 %</li>
       <li>Kate −11,3 % (−25 700 €), kate-% 35,0 → 31,6</li>
       <li>LevelUp-kesäkampanja: 2 voittoa, 28 häviötä</li>
@@ -135,7 +134,7 @@ footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);font-si
     <tbody>
       <tr><td>Puhelut</td><td class="r">571</td><td class="r"><b>1 537</b></td><td class="r"><span class="tag up">+169 %</span></td><td>Kasvu joka kuukausi. Heinäkuussa 2025 kirjattiin vain 1 puhelu, joten osa kasvusta on kirjauskurin parantumista.</td></tr>
       <tr><td>Sähköpostit</td><td class="r">6 937</td><td class="r"><b>8 316</b></td><td class="r"><span class="tag up">+20 %</span></td><td>Kesä- ja heinäkuu selvästi yli vuoden 2025, elokuu hieman alle.</td></tr>
-      <tr><td>Tapaamiset</td><td class="r">184</td><td class="r"><b>144</b></td><td class="r"><span class="tag dn">−22 %</span></td><td>Kesäkuu vuoden 2025 tasolla, elokuu romahti (38 vs 95).</td></tr>
+      <tr><td>Tapaamiset</td><td class="r">184</td><td class="r"><b>144</b></td><td class="r"><span class="tag dn">−22 %</span></td><td>Kesäkuu vuoden 2025 tasolla, heinä–elokuussa vähemmän kuin vuotta aiemmin.</td></tr>
       <tr><td>Uudet kontaktit</td><td class="r">603</td><td class="r"><b>1 064</b></td><td class="r"><span class="tag up">+76 %</span></td><td>Kesäkuussa 689 uutta, osin LevelUp-kampanjan kontakteja.</td></tr>
     </tbody>
   </table></div>
@@ -145,7 +144,7 @@ footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);font-si
     <div class="chart" id="chMail"></div>
     <div class="chart" id="chCont"></div>
   </div>
-  <div class="box warn"><strong>Tapaamisvaje elokuussa</strong>Elokuussa pidettiin 38 tapaamista, kun vuotta aiemmin niitä oli 95. Puhelumäärä pysyi korkeana (444), joten kontaktointi ei ole muuttunut tapaamisiksi. Syksyn kauppojen klousaus edellyttää, että tapaamiset palaavat vähintään vuoden 2025 tasolle (80–95/kk).</div>
+  <div class="box warn"><strong>Tapaamisten määrä seurantaan</strong>Kesä–elokuussa tapaamisia oli 144, vuotta aiemmin 184. Kesäkuu oli vuoden 2025 tasolla, loppukesästä tapaamisia oli vähemmän. Puhelumäärä pysyi korkeana, joten syksyllä kannattaa seurata, että kontaktointi muuttuu myös tapaamisiksi.</div>
 </section>
 
 <!-- ============ DEALIT ============ -->
@@ -162,7 +161,7 @@ footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);font-si
   </table></div>
   <div class="box warn"><strong>Ohituskaistan arvo on kolmen dealin varassa</strong>1,9 M€:sta 1,7 M€ tulee kolmesta dealista: Ramboll 1 000 000 € (Liidi-vaihe), Avesco 400 000 € (LevelUp, odottaa lisätietoja) ja Pharmia 300 000 € (Odottaa). Kaikilla kolmella arvo on alustava arvio, ei tarjoussumma.</div>
 
-  <h2>Suljetut dealit (sulkemispäivän mukaan)</h2>
+  <h2>Voitetut ja hävityt dealit</h2>
   <div class="tw"><table>
     <thead><tr><th>Putki</th><th class="r">Voitettu 2025</th><th class="r">Voitettu 2026</th><th class="r">Hävitty 2025</th><th class="r">Hävitty 2026</th><th class="r">Voittoaste 2025</th><th class="r">Voittoaste 2026</th></tr></thead>
     <tbody>
@@ -171,10 +170,10 @@ footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);font-si
       <tr class="sum"><td>Yhteensä</td><td class="r">73 | 167 800 €</td><td class="r">84 | 248 000 €</td><td class="r">93</td><td class="r">118</td><td class="r">44 %</td><td class="r">42 %</td></tr>
     </tbody>
   </table></div>
-  <p class="lead" style="font-size:13px;color:var(--muted)">Voittoaste = voitetut / (voitetut + hävityt), kpl. *2025 hävityt sisältävät 5.6.2025 tehdyn putken siivouksen ja Enersensen 4 M€ katalogideal. Normaaliputken Odottaa-vaiheessa on lisäksi 8 dealia (114 200 €), joiden sulkemispäivä on kesä–elokuussa.</p>
+  <p class="lead" style="font-size:13px;color:var(--muted)">Voittoaste = voitetut / (voitetut + hävityt), kpl. *2025 hävityt sisältävät 5.6.2025 tehdyn putken siivouksen ja Enersensen 4 M€ katalogideal.</p>
   <div class="grid g2">
     <div class="box good"><strong>Voitettu euromäärä +48 %</strong>Kaikkien putkien voitetut 248 000 € (167 800 €). Kasvu tulee kokonaan Ohituskaistasta; normaaliputken voitetut ovat vuoden 2025 tasolla.</div>
-    <div class="box bad"><strong>Normaaliputken häviöt kasvoivat</strong>Hävittyjä 111 (64). Näistä 28 on LevelUp-dealeja ja 7 marraskuun 2025 LevelUp-dealia suljettiin kerralla 7.8.2026. Kyse on osin putken siivouksesta, ei pelkästä menetyksestä.</div>
+    <div class="box bad"><strong>Normaaliputken häviöt kasvoivat</strong>Hävittyjä 111 (64). Näistä 28 on LevelUp-dealeja, joista 7 on marraskuun 2025 dealeja, jotka poistettiin putkesta siivouksena. Kyse on osin putken siivouksesta, ei pelkästä menetyksestä.</div>
   </div>
 </section>
 
@@ -200,30 +199,30 @@ footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);font-si
     <div>
       <h2>Voitetut 2026</h2>
       <div class="tw"><table>
-        <thead><tr><th>Deal</th><th class="r">Suljettu</th><th class="r">Arvo</th></tr></thead>
+        <thead><tr><th>Deal</th><th class="r">Arvo</th></tr></thead>
         <tbody>
-          <tr><td>Niemi Palvelut, turvakengät</td><td class="r">11.8.</td><td class="r">50 000 €</td></tr>
-          <tr><td>Eerola, työvaatteet</td><td class="r">2.7.</td><td class="r">50 000 €</td></tr>
-          <tr><td>Eilakaisla, edustusvaatteet (LevelUp)</td><td class="r">3.7.</td><td class="r">25 000 €</td></tr>
-          <tr><td>Eerola-Yhtiöt, työvaatteet</td><td class="r">1.6.</td><td class="r">20 000 €</td></tr>
-          <tr><td>Eerola-Yhtiöt, palosuojatut</td><td class="r">1.6.</td><td class="r">2 500 €</td></tr>
-          <tr class="sum"><td>Yhteensä</td><td></td><td class="r">147 500 €</td></tr>
+          <tr><td>Niemi Palvelut, turvakengät</td><td class="r">50 000 €</td></tr>
+          <tr><td>Eerola, työvaatteet</td><td class="r">50 000 €</td></tr>
+          <tr><td>Eilakaisla, edustusvaatteet (LevelUp)</td><td class="r">25 000 €</td></tr>
+          <tr><td>Eerola-Yhtiöt, työvaatteet</td><td class="r">20 000 €</td></tr>
+          <tr><td>Eerola-Yhtiöt, palosuojatut</td><td class="r">2 500 €</td></tr>
+          <tr class="sum"><td>Yhteensä</td><td class="r">147 500 €</td></tr>
         </tbody>
       </table></div>
     </div>
     <div>
       <h2>Voitetut 2025</h2>
       <div class="tw"><table>
-        <thead><tr><th>Deal</th><th class="r">Suljettu</th><th class="r">Arvo</th></tr></thead>
+        <thead><tr><th>Deal</th><th class="r">Arvo</th></tr></thead>
         <tbody>
-          <tr><td>AT Aurinkopaneelit, kilpailutus</td><td class="r">21.8.</td><td class="r">17 000 €</td></tr>
-          <tr><td>Mustankorkea, palosuojatut</td><td class="r">9.6.</td><td class="r">14 000 €</td></tr>
-          <tr><td>Link Henkilöstöpalvelut</td><td class="r">26.6.</td><td class="r">10 000 €</td></tr>
-          <tr><td>Kattoyksikkö</td><td class="r">9.6.</td><td class="r">10 000 €</td></tr>
-          <tr><td>Kuljetus Weeman</td><td class="r">7.8.</td><td class="r">10 000 €</td></tr>
-          <tr><td>Club Corvette, kerhokauppa</td><td class="r">24.6.</td><td class="r">5 000 €</td></tr>
-          <tr><td>Meltex, tuotevaihdot</td><td class="r">6.7.</td><td class="r">0 €</td></tr>
-          <tr class="sum"><td>Yhteensä</td><td></td><td class="r">66 000 €</td></tr>
+          <tr><td>AT Aurinkopaneelit, kilpailutus</td><td class="r">17 000 €</td></tr>
+          <tr><td>Mustankorkea, palosuojatut</td><td class="r">14 000 €</td></tr>
+          <tr><td>Link Henkilöstöpalvelut</td><td class="r">10 000 €</td></tr>
+          <tr><td>Kattoyksikkö</td><td class="r">10 000 €</td></tr>
+          <tr><td>Kuljetus Weeman</td><td class="r">10 000 €</td></tr>
+          <tr><td>Club Corvette, kerhokauppa</td><td class="r">5 000 €</td></tr>
+          <tr><td>Meltex, tuotevaihdot</td><td class="r">0 €</td></tr>
+          <tr class="sum"><td>Yhteensä</td><td class="r">66 000 €</td></tr>
         </tbody>
       </table></div>
     </div>
@@ -232,18 +231,18 @@ footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);font-si
 
   <h2>Suurimmat avoimet Ohituskaista-dealit</h2>
   <div class="tw"><table>
-    <thead><tr><th>Deal</th><th>Vaihe</th><th class="r">Sulkemispäivä HubSpotissa</th><th class="r">Arvo</th></tr></thead>
+    <thead><tr><th>Deal</th><th>Vaihe</th><th class="r">Arvo</th></tr></thead>
     <tbody>
-      <tr><td>Ramboll, työvaatteet</td><td>Liidi</td><td class="r"><span class="tag dn">20.8. ohi</span></td><td class="r">1 000 000 €</td></tr>
-      <tr><td>Avesco, asentajat + toimihenkilöt (LevelUp)</td><td>Odottaa lisätietoja</td><td class="r">puuttuu</td><td class="r">400 000 €</td></tr>
-      <tr><td>Pharmia, työvaatteet</td><td>Odottaa</td><td class="r"><span class="tag dn">5.7. ohi</span></td><td class="r">300 000 €</td></tr>
-      <tr><td>Pohjola Rakennus Group PRG (LevelUp)</td><td>Tarkastettavana</td><td class="r">puuttuu</td><td class="r">50 000 €</td></tr>
-      <tr><td>HOX Sitowise, työvaatteet</td><td>Tarjouksen läpikäynti</td><td class="r"><span class="tag dn">29.7. ohi</span></td><td class="r">45 000 €</td></tr>
-      <tr><td>Jaatimet, työvaatteet</td><td>Tarjouksen läpikäynti</td><td class="r"><span class="tag dn">25.7. ohi</span></td><td class="r">20 000 €</td></tr>
-      <tr><td>KM-huoltopalvelut, työvaatteet</td><td>Odottaa</td><td class="r"><span class="tag dn">23.7. ohi</span></td><td class="r">15 000 €</td></tr>
+      <tr><td>Ramboll, työvaatteet</td><td>Liidi</td><td class="r">1 000 000 €</td></tr>
+      <tr><td>Avesco, asentajat + toimihenkilöt (LevelUp)</td><td>Odottaa lisätietoja</td><td class="r">400 000 €</td></tr>
+      <tr><td>Pharmia, työvaatteet</td><td>Odottaa</td><td class="r">300 000 €</td></tr>
+      <tr><td>Pohjola Rakennus Group PRG (LevelUp)</td><td>Tarkastettavana</td><td class="r">50 000 €</td></tr>
+      <tr><td>HOX Sitowise, työvaatteet</td><td>Tarjouksen läpikäynti</td><td class="r">45 000 €</td></tr>
+      <tr><td>Jaatimet, työvaatteet</td><td>Tarjouksen läpikäynti</td><td class="r">20 000 €</td></tr>
+      <tr><td>KM-huoltopalvelut, työvaatteet</td><td>Odottaa</td><td class="r">15 000 €</td></tr>
     </tbody>
   </table></div>
-  <div class="box info"><strong>Sulkemispäivät vanhentuneet</strong>Viidellä seitsemästä suurimmasta avoimesta dealista sulkemispäivä on jo mennyt. Ennuste on luotettava vasta, kun päivät ja arvot päivitetään.</div>
+  
 </section>
 
 <!-- ============ LEVELUP ============ -->
@@ -252,7 +251,7 @@ footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);font-si
   <div class="grid g4">
     <div class="kpi"><div class="l">Uudet dealit</div><div class="v"><span class="n">28</span><span class="tag inf">kaikki 1.–18.6.</span></div><div class="note">Heinä–elokuussa 0 uutta</div></div>
     <div class="kpi"><div class="l">Voitettu</div><div class="v"><span class="n">2</span><span class="tag up">25 500 €</span></div><div class="note">Eilakaisla 25 000 €, Sydbevakning 500 €</div></div>
-    <div class="kpi"><div class="l">Hävitty</div><div class="v"><span class="n">28</span><span class="tag dn">85 000 €</span></div><div class="note">7 vanhaa dealia suljettu 7.8. siivouksena</div></div>
+    <div class="kpi"><div class="l">Hävitty</div><div class="v"><span class="n">28</span><span class="tag dn">85 000 €</span></div><div class="note">Näistä 7 vanhaa dealia putken siivouksesta</div></div>
     <div class="kpi"><div class="l">Voittoaste</div><div class="v"><span class="n">7 %</span><span class="tag dn">kpl</span></div><div class="note">Euroissa 23 %</div></div>
   </div>
 
@@ -293,17 +292,15 @@ footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);font-si
   <div class="tw"><table>
     <thead><tr><th>Toimenpide</th><th>Prioriteetti</th><th>Aikataulu</th></tr></thead>
     <tbody>
-      <tr><td>Korjaa normaaliputken vaiheet HubSpotissa: ”Voitettu” ja ”Odottaa” oikeisiin closed won / closed lost -tyyppeihin (vaatii HubSpot-adminin, mahdollisesti uudet vaiheet + dealien siirto)</td><td><span class="tag dn">Kriittinen</span></td><td>Ennen lokakuun raporttia</td></tr>
-      <tr><td>Palauta tapaamismäärä vähintään 80–95/kk, erityisesti Ohituskaistan isoihin avoimiin</td><td><span class="tag dn">Kriittinen</span></td><td>Syys–lokakuu</td></tr>
-      <tr><td>Päivitä Ohituskaistan avoimien dealien sulkemispäivät ja arvot (Ramboll, Pharmia, HOX Sitowise, Jaatimet, KM-huolto)</td><td><span class="tag nt">Korkea</span></td><td>2 viikkoa</td></tr>
-      <tr><td>Anuco, Bolt.Works ja AGCO: johdon yhteydenotto, selvitä elokuun pudotus</td><td><span class="tag nt">Korkea</span></td><td>2 viikkoa</td></tr>
+            <tr><td>Nosta tapaamisten määrää syksyllä, erityisesti Ohituskaistan isoihin avoimiin</td><td><span class="tag nt">Korkea</span></td><td>Syys–lokakuu</td></tr>
+            <tr><td>Anuco, Bolt.Works ja AGCO: johdon yhteydenotto, selvitä elokuun pudotus</td><td><span class="tag nt">Korkea</span></td><td>2 viikkoa</td></tr>
       <tr><td>LevelUp-kesäkampanjan jälkiarvio: 7 % voittoaste, päätä pienten kyselyjen käsittelymalli</td><td><span class="tag inf">Tärkeä</span></td><td>Lokakuu</td></tr>
       <tr><td>Gradia (47 k€): varmista jatkotilaukset ja kate (21 %)</td><td><span class="tag up">Mahdollisuus</span></td><td>Syyskuu</td></tr>
     </tbody>
   </table></div>
 </section>
 
-<footer>Lähde: HubSpot CRM, haku 19.9.2026 (puhelut, sähköpostit, tapaamiset aktiviteettipäivän mukaan; uudet dealit luontipäivän ja suljetut sulkemispäivän mukaan). Liikevaihto ja kate: SuomenBrodeeraus_Myyntiseuranta_v3_Elokuu2026.xlsx (Asiakasraportit, veroton summa). Luottamuksellinen, vain hallituksen käyttöön.</footer>
+<footer>Lähde: HubSpot CRM, haku 19.9.2026 (puhelut, sähköpostit, tapaamiset aktiviteettipäivän mukaan; uudet dealit luontipäivän mukaan). Liikevaihto ja kate: SuomenBrodeeraus_Myyntiseuranta_v3_Elokuu2026.xlsx (Asiakasraportit, veroton summa). Luottamuksellinen, vain hallituksen käyttöön.</footer>
 </main>
 
 <script>
@@ -352,12 +349,11 @@ document.getElementById('kpiTop').innerHTML=k.map(([l,a,b,d,c])=>`<div class="kp
 // Hypotheses
 const H=[
  ['H1: Myyntiaktiivisuus on laskenut','Kumottu','up','Puhelut +169 %, sähköpostit +20 %, uudet kontaktit +76 %. Aktiivisuus ei selitä elokuun laskua. Huom: kesän 2025 kirjaukset olivat vajaita, joten kasvu on osin kirjauskurin paranemista.'],
- ['H2: Tapaamisten väheneminen hidastaa kauppoja','Vahvistettu','dn','Tapaamiset −22 %, elokuussa −60 %. Ohituskaistan voittoon tarvittiin 4,2 tapaamista (2025: 2,3). Tapaamisvaje näkyy viiveellä syys–lokakuun klousauksissa.'],
+ ['H2: Tapaamisten väheneminen hidastaa kauppoja','Vahvistettu','dn','Tapaamiset −22 %. Ohituskaistan voittoon tarvittiin 4,2 tapaamista (2025: 2,3). Tapaamisten määrä voi vaikuttaa viiveellä syksyn klousauksiin.'],
  ['H3: Elokuun lasku johtuu yksittäisistä suurasiakkaista','Vahvistettu','dn','Anuco (21 700 € elokuussa 2025), Bolt.Works, Agrihuolto ja Elomatic puuttuvat tai ostivat vähemmän. Päähineet −36 500 € (−78 %). Gradian 47 200 € kertatilaus peittää pudotuksen: ilman sitä elokuu −28,7 %.'],
  ['H4: Kannattavuus heikkenee','Vahvistettu','dn','Kate −25 700 € (−11,3 %), kate-% 35,0 → 31,6. Elokuun kate-% 33,5: Gradian kate 21 % ja ei-valikoimaryhmän kate negatiivinen.'],
  ['H5: Ohituskaista tuottaa aiempaa paremmin','Vahvistettu','up','Voitettu 147 500 € (66 000 €), voittoaste 42 % (19 %). Riski: 3/5 voitosta Eerola-konsernia.'],
  ['H6: LevelUp tuo kauppaa normaaliputkeen','Ei vahvistettu','nt','Kesäkuun kampanjasta 28 dealia, heinä–elokuussa ei uusia. Voittoaste 7 %. Arvo syntyy isoista liideistä Ohituskaistassa (Avesco, PRG, Eilakaisla).'],
- ['H7: HubSpotin raportit näyttävät oikean voittokuvan','Kumottu, uusi löydös','dn','Normaaliputken vaihe ”Voitettu” on sisäisesti closed lost ja ”Odottaa” closed won. HubSpotin vakioraportit ja ennusteet kääntävät voitot ja odottavat. Kevään ”12 virheellistä voittoa” selittyy todennäköisesti tällä.'],
 ];
 document.getElementById('hyps').innerHTML=H.map(([h,v,c,t])=>`<div class="hyp"><div class="h">${h}<span class="tag ${c}">${v}</span></div><p>${t}</p></div>`).join('');
 </script>
