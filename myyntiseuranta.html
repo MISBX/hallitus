@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SB Myyntiseuranta – Tammi–Elokuu 2026</title>
+<title>SB Myyntiseuranta – Tammi–Syyskuu 2026</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;font-size:13.5px}
@@ -57,25 +57,26 @@ td{padding:8px 13px}
 .pk{color:#dc2626;font-weight:700}
 .ph{color:#d97706;font-weight:700}
 .pm{color:#64748b}
+td.r{white-space:nowrap}
 </style>
 </head>
 <body>
 <div class="header">
   <div class="header-label">Suomen Brodeeraus Oy — Hallitusraportti</div>
-  <div class="header-title">Myyntiseuranta — Tammi–Elokuu 2026</div>
-  <div class="header-sub">Vertailu 2025 | Budjetti | Asiakkaat | Tuoteryhmät &nbsp;|&nbsp; Data: Tehden 1.8.2026</div>
+  <div class="header-title">Myyntiseuranta — Tammi–Syyskuu 2026</div>
+  <div class="header-sub">Vertailu 2025 | Budjetti | Asiakkaat | Tuoteryhmät &nbsp;|&nbsp; Data: Tehden Asiakasraportit 1.1.–30.9.2026</div>
 </div>
 <div class="tabs" id="tabBar"></div>
 <div class="content" id="content"></div>
 <script>
-var d25=[179868,226864,342016,400398,315360,260556,125962,263968];
-var d26=[192772,210886,263139,335678,318889,274241,128435,235482];
-var k25=[36.2,36.2,29.2,40.0,41.4,34.4,34.5,38.0];
-var k26=[35.1,33.6,35.5,33.5,28.8,37.3,38.2,33.5];
-var b26=[202906,200313,330155,443274,343680,308021,155900,282139];
-var t25=[522,599,832,748,799,1255,878,1184];
-var t26=[488,450,588,737,690,610,419,521];
-var mn=["Tammikuu","Helmikuu","Maaliskuu","Huhtikuu","Toukokuu","Kesakuu","Heinakuu","Elokuu"];
+var d25=[179868,226864,342016,400398,315360,260556,125962,263968,283143];
+var d26=[192772,210886,263139,335678,318889,274241,128435,235482,317632];
+var k25=[36.2,36.2,29.2,40.0,41.4,34.4,34.5,38.0,29.6];
+var k26=[35.1,33.6,35.5,33.5,28.8,37.3,38.2,33.5,33.2];
+var b26=[202906,200313,330155,443274,343680,308021,155900,282139,717923];
+var t25=[522,599,832,748,799,1255,878,1184,635];
+var t26=[488,450,588,737,690,610,419,521,585];
+var mn=["Tammikuu","Helmikuu","Maaliskuu","Huhtikuu","Toukokuu","Kesakuu","Heinakuu","Elokuu","Syyskuu"];
 
 function sum(a){return a.reduce(function(x,y){return x+y;},0);}
 var y25=sum(d25),y26=sum(d26),yb=sum(b26);
@@ -129,7 +130,7 @@ function kpiCard(label,v25str,v26str,chg){
 
 function mTable(){
   var rows="";
-  for(var i=0;i<8;i++){
+  for(var i=0;i<9;i++){
     var chg=(d26[i]-d25[i])/d25[i]*100;
     var dp=k26[i]-k25[i];
     rows+='<tr><td>'+mn[i]+'</td><td class="r">'+fe(d25[i])+'</td><td class="r">'+fe(d26[i])+'</td><td class="r">'+fe(b26[i])+'</td>'
@@ -139,7 +140,7 @@ function mTable(){
   }
   var cy=(y26-y25)/y25*100;
   var kp26=yk26/y26*100, kp25=yk25/y25*100;
-  rows+='<tr class="tot"><td>TAMMI\u2013ELO YTD</td><td class="r">'+fe(y25)+'</td><td class="r">'+fe(y26)+'</td><td class="r">'+fe(yb)+'</td>'
+  rows+='<tr class="tot"><td>TAMMI\u2013SYYS YTD</td><td class="r">'+fe(y25)+'</td><td class="r">'+fe(y26)+'</td><td class="r">'+fe(yb)+'</td>'
     +'<td class="r '+(cy<0?"dn":"up")+'">'+fp(cy)+'</td>'
     +'<td class="c">'+kp25.toFixed(1)+'%</td><td class="c">'+kp26.toFixed(1)+'%</td>'
     +'<td class="c '+((kp26-kp25)<0?"dn":"up")+'">'+(kp26>kp25?"+":"")+(kp26-kp25).toFixed(1)+' pp</td></tr>';
@@ -148,24 +149,24 @@ function mTable(){
 
 function renderYhteenveto(el){
   var cl=(y26-y25)/y25*100, cb=(y26-yb)/yb*100, ck=(yk26/y26-yk25/y25)*100;
-  var h='<div class="ytdb"><div class="ytdt">\uD83C\uDFC1 YTD Tammi\u2013Elokuu 2026</div><div class="ytdg">'
+  var h='<div class="ytdb"><div class="ytdt">\uD83C\uDFC1 YTD Tammi\u2013Syyskuu 2026</div><div class="ytdg">'
     +'<div class="ytds"><div class="ytdsv">'+(y26/1e6).toFixed(2)+' M\u20ac</div><div class="ytdsl">Liikevaihto 2026</div></div>'
     +'<div class="ytds"><div class="ytdsv '+(cl<0?"dn":"up")+'">'+fp(cl)+'</div><div class="ytdsl">vs 2025 ('+(y25/1e6).toFixed(2)+' M\u20ac)</div></div>'
     +'<div class="ytds"><div class="ytdsv '+(cb<0?"dn":"up")+'">'+fp(cb)+'</div><div class="ytdsl">vs Budjetti ('+(yb/1e6).toFixed(2)+' M\u20ac)</div></div>'
     +'<div class="ytds"><div class="ytdsv '+(ck<0?"dn":"up")+'">'+(yk26/y26*100).toFixed(1)+'%</div><div class="ytdsl">Kate-% 2026 (oli '+(yk25/y25*100).toFixed(1)+'%)</div></div>'
     +'</div></div>';
-  h+='<div class="sec">Elokuu 2026 \u2014 Tuorein kuukausi</div>';
+  h+='<div class="sec">Syyskuu 2026 \u2014 Tuorein kuukausi</div>';
   h+='<div class="grid3">'
-    +kpiCard("Liikevaihto",fe(d25[7]),fe(d26[7]),(d26[7]-d25[7])/d25[7]*100)
-    +kpiCard("Myyntikate %",k25[7].toFixed(1)+"%",k26[7].toFixed(1)+"%",k26[7]-k25[7])
-    +kpiCard("Tilauksia",t25[7].toString(),t26[7].toString(),(t26[7]-t25[7])/t25[7]*100)
+    +kpiCard("Liikevaihto",fe(d25[8]),fe(d26[8]),(d26[8]-d25[8])/d25[8]*100)
+    +kpiCard("Myyntikate %",k25[8].toFixed(1)+"%",k26[8].toFixed(1)+"%",k26[8]-k25[8])
+    +kpiCard("Tilauksia",t25[8].toString(),t26[8].toString(),(t26[8]-t25[8])/t25[8]*100)
     +'</div>';
-  h+='<div class="ibox ig">\u2705 <strong>Elokuun iso uutuus:</strong> Jyv\u00e4skyl\u00e4n koulutuskuntayhtym\u00e4 Gradia 47 164 \u20ac \u2014 elokuun ylivoimainen #1. Uusi merkitt\u00e4v\u00e4 julkinen asiakkuus.</div>';
-  h+='<div class="ibox ir">\u26A0\uFE0F <strong>Elokuu \u221210.8% vs 2025</strong> \u2014 Anuco Oy l\u00e4hes kokonaan poissa. Kattotutka-ketjun lasku jatkuu.</div>';
-  h+='<div class="sec">Kuukausittainen kehitys \u2014 Tammi\u2013Elokuu 2026</div>';
+  h+='<div class="ibox ig">\u2705 <strong>Syyskuu +12,2 % vs 2025 (317 632 \u20ac).</strong> Kasvu tuli yhteisilt\u00e4 asiakkailta (+41 k\u20ac): AGCO Suomi Oy +16,8 k\u20ac ja Niemi Palvelut Oy +12,4 k\u20ac. Kate-% nousi 29,6 % \u2192 33,2 %.</div>';
+  h+='<div class="ibox ir">\u26A0\uFE0F <strong>Syyskuu \u221255,8 % budjetista.</strong> Syyskuun budjetti 717 923 \u20ac on 2,5-kertainen vuoden 2025 syyskuuhun (283 143 \u20ac) n\u00e4hden. YTD budjettivaje kasvoi 707 k\u20ac:oon.</div>';
+  h+='<div class="sec">Kuukausittainen kehitys \u2014 Tammi\u2013Syyskuu 2026</div>';
   h+='<div class="card">'+mTable()+'</div>';
-  h+='<div class="grid2"><div class="ibox ig">\u2705 <strong>Positiivista:</strong><br>\u2022 Kes\u00e4kuu +5.2% (274 241\u20ac)<br>\u2022 Hein\u00e4kuu +1.9% (128 435\u20ac)<br>\u2022 Kate-% hein\u00e4kuussa 38.2%<br>\u2022 KSBR Sverige AB \u2014 uusi kv-asiakas</div>'
-    +'<div class="ibox ir">\u26A0\uFE0F <strong>Seurattavaa:</strong><br>\u2022 YTD \u221212.7% vs 2025<br>\u2022 YTD \u221214.5% vs budjetti<br>\u2022 Kate-% YTD laskenut 35.3% \u2192 34.1%<br>\u2022 Kattokeskus-ketjun poistumat jatkuvat</div></div>';
+  h+='<div class="grid2"><div class="ibox ig">\u2705 <strong>Positiivista:</strong><br>\u2022 Syyskuu +12,2 % (317 632\u20ac)<br>\u2022 Kate-% syyskuussa 33,2 % (2025: 29,6 %)<br>\u2022 Edustusvaatteet +49,6 % syyskuussa<br>\u2022 Uusia: Vintit Kuntoon Oy, VM-Asfaltti Oy, KSBR Sverige AB</div>'
+    +'<div class="ibox ir">\u26A0\uFE0F <strong>Seurattavaa:</strong><br>\u2022 YTD \u22125,0 % vs 2025<br>\u2022 YTD \u221223,7 % vs budjetti<br>\u2022 Kate-% YTD 35,7 % \u2192 33,9 %<br>\u2022 P\u00e4\u00e4hineet \u221239,6 % syyskuussa; Anucon syyskuun tilausrivit 0 \u20ac</div></div>';
   el.innerHTML=h;
 }
 
@@ -181,10 +182,12 @@ function trTable(h){
 }
 
 function renderTuoteryh(el){
+  var syysRows=trRow("Edustusvaatteet",65480,97968,37.2,42.3,false)+trRow("Keng\u00e4t",24185,30895,17.0,16.2,false)+trRow("Liikelahjat",4750,14917,-8.2,53.3,false)+trRow("Logomerkkaus",11155,8568,99.4,99.9,false)+trRow("Promotuotteet",9596,9306,46.2,28.6,false)+trRow("P\u00e4\u00e4hineet",29226,17654,34.9,53.8,false)+trRow("Suojaimet",4449,3155,34.2,35.3,false)+trRow("Toimituskulut",4604,4169,100,100,false)+trRow("Ty\u00f6vaatteet",120764,111017,17.5,23.6,false)+trRow("Muut",6506,17735,29.2,3.7,false)+trRow("YHTEENS\u00c4",280715,315385,29.4,33.0,true);
   var eloRows=trRow("Edustusvaatteet",49888,48849,45.7,48.4,false)+trRow("Keng\u00e4t",17504,27014,18.1,20.2,false)+trRow("Liikelahjat",3686,3493,43.9,53.2,false)+trRow("Logomerkkaus",10090,9580,93.6,93.7,false)+trRow("Promotuotteet",14606,8623,42.8,53.9,false)+trRow("P\u00e4\u00e4hineet",46822,10349,39.3,56.8,false)+trRow("Suojaimet",5031,3798,25.8,27.5,false)+trRow("Toimituskulut",4033,2976,100,100,false)+trRow("Ty\u00f6vaatteet",85557,99525,16.6,21.7,false)+trRow("Muut",26132,9155,73.6,-5.2,false)+trRow("YHTEENS\u00c4",263968,235482,38.0,33.5,true);
   var heinaRows=trRow("Edustusvaatteet",19982,27635,43.1,36.4,false)+trRow("Keng\u00e4t",13512,13636,3.0,20.0,false)+trRow("Liikelahjat",1622,418,47.9,-170.7,false)+trRow("Logomerkkaus",10461,9594,99.8,100,false)+trRow("Promotuotteet",6166,2842,57.6,45.9,false)+trRow("P\u00e4\u00e4hineet",9608,8894,24.8,57.1,false)+trRow("Suojaimet",1923,3673,29.1,31.8,false)+trRow("Toimituskulut",3336,2257,100,100,false)+trRow("Ty\u00f6vaatteet",51387,53542,25.1,27.6,false)+trRow("Muut",4965,4645,36.6,11.3,false)+trRow("YHTEENS\u00c4",125962,128435,34.5,38.2,true);
   var kesaRows=trRow("Edustusvaatteet",59150,60997,42.6,46.3,false)+trRow("Keng\u00e4t",18856,14583,16.6,21.1,false)+trRow("Liikelahjat",13880,8390,38.2,28.9,false)+trRow("Logomerkkaus",10215,14758,99.4,99.9,false)+trRow("Promotuotteet",14373,9091,35.4,66.2,false)+trRow("P\u00e4\u00e4hineet",23295,17899,37.2,54.5,false)+trRow("Suojaimet",3807,2967,29.1,31.1,false)+trRow("Toimituskulut",4359,3961,100,100,false)+trRow("Ty\u00f6vaatteet",97408,128995,31.4,24.2,false)+trRow("Muut",14223,9572,-73.9,-7.4,false)+trRow("YHTEENS\u00c4",260556,274241,34.4,37.3,true);
-  el.innerHTML='<div class="sec">\u25b6 Elokuu 2026 vs 2025</div><div class="card">'+trTable(eloRows)+'</div>'
+  el.innerHTML='<div class="sec">\u25b6 Syyskuu 2026 vs 2025</div><div class="card">'+trTable(syysRows)+'</div>'
+    +'<div class="sec">\u25b6 Elokuu 2026 vs 2025</div><div class="card">'+trTable(eloRows)+'</div>'
     +'<div class="sec">\u25b6 Hein\u00e4kuu 2026 vs 2025</div><div class="card">'+trTable(heinaRows)+'</div>'
     +'<div class="sec">\u25b6 Kes\u00e4kuu 2026 vs 2025</div><div class="card">'+trTable(kesaRows)+'</div>';
 }
@@ -193,22 +196,38 @@ function topTable(rows){
   return '<table><thead><tr><th class="c">#</th><th>Asiakas</th><th class="r">Myynti 2026 \u20ac</th><th>Huomio</th></tr></thead><tbody>'+rows+'</tbody></table>';
 }
 function renderTop(el){
+  var syys=[["AGCO Suomi Oy",17169,"\u2191 Iso kasvu (2025: 368\u20ac)"],["Niemi Palvelut Oy",16124,"\u2191 Kasvaa"],["KSBR Sverige AB",15161,"\u2705 Kv-asiakas"],["Kattotutka Oy",14875,"\u2191"],["KSBR Keski-Suomen Betonirakenne Oy",11866,"\u2194"],["Tana Oy",9623,"\u2191"],["Vintit Kuntoon Oy",9049,"\u2705 Uusi asiakas"],["VM-Asfaltti Oy",8585,"Ei syys 2025"],["Finncont Oy",8376,"\u26A0\uFE0F Toimittamatta 30.9."],["Sakela Rakennus Oy",8358,"\u26A0\uFE0F Kate negatiivinen"]];
+  var ytdT=[["Kattotutka Oy",108595,"\u2194 (2025: 109 605\u20ac)"],["Anuco Oy",104898,"\u2191 +11 %"],["KSBR Keski-Suomen Betonirakenne Oy",72025,"\u2191 +28 %"],["Niemi Palvelut Oy",56936,"\u2191 +69 %"],["Jyv\u00e4skyl\u00e4n koulutuskuntayhtym\u00e4 Gradia",50379,"\u2b50 Uusi 2026"],["Scania Suomi Oy",49944,"\u2193 \u221227 %"],["Tana Oy",42105,"\u2191 +8 %"],["Alva-yhti\u00f6t Oy",39540,"\u2191 +34 %"],["Chiller Oy",34870,"\u2191 +52 %"],["Meltex Oy Plastics",34302,"\u2193 \u221217 %"]];
   var elo=[["Jyv\u00e4skyl\u00e4n koulutuskuntayhtym\u00e4 Gradia",47165,"\u2b50 Uusi suurasikas"],["Niemi Palvelut Oy",10269,"\u2191 Kasvaa"],["Tana Oy",7252,"\u2191 Kasvaa"],["Kattotutka Oy",7030,"\u2191"],["KSBR Sverige AB",6035,"\u2705 Uusi kv-asiakas"],["KSBR Keski-Suomen Betonirakenne Oy",5942,"\u2194"],["Viafin Process Piping Oy",4990,"\u2191"],["Calderys Finland Oy",4253,"\u2194"],["Elega Oy",3920,"\u2194"],["Kx-Treeshears Oy",3316,"Palasi"]];
   var heina=[["Anuco Oy",7853,"\u2191"],["Kattotutka Oy",6492,"\u2191"],["KSBR Keski-Suomen Betonirakenne Oy",5424,"\u2191"],["Tana Oy",4760,"\u2191"],["Scania Suomi Oy",4251,"Palasi"],["Salvos Finland Oy",4217,"\u2191"],["Niemi Palvelut Oy",3902,"\u2191"],["Elega Oy",3338,"\u2194"],["Maansiirto Harry M\u00e4kel\u00e4 Oy",2716,"Uusi top 10"],["LVI Kurikka Oy",2544,"\u2194"]];
   var kesa=[["Anuco Oy",37297,"\u26A0\uFE0F Iso backlog"],["Lillbacka Powerco Oy",18667,"\u2705 Uusi suuri asiakas"],["Kattotutka Oy",9138,"\u2191"],["Scania Suomi Oy",8517,"\u2191"],["Niemi Palvelut Oy",7477,"\u2191"],["LLP Farm Machinery Group Oy",6508,"Uusi top 10"],["Alltvex Oy",5337,"\u2705 Uusi"],["Harvia Austria GmbH",5135,"Kv-asiakas"],["KSBR Keski-Suomen Betonirakenne Oy",5069,"\u2191"],["Eezy Oyj",5008,"Uusi top 10"]];
   function makeRows(arr){return arr.map(function(r,i){return '<tr><td class="c">'+(i+1)+'</td><td>'+r[0]+'</td><td class="r">'+fe(r[1])+'</td><td>'+r[2]+'</td></tr>';}).join("");}
-  el.innerHTML='<div class="sec">\u25b6 Elokuu 2026</div><div class="card">'+topTable(makeRows(elo))+'</div>'
+  el.innerHTML='<div class="sec">\u25b6 YTD Tammi\u2013Syyskuu 2026 (kumulatiivinen)</div><div class="card">'+topTable(makeRows(ytdT))+'</div>'
+    +'<div class="sec">\u25b6 Syyskuu 2026</div><div class="card">'+topTable(makeRows(syys))+'</div>'
+    +'<div class="sec">\u25b6 Elokuu 2026</div><div class="card">'+topTable(makeRows(elo))+'</div>'
     +'<div class="sec">\u25b6 Hein\u00e4kuu 2026</div><div class="card">'+topTable(makeRows(heina))+'</div>'
     +'<div class="sec">\u25b6 Kes\u00e4kuu 2026</div><div class="card">'+topTable(makeRows(kesa))+'</div>';
 }
 
 function renderUudet(el){
-  el.innerHTML='<div class="ytdb"><div class="ytdt">\u2705 YTD UUDET ASIAKKAAT \u2014 Tammi\u2013Elokuu 2026</div><div class="ytdg">'
-    +'<div class="ytds"><div class="ytdsv">~124\u2013152</div><div class="ytdsl">Uusia/kk (arvio)</div></div>'
-    +'<div class="ytds"><div class="ytdsv">~1 100</div><div class="ytdsl">YTD uusia yhteens\u00e4</div></div>'
-    +'<div class="ytds"><div class="ytdsv">~150\u2013180</div><div class="ytdsl">Poistuvia/kk (arvio)</div></div>'
-    +'<div class="ytds"><div class="ytdsv dn">\u221230\u201350</div><div class="ytdsl">Nettomiinus/kk</div></div>'
+  el.innerHTML='<div class="ytdb"><div class="ytdt">\u2705 YTD UUDET ASIAKKAAT \u2014 Tammi\u2013Syyskuu 2026</div><div class="ytdg">'
+    +'<div class="ytds"><div class="ytdsv">1 240</div><div class="ytdsl">Uusia YTD (kpl)</div></div>'
+    +'<div class="ytds"><div class="ytdsv">957 358 \u20ac</div><div class="ytdsl">Uusien myynti YTD</div></div>'
+    +'<div class="ytds"><div class="ytdsv">1 449</div><div class="ytdsl">Menetettyj\u00e4 YTD (kpl)</div></div>'
+    +'<div class="ytds"><div class="ytdsv dn">-63 703 \u20ac</div><div class="ytdsl">Nettovaikutus YTD</div></div>'
     +'</div></div>'
+    +'<div class="sec">\u25b6 Kuukausittain (uusi = osti kuussa 2026, ei samana kuukautena 2025)</div>'+'<div class="card" style="overflow-x:auto"><table><thead><tr><th>Mittari</th><th class="r">Tammi</th><th class="r">Helmi</th><th class="r">Maalis</th><th class="r">Huhti</th><th class="r">Touko</th><th class="r">Kes\u00e4</th><th class="r">Hein\u00e4</th><th class="r">Elo</th><th class="r">Syys</th><th class="r">YTD</th></tr></thead><tbody><tr><td>Uusia (kpl)</td><td class="r">134</td><td class="r">117</td><td class="r">138</td><td class="r">148</td><td class="r">163</td><td class="r">143</td><td class="r">126</td><td class="r">130</td><td class="r">141</td><td class="r"><b>1 240</b></td></tr><tr><td>Uusien myynti</td><td class="r">100 253 \u20ac</td><td class="r">113 986 \u20ac</td><td class="r">97 648 \u20ac</td><td class="r">122 949 \u20ac</td><td class="r">117 252 \u20ac</td><td class="r">109 305 \u20ac</td><td class="r">47 084 \u20ac</td><td class="r">119 763 \u20ac</td><td class="r">129 118 \u20ac</td><td class="r"><b>957 358 \u20ac</b></td></tr><tr><td>Menetettyj\u00e4 (kpl)</td><td class="r">152</td><td class="r">160</td><td class="r">144</td><td class="r">172</td><td class="r">201</td><td class="r">171</td><td class="r">139</td><td class="r">145</td><td class="r">165</td><td class="r"><b>1 449</b></td></tr><tr><td>Nettovaikutus</td><td class="r">7 715 \u20ac</td><td class="r">22 050 \u20ac</td><td class="r">-16 003 \u20ac</td><td class="r">-12 970 \u20ac</td><td class="r">-37 892 \u20ac</td><td class="r">10 045 \u20ac</td><td class="r">-24 353 \u20ac</td><td class="r">-5 263 \u20ac</td><td class="r">-7 032 \u20ac</td><td class="r"><b>-63 703 \u20ac</b></td></tr></tbody></table></div>'
+    +'<div class="sec">\u25b6 Syyskuu 2026 \u2014 Merkitt\u00e4vimm\u00e4t uudet (141 kpl, 129 118 \u20ac)</div><div class="card"><table>'
+    +'<thead><tr><th>#</th><th>Asiakas</th><th class="r">Myynti \u20ac</th><th class="c">Kate%</th><th>Potentiaali</th></tr></thead><tbody>'
+    +'<tr><td>1</td><td>KSBR Sverige AB</td><td class="r">15 161 \u20ac</td><td class="c">12,0 %</td><td>Kv-asiakas (Ruotsi), kate matala</td></tr>'
+    +'<tr><td>2</td><td>Vintit Kuntoon Oy</td><td class="r">9 049 \u20ac</td><td class="c">36,0 %</td><td>\u2b50 1. osto, iso ensitilaus</td></tr>'
+    +'<tr><td>3</td><td>VM-Asfaltti Oy</td><td class="r">8 585 \u20ac</td><td class="c">24,5 %</td><td>Rakennusala</td></tr>'
+    +'<tr><td>4</td><td>Finncont Oy</td><td class="r">8 376 \u20ac</td><td class="c">\u2014</td><td>Toimittamatta 30.9.</td></tr>'
+    +'<tr><td>5</td><td>Ukemix Oy</td><td class="r">3 996 \u20ac</td><td class="c">23,0 %</td><td>Teollisuus</td></tr>'
+    +'<tr><td>6</td><td>Anaika Wood Group Ltd Oy</td><td class="r">3 605 \u20ac</td><td class="c">38,1 %</td><td>Puuteollisuus</td></tr>'
+    +'<tr><td>7</td><td>Harvia Austria GmbH</td><td class="r">3 545 \u20ac</td><td class="c">38,1 %</td><td>Kv-asiakas, Harvia-konserni</td></tr>'
+    +'<tr><td>8</td><td>Jyväskylän koulutuskuntayhtymä Gradia / Ammattiopisto Gradia</td><td class="r">3 095 \u20ac</td><td class="c">12,5 %</td><td>Jatkoa elokuun 47 k\u20ac tilaukselle</td></tr>'
+    +'</tbody></table></div>'
     +'<div class="sec">\u25b6 Elokuu 2026 \u2014 Merkitt\u00e4vimm\u00e4t uudet</div><div class="card"><table>'
     +'<thead><tr><th>#</th><th>Asiakas</th><th class="r">Myynti \u20ac</th><th class="c">Kate%</th><th>Potentiaali</th></tr></thead><tbody>'
     +'<tr><td>1</td><td>Jyv\u00e4skyl\u00e4n koulutuskuntayhtym\u00e4 Gradia</td><td class="r">47 165 \u20ac</td><td class="c">21.2%</td><td>\u2b50 Julkinen suurasikas \u2014 seuraa!</td></tr>'
@@ -227,7 +246,24 @@ function renderUudet(el){
 }
 
 function renderMenetetyt(el){
-  el.innerHTML='<div class="ibox ia">\uD83D\uDCCC <strong>Rakenteellinen asiakaspoistuma:</strong> 150\u2013180 asiakasta/kk poistuu, uusia tulee 124\u2013152/kk. Nettomiinus ~30\u201350/kk. Retentio-ohjelma tarvitaan.</div>'
+  el.innerHTML='<div class="ytdb"><div class="ytdt">\u26A0\uFE0F YTD MENETETYT \u2014 Tammi\u2013Syyskuu 2026</div><div class="ytdg">'
+    +'<div class="ytds"><div class="ytdsv">1 449</div><div class="ytdsl">Menetettyj\u00e4 YTD (kpl)</div></div>'
+    +'<div class="ytds"><div class="ytdsv">1 021 061 \u20ac</div><div class="ytdsl">Heid\u00e4n myyntins\u00e4 2025</div></div>'
+    +'<div class="ytds"><div class="ytdsv dn">-209</div><div class="ytdsl">Nettomuutos (kpl)</div></div>'
+    +'<div class="ytds"><div class="ytdsv dn">-63 703 \u20ac</div><div class="ytdsl">Nettovaikutus \u20ac</div></div>'
+    +'</div></div>'
+    +'<div class="sec">\u25b6 Kuukausittain (menetetty = osti kuussa 2025, ei samana kuukautena 2026)</div>'+'<div class="card" style="overflow-x:auto"><table><thead><tr><th>Mittari</th><th class="r">Tammi</th><th class="r">Helmi</th><th class="r">Maalis</th><th class="r">Huhti</th><th class="r">Touko</th><th class="r">Kes\u00e4</th><th class="r">Hein\u00e4</th><th class="r">Elo</th><th class="r">Syys</th><th class="r">YTD</th></tr></thead><tbody><tr><td>Menetettyj\u00e4 (kpl)</td><td class="r">152</td><td class="r">160</td><td class="r">144</td><td class="r">172</td><td class="r">201</td><td class="r">171</td><td class="r">139</td><td class="r">145</td><td class="r">165</td><td class="r"><b>1 449</b></td></tr><tr><td>Menetettyjen myynti 2025</td><td class="r">92 538 \u20ac</td><td class="r">91 936 \u20ac</td><td class="r">113 651 \u20ac</td><td class="r">135 919 \u20ac</td><td class="r">155 144 \u20ac</td><td class="r">99 260 \u20ac</td><td class="r">71 437 \u20ac</td><td class="r">125 026 \u20ac</td><td class="r">136 150 \u20ac</td><td class="r"><b>1 021 061 \u20ac</b></td></tr><tr><td>Uusia (kpl)</td><td class="r">134</td><td class="r">117</td><td class="r">138</td><td class="r">148</td><td class="r">163</td><td class="r">143</td><td class="r">126</td><td class="r">130</td><td class="r">141</td><td class="r"><b>1 240</b></td></tr><tr><td>Nettomuutos (kpl)</td><td class="r">-18</td><td class="r">-43</td><td class="r">-6</td><td class="r">-24</td><td class="r">-38</td><td class="r">-28</td><td class="r">-13</td><td class="r">-15</td><td class="r">-24</td><td class="r"><b>-209</b></td></tr><tr><td>Nettovaikutus</td><td class="r">7 715 \u20ac</td><td class="r">22 050 \u20ac</td><td class="r">-16 003 \u20ac</td><td class="r">-12 970 \u20ac</td><td class="r">-37 892 \u20ac</td><td class="r">10 045 \u20ac</td><td class="r">-24 353 \u20ac</td><td class="r">-5 263 \u20ac</td><td class="r">-7 032 \u20ac</td><td class="r"><b>-63 703 \u20ac</b></td></tr></tbody></table></div>'
+    +'<div class="ibox ia">\uD83D\uDCCC Kuukausivertailu ei yksin kerro pysyv\u00e4st\u00e4 menetyksest\u00e4: moni ostaa muina kuukausina. Pysyv\u00e4t menetykset n\u00e4kyv\u00e4t Asiakasanalyysiss\u00e4.</div>'
+    +'<div class="sec">\u25b6 Syyskuu 2026 \u2014 Kriittisimm\u00e4t menetykset (165 kpl, 136 150 \u20ac)</div><div class="card"><table>'
+    +'<thead><tr><th>Asiakas</th><th class="r">Myynti 2025 \u20ac</th><th class="c">Prioriteetti</th><th>Huomio</th></tr></thead><tbody>'
+    +'<tr><td>Kattoyksikkö Oy</td><td class="r">12 430 \u20ac</td><td class="c"><span class="ph">KESKI</span></td><td>Ostaa yh\u00e4 (hein\u00e4kuu)</td></tr>'
+    +'<tr><td>Rakennusliike U. Lipsanen Oy</td><td class="r">7 382 \u20ac</td><td class="c"><span class="ph">KORKEA</span></td><td>Ostot v\u00e4hentyneet</td></tr>'
+    +'<tr><td>Anuco Oy</td><td class="r">5 408 \u20ac</td><td class="c"><span class="ph">KORKEA</span></td><td>Syyskuun tilausrivit 0 \u20ac \u2014 tarkista</td></tr>'
+    +'<tr><td>Osuuskunta Maitosuomi</td><td class="r">4 820 \u20ac</td><td class="c"><span class="pk">KRIITTINEN</span></td><td>Ei ostoja vuoteen</td></tr>'
+    +'<tr><td>Kytola Instruments Oy</td><td class="r">4 258 \u20ac</td><td class="c"><span class="ph">KORKEA</span></td><td>L\u00e4hes poistunut 2026</td></tr>'
+    +'<tr><td>Valoo Oy</td><td class="r">4 198 \u20ac</td><td class="c"><span class="ph">KESKI</span></td><td>Osti kes\u00e4kuussa</td></tr>'
+    +'<tr><td>Kurko Koponen Oy</td><td class="r">4 102 \u20ac</td><td class="c"><span class="ph">KORKEA</span></td><td>L\u00e4hes poistunut 2026</td></tr>'
+    +'</tbody></table></div>'
     +'<div class="sec">\u25b6 Elokuu 2026 \u2014 Kriittisimm\u00e4t menetykset</div><div class="card"><table>'
     +'<thead><tr><th>Asiakas</th><th class="r">Myynti 2025 \u20ac</th><th class="c">Prioriteetti</th><th>Huomio</th></tr></thead><tbody>'
     +'<tr><td>Anuco Oy</td><td class="r">21 726 \u20ac</td><td class="c"><span class="pk">KRIITTINEN</span></td><td>EP\u00e4s\u00e4\u00e4nn\u00f6llinen rytmi \u2014 elo 2025 oli poikkeuksellinen</td></tr>'
@@ -245,7 +281,7 @@ function renderMenetetyt(el){
 }
 
 function renderBudjetti(el){
-  var bd=[[202906,192772],[200313,210886],[330155,263139],[443274,335678],[343680,318889],[308021,274241],[155900,128435],[282139,235482],[717923,null],[780218,null],[800193,null],[864033,null]];
+  var bd=[[202906,192772],[200313,210886],[330155,263139],[443274,335678],[343680,318889],[308021,274241],[155900,128435],[282139,235482],[717923,317632],[780218,null],[800193,null],[864033,null]];
   var mnfull=["Tammikuu","Helmikuu","Maaliskuu","Huhtikuu","Toukokuu","Kes\u00e4kuu","Hein\u00e4kuu","Elokuu","Syyskuu","Lokakuu","Marraskuu","Joulukuu"];
   var rows="";
   for(var i=0;i<12;i++){
@@ -257,8 +293,8 @@ function renderBudjetti(el){
       +'<td class="r '+(has&&chg<0?"dn":has?"up":"")+'">'+( chg!==null?fp(chg):"—")+'</td><td>'+st+'</td></tr>';
   }
   var yc=(y26-yb)/yb*100;
-  rows+='<tr class="tot"><td>YTD Tammi\u2013Elo</td><td class="r">'+fe(yb)+'</td><td class="r">'+fe(y26)+'</td><td class="r dn">'+fp(yc)+'</td><td>\u26A0\uFE0F YTD alle budjetin</td></tr>';
-  el.innerHTML='<div class="ytdb"><div class="ytdt">\uD83C\uDFAF YTD vs Budjetti \u2014 Tammi\u2013Elokuu 2026</div><div class="ytdg">'
+  rows+='<tr class="tot"><td>YTD Tammi\u2013Syys</td><td class="r">'+fe(yb)+'</td><td class="r">'+fe(y26)+'</td><td class="r dn">'+fp(yc)+'</td><td>\u26A0\uFE0F YTD alle budjetin</td></tr>';
+  el.innerHTML='<div class="ytdb"><div class="ytdt">\uD83C\uDFAF YTD vs Budjetti \u2014 Tammi\u2013Syyskuu 2026</div><div class="ytdg">'
     +'<div class="ytds"><div class="ytdsv">'+(yb/1e6).toFixed(2)+' M\u20ac</div><div class="ytdsl">Budjetti YTD</div></div>'
     +'<div class="ytds"><div class="ytdsv">'+(y26/1e6).toFixed(2)+' M\u20ac</div><div class="ytdsl">Toteuma YTD</div></div>'
     +'<div class="ytds"><div class="ytdsv dn">'+fe(y26-yb)+'</div><div class="ytdsl">Ero \u20ac</div></div>'
@@ -270,7 +306,7 @@ function renderBudjetti(el){
 }
 
 function renderEnnuste(el){
-  var ed=[[179868,192772,202906,192772,true],[226864,210886,200313,210886,true],[342016,263139,330155,263139,true],[400398,335678,443274,335678,true],[315360,318889,343680,318889,true],[260556,274241,308021,274241,true],[125962,128435,155900,128435,true],[263968,235482,282139,235482,true],[283143,null,717923,310000,false],[335895,null,780218,360000,false],[349581,null,800193,370000,false],[139998,null,864033,175000,false]];
+  var ed=[[179868,192772,202906,192772,true],[226864,210886,200313,210886,true],[342016,263139,330155,263139,true],[400398,335678,443274,335678,true],[315360,318889,343680,318889,true],[260556,274241,308021,274241,true],[125962,128435,155900,128435,true],[263968,235482,282139,235482,true],[283143,317632,717923,317632,true],[335895,null,780218,360000,false],[349581,null,800193,370000,false],[139998,null,864033,175000,false]];
   var mnfull=["Tammikuu","Helmikuu","Maaliskuu","Huhtikuu","Toukokuu","Kes\u00e4kuu","Hein\u00e4kuu","Elokuu","Syyskuu","Lokakuu","Marraskuu","Joulukuu"];
   var rows="";
   var totE=0,tot25=0;
@@ -301,7 +337,7 @@ function renderEnnuste(el){
 render();
 </script>
 <div style="padding:12px 32px;font-size:10px;color:#94a3b8;border-top:1px solid #e2e8f0;margin-top:24px">
-  L&#228;hde: Tehden myyntij&#228;rjestelm&#228;, Veroton summa | Tammi&#8211;Elokuu 2026 | Luottamuksellinen &#8212; vain hallituksen k&#228;ytt&#246;&#246;n
+  L&#228;hde: Tehden myyntij&#228;rjestelm&#228;, Veroton summa | Tammi&#8211;Syyskuu 2026 | Luottamuksellinen &#8212; vain hallituksen k&#228;ytt&#246;&#246;n
 </div>
 </body>
 </html>
